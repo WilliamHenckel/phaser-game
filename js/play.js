@@ -113,6 +113,9 @@ var playState = {
 
     this.deadSound.play();
 
+    var deathLabel = game.add.text(game.world.centerX, game.world.centerY, 'T\'es nul...',{font: '30px Arial', fill: '#ffffff'});
+    deathLabel.anchor.setTo(0.5, 0.5);
+
     game.stage.backgroundColor = "#ff0000";
 
     this.emitter.x = this.player.x;
