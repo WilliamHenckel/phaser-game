@@ -43,6 +43,9 @@ var playState = {
     this.emitter.gravity = 0;
     this.emitter.minParticleScale = 0.5;
     this.emitter.minRotation = 50;
+
+    //Fond
+    game.stage.backgroundColor = "#3498db";
   },
 
   update: function() {
@@ -109,6 +112,8 @@ var playState = {
     this.player.kill();
 
     this.deadSound.play();
+
+    game.stage.backgroundColor = "#ff0000";
 
     this.emitter.x = this.player.x;
     this.emitter.y = this.player.y;
