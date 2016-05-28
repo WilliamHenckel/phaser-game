@@ -84,7 +84,7 @@ var playState = {
       this.player.frame = 0;
     }
 
-    if (this.cursor.up.isDown && this.player.body.onFloor()) {
+    if (this.cursor.up.isDown && this.player.body.onFloor() && this.player.alive) {
       this.player.body.velocity.y = -300;
       if (this.cursor.left.isDown) {
         game.add.tween(this.player).to({angle:-360}, 500, Phaser.Easing.Linear.None, true);
