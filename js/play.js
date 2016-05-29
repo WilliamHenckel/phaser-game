@@ -97,7 +97,7 @@ var playState = {
   },
 
   createWorld: function() {
-    this.map = game.add.tilemap('map2');
+    this.map = game.add.tilemap('map');
     this.map.addTilesetImage('tileset');
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
