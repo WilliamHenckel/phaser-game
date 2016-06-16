@@ -14,6 +14,7 @@ var playState = {
     this.player.body.gravity.y = 500;
     this.player.animations.add('right', [1,2], 8, true);
     this.player.animations.add('left', [3,4], 8, true);
+    game.life_points = 3;
 
     //Pièce
     this.coin = game.add.sprite(60,140,'coin');
@@ -23,6 +24,9 @@ var playState = {
     //Score
     this.scoreLabel = game.add.text(30, 30, 'Score : 0', {font:'18px Arial', fill:'#ffffff'});
     game.global.score = 0;
+
+    //Points de vie
+    game.life_pointsLabel = game.add.text(460, 30, game.life_points, {font:'18px Arial', fill:'#ffffff'});
 
     //Ennemies
     this.enemies = game.add.group();
@@ -46,6 +50,9 @@ var playState = {
 
     //Fond
     game.stage.backgroundColor = "#3498db";
+
+    //Damage
+    this.executed = false;
   },
 
   update: function() {
@@ -54,7 +61,7 @@ var playState = {
     game.physics.arcade.collide(this.enemies, this.layer);
 
     game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
-    game.physics.arcade.overlap(this.player, this.enemies, this.playerDie, null, this);
+    game.physics.arcade.overlap(this.player, this.enemies, this.playerHurt, null, this);
 
     this.movePlayer();
 
@@ -102,6 +109,24 @@ var playState = {
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
     this.map.setCollision(1);
+  },
+
+  playerHurt: function() {
+    if (!this.executed && game.life_points >= 1){
+      this.executed = true;
+      game.life_points -= 1;
+      this.player.alpha = 0.5;
+      game.life_pointsLabel.destroy();
+      game.life_pointsLabel = game.add.text(460, 30, game.life_points, {font:'18px Arial', fill:'#ffffff'});
+      game.time.events.add(1000, this.reset_executed, this);
+    } else if (game.life_points === 0) {
+      this.playerDie();
+    }
+  },
+
+  reset_executed: function() {
+    this.executed = false;
+    this.player.alpha = 1;
   },
 
   playerDie: function() {
