@@ -111,13 +111,13 @@ var playState = {
     this.map.setCollision(1);
   },
 
+  // Mise a jour des points de vie du personnage
   playerHurt: function() {
     if (!this.executed && game.life_points >= 1){
       this.executed = true;
       game.life_points -= 1;
       this.player.alpha = 0.5;
-      game.life_pointsLabel.destroy();
-      game.life_pointsLabel = game.add.text(460, 30, game.life_points, {font:'18px Arial', fill:'#ffffff'});
+      game.life_pointsLabel.text = game.life_points;
       game.time.events.add(1000, this.reset_executed, this);
     } else if (game.life_points === 0) {
       this.playerDie();
