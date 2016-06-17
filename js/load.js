@@ -1,7 +1,7 @@
 var loadState = {
 
   preload: function() {
-    var loadingLabel = game.add.text(game.world.centerX, 150, 'Chargement...',{font: '30px Arial', fill: '#ffffff'});
+    var loadingLabel = game.add.text(game.world.centerX, 150, 'Chargement...',{font: fontl, fill: textColor});
     loadingLabel.anchor.setTo(0.5, 0.5);
 
     var progressBar = game.add.sprite(game.world.centerX, 200, 'progressBar');

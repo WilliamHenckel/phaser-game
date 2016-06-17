@@ -22,11 +22,11 @@ var playState = {
     this.coin.anchor.setTo(0.5,0.5);
 
     //Score
-    this.scoreLabel = game.add.text(30, 30, 'Score : 0', {font:'18px Arial', fill:'#ffffff'});
+    this.scoreLabel = game.add.text(30, 30, 'Score : 0', {font:fontxs, fill:textColor});
     game.global.score = 0;
 
     //Points de vie
-    game.life_pointsLabel = game.add.text(460, 30, game.life_points, {font:'18px Arial', fill:'#ffffff'});
+    game.life_pointsLabel = game.add.text(460, 30, game.life_points, {font:fontxs, fill:textColor});
 
     //Ennemies
     this.enemies = game.add.group();
@@ -138,7 +138,7 @@ var playState = {
 
     this.deadSound.play();
 
-    var deathLabel = game.add.text(game.world.centerX, game.world.centerY, 'T\'es nul...',{font: '30px Arial', fill: '#ffffff'});
+    var deathLabel = game.add.text(game.world.centerX, game.world.centerY, 'T\'es nul...',{font: fontl, fill: textColor});
     deathLabel.anchor.setTo(0.5, 0.5);
 
     game.stage.backgroundColor = "#ff0000";
