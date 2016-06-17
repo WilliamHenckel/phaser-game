@@ -15,6 +15,7 @@ var playState = {
     this.player.animations.add('right', [1,2], 8, true);
     this.player.animations.add('left', [3,4], 8, true);
     game.life_points = 3;
+    game.wallJump = false;
 
     //Pièce
     this.coin = game.add.sprite(60,140,'coin');
@@ -79,18 +80,30 @@ var playState = {
   },
 
   movePlayer: function() {
-    if (this.cursor.left.isDown) {
+    if (this.cursor.left.isDown && game.wallJump == false) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
-    } else if (this.cursor.right.isDown) {
+    } else if (this.cursor.right.isDown && game.wallJump == false) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
+    } else if (this.cursor.left.isDown && game.wallJump == true) {
+      this.player.body.velocity.x = 200;
+      this.player.animations.play('right');
+    } else if (this.cursor.right.isDown && game.wallJump == true) {
+      this.player.body.velocity.x = -200;
+      this.player.animations.play('left');
     } else {
       this.player.body.velocity.x = 0;
       this.player.animations.stop();
       this.player.frame = 0;
     }
 
+    //Reset walljump
+    if (this.player.body.onFloor()) {
+      game.wallJump = false;
+    }
+
+    //Jump simple
     if (this.cursor.up.isDown && this.player.body.onFloor() && this.player.alive) {
       this.player.body.velocity.y = -300;
       if (this.cursor.left.isDown) {
@@ -100,6 +113,12 @@ var playState = {
       }
 
       this.jumpSound.play();
+    }
+
+    //Wall jump
+    if (!this.player.body.onFloor() && this.player.body.onWall() && this.cursor.up.isDown && this.cursor.left.isDown || !this.player.body.onFloor() && this.player.body.onWall() && this.cursor.up.isDown && this.cursor.right.isDown) {
+      game.wallJump = true;
+      this.player.body.velocity.y = -200;
     }
   },
 
