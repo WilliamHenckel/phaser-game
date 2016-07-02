@@ -7,7 +7,11 @@ var menuState = {
     nameLabel.anchor.setTo(0.5, 0.5);
     game.add.tween(nameLabel).to({y: 80}, 1000).easing(Phaser.Easing.Bounce.Out).start();
 
-    var text = 'Score : ' + game.global.score + '\nRecord : ' + localStorage.getItem('bestScore');
+    /*var text = 'Score : ' + game.global.score + '\nRecord : ' + localStorage.getItem('bestScore');
+    var scoreLabel = game.add.text(game.world.centerX, game.world.centerY, text, {font: fontm, fill: textColor, align: 'center'});
+    scoreLabel.anchor.setTo(0.5, 0.5);*/
+
+    var text = 'Marquez 100 points par niveau';
     var scoreLabel = game.add.text(game.world.centerX, game.world.centerY, text, {font: fontm, fill: textColor, align: 'center'});
     scoreLabel.anchor.setTo(0.5, 0.5);
 

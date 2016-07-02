@@ -1,4 +1,4 @@
-var playState = {
+var playState2 = {
   create: function() {
     //Commandes
     this.cursor = game.input.keyboard.createCursorKeys();
@@ -15,7 +15,6 @@ var playState = {
     this.player.animations.add('right', [1,2], 8, true);
     this.player.animations.add('left', [3,4], 8, true);
     game.life_points = 3;
-    /*game.wallJump = false;*/
 
     //Pièce
     this.coin = game.add.sprite(60,140,'coin');
@@ -80,28 +79,17 @@ var playState = {
   },
 
   movePlayer: function() {
-    if (this.cursor.left.isDown /*&& game.wallJump == false*/) {
+    if (this.cursor.left.isDown) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
-    } else if (this.cursor.right.isDown /*&& game.wallJump == false*/) {
+    } else if (this.cursor.right.isDown) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
-    } /*else if (this.cursor.left.isDown && game.wallJump == true) {
-      this.player.body.velocity.x = 200;
-      this.player.animations.play('right');
-    } else if (this.cursor.right.isDown && game.wallJump == true) {
-      this.player.body.velocity.x = -200;
-      this.player.animations.play('left');
-    }*/ else {
+    } else {
       this.player.body.velocity.x = 0;
       this.player.animations.stop();
       this.player.frame = 0;
     }
-
-    //Reset walljump
-    /*if (this.player.body.onFloor()) {
-      game.wallJump = false;
-    }*/
 
     //Jump simple
     if (this.cursor.up.isDown && this.player.body.onFloor() && this.player.alive) {
@@ -114,30 +102,14 @@ var playState = {
 
       this.jumpSound.play();
     }
-
-    //Wall jump
-    /*if (!this.player.body.onFloor() && this.player.body.onWall() && this.cursor.up.isDown && this.cursor.left.isDown || !this.player.body.onFloor() && this.player.body.onWall() && this.cursor.up.isDown && this.cursor.right.isDown) {
-      game.wallJump = true;
-      this.player.body.velocity.y = -200;
-    }*/
   },
 
   createWorld: function() {
-    this.map = game.add.tilemap('map');
+    this.map = game.add.tilemap('map2');
     this.map.addTilesetImage('tileset');
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
     this.map.setCollision(1);
-  },
-
-  nextLevel: function() {
-    var finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé',{font: fontl, fill: textColor});
-    finishLabel.anchor.setTo(0.5, 0.5);
-    game.time.events.add(2000, this.level2, this);
-  },
-
-  level2: function() {
-    game.state.start('play2');
   },
 
   // Mise a jour des points de vie du personnage
@@ -190,10 +162,6 @@ var playState = {
     game.add.tween(this.coin.scale).to({x: 1, y: 1}, 300).start();
 
     game.add.tween(this.player.scale).to({x: 1.3, y: 1.3}, 50).to({x: 1, y: 1}, 150).start();
-
-    if (game.global.score == 100) {
-      this.nextLevel();
-    }
   },
 
   updateCoinPosition: function() {
@@ -223,7 +191,7 @@ var playState = {
       return;
     }
 
-    enemy.anchor.setTo(0.5, 1);
+    enemy.anchor.setTo(0.5, 0.9);
     enemy.reset(game.world.centerX,0);
     enemy.body.gravity.y = 500;
     enemy.body.velocity.x = 100 * game.rnd.integerInRange(-1,1);
@@ -235,5 +203,5 @@ var playState = {
 
   startMenu: function() {
     game.state.start('menu');
-  },
+  }
 };
