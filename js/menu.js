@@ -11,24 +11,27 @@ var menuState = {
     var scoreLabel = game.add.text(game.world.centerX, game.world.centerY, text, {font: fontm, fill: textColor, align: 'center'});
     scoreLabel.anchor.setTo(0.5, 0.5);*/
 
-    var text = 'Marquez 100 points par niveau';
-    var scoreLabel = game.add.text(game.world.centerX, game.world.centerY, text, {font: fontm, fill: textColor, align: 'center'});
-    scoreLabel.anchor.setTo(0.5, 0.5);
+    var bouton1 = game.add.sprite(game.world.centerX-100, game.world.centerY, 'bouton1');
+    bouton1.anchor.set(0.5);
+    bouton1.inputEnabled = true;
+    bouton1.events.onInputDown.add(this.level1, this);
+
+    var bouton2 = game.add.sprite(game.world.centerX+100, game.world.centerY, 'bouton2');
+    bouton2.anchor.set(0.5);
+    bouton2.inputEnabled = true;
+    bouton2.events.onInputDown.add(this.level2, this);
 
     var startLabel = game.add.text(game.world.centerX, game.world.height-80, 'Fleche haut pour commencer',{font: fonts, fill: textColor});
     startLabel.anchor.setTo(0.5, 0.5);
     game.add.tween(startLabel).to({angle: -5}, 500).to({angle: 0}, 500).loop().start();
 
-    var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-    upKey.onDown.addOnce(this.start, this);
-
-    if (!localStorage.getItem('bestScore')) {
+    /*if (!localStorage.getItem('bestScore')) {
       localStorage.setItem('bestScore', 0);
     }
 
     if (game.global.score > localStorage.getItem('bestScore')) {
       localStorage.setItem('bestScore', game.global.score);
-    }
+    }*/
 
     this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
     this.muteButton.input.useHandCursor = true;
@@ -38,8 +41,12 @@ var menuState = {
     }
   },
 
-  start: function() {
+  level1: function() {
     game.state.start('play');
+  },
+
+  level2: function() {
+    game.state.start('play2');
   },
 
   toggleSound: function() {

@@ -8,7 +8,7 @@ var playState = {
     this.createWorld();
 
     //Joueur
-    this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
+    this.player = game.add.sprite(game.world.centerX, 230, 'player');
     this.player.anchor.setTo(0.5,0.5);
     game.physics.arcade.enable(this.player);
     this.player.body.gravity.y = 500;
