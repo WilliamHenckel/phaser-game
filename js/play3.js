@@ -1,4 +1,4 @@
-var playState2 = {
+var playState3 = {
   create: function() {
     //Commandes
     this.cursor = game.input.keyboard.createCursorKeys();
@@ -17,7 +17,7 @@ var playState2 = {
     game.life_points = 3;
 
     //Pièce
-    this.coin = game.add.sprite(60,140,'coin');
+    this.coin = game.add.sprite(150,220,'coin');
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5,0.5);
 
@@ -105,7 +105,7 @@ var playState2 = {
   },
 
   createWorld: function() {
-    this.map = game.add.tilemap('map2');
+    this.map = game.add.tilemap('map3');
     this.map.addTilesetImage('tileset');
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
@@ -166,9 +166,9 @@ var playState2 = {
 
   updateCoinPosition: function() {
     var coinPosition = [
-      {x: 140, y: 60}, {x: 360, y: 60},
-      {x: 60, y: 140}, {x: 440, y: 140},
-      {x: 140, y: 220}, {x: 360, y: 220}
+      {x: 150, y: 60}, {x: 350, y: 60},
+      {x: 150, y: 220}, {x: 350, y: 220},
+      {x: 50, y: 300}, {x: 450, y: 300}
     ];
 
     for (var i = 0; i < coinPosition.length; i++) {

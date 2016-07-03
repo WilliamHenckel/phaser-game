@@ -16,9 +16,11 @@ var loadState = {
     game.load.image('tileset', 'assets/tileset.png');
     game.load.image('bouton1', 'assets/bouton1.png');
     game.load.image('bouton2', 'assets/bouton2.png');
+    game.load.image('bouton3', 'assets/bouton3.png');
 
     game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('map2', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('map3', 'assets/map3.json', null, Phaser.Tilemap.TILED_JSON);
 
     game.load.audio('jump',['assets/jump.ogg','assets/jump.mp3']);
     game.load.audio('coin',['assets/coin.ogg','assets/coin.mp3']);
