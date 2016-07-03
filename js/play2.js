@@ -119,7 +119,7 @@ var playState2 = {
 
   // Mise a jour des points de vie du personnage
   playerHurt: function() {
-    if (!this.executed && game.life_points >= 1){
+    if (!this.executed && game.life_points >= 1 && game.global.score < 100){
       this.executed = true;
       game.life_points -= 1;
       this.player.alpha = 0.5;
@@ -147,7 +147,7 @@ var playState2 = {
     var deathLabel = game.add.text(game.world.centerX, game.world.centerY, 'T\'es nul...',{font: fontl, fill: textColor});
     deathLabel.anchor.setTo(0.5, 0.5);
 
-    game.stage.backgroundColor = "#ff0000";
+    game.stage.backgroundColor = "#313131";
 
     this.emitter.x = this.player.x;
     this.emitter.y = this.player.y;
@@ -175,9 +175,9 @@ var playState2 = {
 
   updateCoinPosition: function() {
     var coinPosition = [
-      {x: 140, y: 60}, {x: 360, y: 60},
+      {x: 150, y: 60}, {x: 350, y: 60},
       {x: 60, y: 140}, {x: 440, y: 140},
-      {x: 140, y: 220}, {x: 360, y: 220}
+      {x: 150, y: 220}, {x: 350, y: 220}
     ];
 
     for (var i = 0; i < coinPosition.length; i++) {

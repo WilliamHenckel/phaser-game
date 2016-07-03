@@ -210,9 +210,9 @@ var playState = {
 
   updateCoinPosition: function() {
     var coinPosition = [
-      {x: 140, y: 60}, {x: 360, y: 60},
+      {x: 170, y: 60}, {x: 330, y: 60},
       {x: 60, y: 140}, {x: 440, y: 140},
-      {x: 130, y: 300}, {x: 370, y: 300}
+      {x: 170, y: 300}, {x: 330, y: 300}
     ];
 
     for (var i = 0; i < coinPosition.length; i++) {
