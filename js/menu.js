@@ -3,7 +3,7 @@ var menuState = {
   create: function() {
     game.add.image(0, 0, 'background');
 
-    var nameLabel = game.add.text(game.world.centerX, -50, 'Boo\'s Adventures',{font: fontxl, fill: textColor});
+    var nameLabel = game.add.text(game.world.centerX, -50, 'Bob le blob',{font: fontxl, fill: textColor});
     nameLabel.anchor.setTo(0.5, 0.5);
     game.add.tween(nameLabel).to({y: 80}, 1000).easing(Phaser.Easing.Bounce.Out).start();
 

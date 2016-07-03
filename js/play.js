@@ -8,12 +8,12 @@ var playState = {
     this.createWorld();
 
     //Joueur
-    this.player = game.add.sprite(game.world.centerX, 230, 'player');
+    this.player = game.add.sprite(game.world.centerX, 230, 'slime');
     this.player.anchor.setTo(0.5,0.5);
     game.physics.arcade.enable(this.player);
     this.player.body.gravity.y = 500;
-    this.player.animations.add('right', [1,2], 8, true);
-    this.player.animations.add('left', [3,4], 8, true);
+    this.player.animations.add('right', [2,3], 6, true);
+    this.player.animations.add('left', [0,1], 6, true);
     game.life_points = 3;
     /*game.wallJump = false;*/
 
@@ -106,11 +106,11 @@ var playState = {
     //Jump simple
     if (this.cursor.up.isDown && this.player.body.onFloor() && this.player.alive) {
       this.player.body.velocity.y = -300;
-      if (this.cursor.left.isDown) {
+      /*if (this.cursor.left.isDown) {
         game.add.tween(this.player).to({angle:-360}, 500, Phaser.Easing.Linear.None, true);
       } else if (this.cursor.right.isDown) {
         game.add.tween(this.player).to({angle:360}, 500, Phaser.Easing.Linear.None, true);
-      }
+      }*/
 
       this.jumpSound.play();
     }
