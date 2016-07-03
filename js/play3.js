@@ -8,12 +8,12 @@ var playState3 = {
     this.createWorld();
 
     //Joueur
-    this.player = game.add.sprite(game.world.centerX, 110, 'player');
+    this.player = game.add.sprite(game.world.centerX, 110, 'slime');
     this.player.anchor.setTo(0.5,0.5);
     game.physics.arcade.enable(this.player);
     this.player.body.gravity.y = 500;
-    this.player.animations.add('right', [1,2], 8, true);
-    this.player.animations.add('left', [3,4], 8, true);
+    this.player.animations.add('right', [2,3], 6, true);
+    this.player.animations.add('left', [0,1], 6, true);
     game.life_points = 3;
 
     //Pièce
@@ -94,12 +94,6 @@ var playState3 = {
     //Jump simple
     if (this.cursor.up.isDown && this.player.body.onFloor() && this.player.alive) {
       this.player.body.velocity.y = -300;
-      if (this.cursor.left.isDown) {
-        game.add.tween(this.player).to({angle:-360}, 500, Phaser.Easing.Linear.None, true);
-      } else if (this.cursor.right.isDown) {
-        game.add.tween(this.player).to({angle:360}, 500, Phaser.Easing.Linear.None, true);
-      }
-
       this.jumpSound.play();
     }
   },
@@ -110,6 +104,16 @@ var playState3 = {
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
     this.map.setCollision(1);
+  },
+
+  nextLevel: function() {
+    var finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Jeu terminé ! Bravo !',{font: fontl, fill: textColor});
+    finishLabel.anchor.setTo(0.5, 0.5);
+    game.time.events.add(2000, this.menu, this);
+  },
+
+  menu: function() {
+    game.state.start('menu');
   },
 
   // Mise a jour des points de vie du personnage
@@ -162,6 +166,10 @@ var playState3 = {
     game.add.tween(this.coin.scale).to({x: 1, y: 1}, 300).start();
 
     game.add.tween(this.player.scale).to({x: 1.3, y: 1.3}, 50).to({x: 1, y: 1}, 150).start();
+
+    if (game.global.score == 100) {
+      this.nextLevel();
+    }
   },
 
   updateCoinPosition: function() {
