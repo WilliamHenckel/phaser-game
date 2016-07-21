@@ -22,6 +22,11 @@ var playState = {
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5,0.5);
 
+    //Power Up
+    this.potion = game.add.sprite(game.world.centerX, game.world.centerY,'potion');
+    game.physics.arcade.enable(this.potion);
+    this.potion.anchor.setTo(0.5,0.5);
+
     //Score
     this.scoreLabel = game.add.text(30, 30, 'Score : 0', {font:fontxs, fill:textColor});
     game.global.score = 0;
@@ -39,6 +44,7 @@ var playState = {
     this.jumpSound = game.add.audio('jump');
     this.coinSound = game.add.audio('coin');
     this.deadSound = game.add.audio('dead');
+    this.potionSound = game.add.audio('potion');
 
     //Particules
     this.emitter = game.add.emitter(0, 0, 15);
@@ -61,7 +67,7 @@ var playState = {
   },
 
   eraseTuto:function() {
-    game.add.tween(this.tutoLabel).to( { alpha: 0 }, 2000, "Linear", true);
+    game.add.tween(this.tutoLabel).to( { alpha: 0 }, 1000, "Linear", true);
   },
 
   update: function() {
@@ -70,11 +76,12 @@ var playState = {
     game.physics.arcade.collide(this.enemies, this.layer);
 
     game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
+    game.physics.arcade.overlap(this.player, this.potion, this.takePotion, null, this);
     game.physics.arcade.overlap(this.player, this.enemies, this.playerHurt, null, this);
 
     this.movePlayer();
 
-    if (!this.player.inWorld) {
+    if (!this.player.inWorld && game.global.score < 100) {
       this.playerDie();
     }
 
@@ -188,7 +195,12 @@ var playState = {
   },
 
   takeCoin: function() {
-    this.updateCoinPosition();
+    if (game.global.score < 90) {
+      this.updateCoinPosition();
+    } else {
+      this.coin.kill();
+    }
+
     game.global.score += 10;
     this.scoreLabel.text = 'Score : ' + game.global.score;
 
@@ -204,8 +216,14 @@ var playState = {
     }
   },
 
-  tuto: function() {
+  takePotion: function() {
+    this.updatePotionPosition();
+    game.life_points += 1;
+    game.life_pointsLabel.text = game.life_points;
 
+    this.potionSound.play();
+
+    this.potion.scale.setTo(0,0);
   },
 
   updateCoinPosition: function() {
@@ -221,11 +239,31 @@ var playState = {
       }
     }
 
-    var newPosition = coinPosition[
+    var newCoinPosition = coinPosition[
       game.rnd.integerInRange(0, coinPosition.length-1)
     ];
 
-    this.coin.reset(newPosition.x, newPosition.y);
+    this.coin.reset(newCoinPosition.x, newCoinPosition.y);
+  },
+
+  updatePotionPosition: function() {
+    var potionPosition = [
+      {x: 250, y: 60},
+      {x: 240, y: 120},
+      {x: 230, y: 300}
+    ];
+
+    for (var j = 0; j < potionPosition.length; j++) {
+      if (potionPosition[j].x === this.potion.x) {
+        potionPosition.splice(j,1);
+      }
+    }
+
+    var newPotionPosition = potionPosition[
+      game.rnd.integerInRange(0, potionPosition.length-1)
+    ];
+
+    this.potion.reset(newPotionPosition.x, newPotionPosition.y);
   },
 
   addEnemy: function() {

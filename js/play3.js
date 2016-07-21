@@ -65,7 +65,7 @@ var playState3 = {
 
     this.movePlayer();
 
-    if (!this.player.inWorld) {
+    if (!this.player.inWorld && game.global.score < 100) {
       this.playerDie();
     }
 
@@ -156,7 +156,12 @@ var playState3 = {
   },
 
   takeCoin: function() {
-    this.updateCoinPosition();
+    if (game.global.score < 90) {
+      this.updateCoinPosition();
+    } else {
+      this.coin.kill();
+    }
+    
     game.global.score += 10;
     this.scoreLabel.text = 'Score : ' + game.global.score;
 

@@ -12,6 +12,7 @@ var loadState = {
 
     game.load.image('enemy', 'assets/enemy.png');
     game.load.image('coin', 'assets/coin.png');
+    game.load.image('potion', 'assets/red-potion.png');
     game.load.image('pixel', 'assets/pixel.png');
     game.load.image('tileset', 'assets/tileset.png');
     game.load.image('bouton1', 'assets/bouton1.png');
@@ -29,6 +30,7 @@ var loadState = {
     game.load.audio('coin',['assets/coin.ogg','assets/coin.mp3']);
     game.load.audio('dead',['assets/dead.ogg','assets/dead.mp3']);
     game.load.audio('elephant',['assets/elephant.mp3']);
+    game.load.audio('potion',['assets/powerup.ogg','assets/powerup.mp3']);
 
     game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
   },
