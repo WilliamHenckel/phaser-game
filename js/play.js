@@ -23,7 +23,7 @@ var playState = {
     this.coin.anchor.setTo(0.5,0.5);
 
     //Power Up
-    this.potion = game.add.sprite(game.world.centerX, game.world.centerY,'potion');
+    this.potion = game.add.sprite(250, 50,'potion');
     game.physics.arcade.enable(this.potion);
     this.potion.anchor.setTo(0.5,0.5);
 
@@ -223,7 +223,11 @@ var playState = {
 
     this.potionSound.play();
 
-    this.potion.scale.setTo(0,0);
+    var newPotionPosition = {x: -100, y: -100};
+
+    this.potion.reset(newPotionPosition.x, newPotionPosition.y);
+
+    game.time.events.add(10000, this.updatePotionPosition, this);
   },
 
   updateCoinPosition: function() {
@@ -248,9 +252,8 @@ var playState = {
 
   updatePotionPosition: function() {
     var potionPosition = [
-      {x: 250, y: 60},
-      {x: 240, y: 120},
-      {x: 230, y: 300}
+      {x: 250, y: 50},
+      {x: 250, y: 290}
     ];
 
     for (var j = 0; j < potionPosition.length; j++) {
