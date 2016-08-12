@@ -252,8 +252,8 @@ var playState = {
 
   updatePotionPosition: function() {
     var potionPosition = [
-      {x: 250, y: 50},
-      {x: 250, y: 290}
+      {x: game.world.centerX, y: 50},
+      {x: game.world.centerX, y: 290}
     ];
 
     for (var j = 0; j < potionPosition.length; j++) {
