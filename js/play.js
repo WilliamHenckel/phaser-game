@@ -163,6 +163,10 @@ var playState = {
       this.player.alpha = 0.5;
       game.life_pointsLabel.text = game.life_points;
       game.time.events.add(1000, this.reset_executed, this);
+
+      if (game.life_points >= 4) {
+        game.time.events.add(10000, this.updatePotionPosition, this);
+      }
     } else if (game.life_points === 0) {
       this.playerDie();
     }
@@ -199,6 +203,7 @@ var playState = {
       this.updateCoinPosition();
     } else {
       this.coin.kill();
+      this.potion.kill();
     }
 
     game.global.score += 10;
@@ -227,7 +232,9 @@ var playState = {
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
 
-    game.time.events.add(10000, this.updatePotionPosition, this);
+    if (game.life_points <= 4) {
+      game.time.events.add(10000, this.updatePotionPosition, this);
+    }
   },
 
   updateCoinPosition: function() {
