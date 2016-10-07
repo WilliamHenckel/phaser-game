@@ -9,17 +9,7 @@ var fontxs = '18px '+textFont;  // Minuscule taille de texte
 
 game.global = {score:0};
 
-game.state.add('boot', {
-  preload: function() {
-    game.load.image('progressBar', 'assets/progressBar.png');
-  },
-
-  create: function() {
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.state.start('load');
-  }
-});
-
+game.state.add('boot', bootState);
 game.state.add('load', loadState);
 game.state.add('menu', menuState);
 game.state.add('play', playState);
