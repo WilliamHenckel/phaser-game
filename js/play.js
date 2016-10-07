@@ -74,6 +74,9 @@ var playState = {
     //Fonction exécutée 60x par seconde
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
+    game.physics.arcade.collide(this.enemies, this.movingWall);
+    game.physics.arcade.collide(this.movingWall, this.layer);
+    game.physics.arcade.collide(this.player, this.movingWall);
 
     game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
     game.physics.arcade.overlap(this.player, this.potion, this.takePotion, null, this);
@@ -91,6 +94,12 @@ var playState = {
 
       this.addEnemy();
       this.nextEnemy = game.time.now + delay;
+    }
+
+    if (this.movingWall.x >= game.world.centerX+50) {
+      this.movingWall.body.velocity.x = -50;
+    } else if (this.movingWall.x <= game.world.centerX-50) {
+      this.movingWall.body.velocity.x = 50;
     }
   },
 
@@ -143,6 +152,15 @@ var playState = {
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
     this.map.setCollision(1);
+
+    //moving wall
+    console.log(game.world.centerX);
+    this.movingWall = game.add.sprite(game.world.centerX, 180, 'wallH');
+    this.movingWall.anchor.setTo(0.5, 1);
+    game.physics.arcade.enable(this.movingWall);
+    this.movingWall.enableBody = true;
+    this.movingWall.body.immovable = true;
+    this.movingWall.body.velocity.x = 50;
   },
 
   nextLevel: function() {
