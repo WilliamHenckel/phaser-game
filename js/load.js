@@ -9,9 +9,9 @@ var loadState = {
     game.load.setPreloadSprite(progressBar);
 
     game.load.spritesheet('slime','assets/slime.png', 58, 32, 4);
+    game.load.spritesheet('coin','assets/coin.png', 100, 100, 4);
 
     game.load.image('enemy', 'assets/enemy.png');
-    game.load.image('coin', 'assets/coin.png');
     game.load.image('potion', 'assets/red-potion.png');
     game.load.image('pixel', 'assets/pixel.png');
     game.load.image('tileset', 'assets/tileset.png');
