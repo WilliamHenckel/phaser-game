@@ -10,6 +10,7 @@ var loadState = {
 
     game.load.spritesheet('slime','assets/slime.png', 58, 32, 4);
     game.load.spritesheet('coin','assets/coin.png', 100, 100, 4);
+    game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
 
     game.load.image('enemy', 'assets/enemy.png');
     game.load.image('potion', 'assets/red-potion.png');
@@ -33,7 +34,7 @@ var loadState = {
     game.load.audio('elephant',['assets/elephant.mp3']);
     game.load.audio('potion',['assets/powerup.ogg','assets/powerup.mp3']);
 
-    game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
+    game.load.text('level', 'assets/data/level.json');
   },
 
   create: function() {

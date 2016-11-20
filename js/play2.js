@@ -20,6 +20,9 @@ var playState2 = {
     this.coin = game.add.sprite(60,140,'coin');
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5,0.5);
+    this.coin.animations.add('turn', [0,1,2,3,2,1], 10, true);
+    this.coin.animations.play('turn');
+    this.coin.scale.setTo(0.3,0.3);
 
     //Score
     this.scoreLabel = game.add.text(30, 30, 'Score : 0', {font:fontxs, fill:textColor});
@@ -161,6 +164,7 @@ var playState2 = {
       this.updateCoinPosition();
     } else {
       this.coin.kill();
+      this.potion.kill();
     }
 
     game.global.score += 10;
@@ -169,7 +173,7 @@ var playState2 = {
     this.coinSound.play();
 
     this.coin.scale.setTo(0,0);
-    game.add.tween(this.coin.scale).to({x: 1, y: 1}, 300).start();
+    game.add.tween(this.coin.scale).to({x: 0.3, y: 0.3}, 300).start();
 
     game.add.tween(this.player.scale).to({x: 1.3, y: 1.3}, 50).to({x: 1, y: 1}, 150).start();
 
