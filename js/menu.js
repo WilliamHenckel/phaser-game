@@ -70,7 +70,7 @@ var menuState = {
   },
 
   level1: function() {
-    game.state.start('play');
+    game.state.start('play', true, false, "map1");
   },
 
   level2: function() {

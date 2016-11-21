@@ -151,7 +151,22 @@ var playState = {
   },
 
   createWorld: function () {
-    this.map = game.add.tilemap('map');
+
+    var level1 = [
+      {
+        coinPosition: [
+          {x: 170, y: 60}, {x: 330, y: 60},
+          {x: 60, y: 140}, {x: 440, y: 140},
+          {x: 170, y: 300}, {x: 330, y: 300}
+        ]
+      },
+      {
+        map: 'map1'
+      }
+    ];
+
+    this.map = game.add.tilemap(this.conf.mapName);
+
     this.map.addTilesetImage('tileset');
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
@@ -260,11 +275,11 @@ var playState = {
   },
 
   updateCoinPosition: function () {
-    var coinPosition = [
+    /* var coinPosition = [
       {x: 170, y: 60}, {x: 330, y: 60},
       {x: 60, y: 140}, {x: 440, y: 140},
       {x: 170, y: 300}, {x: 330, y: 300}
-    ];
+    ]; */
 
     for (var i = 0; i < coinPosition.length; i++) {
       if (coinPosition[i].x === this.coin.x) {
