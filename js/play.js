@@ -1,4 +1,11 @@
 var playState = {
+  init: function(param){
+    console.log('yolo');
+    console.log(param);
+    this.conf = {};
+    this.conf.mapName = param;
+  },
+
   create: function () {
     // Commandes
     this.cursor = game.input.keyboard.createCursorKeys();
@@ -151,19 +158,6 @@ var playState = {
   },
 
   createWorld: function () {
-
-    var level1 = [
-      {
-        coinPosition: [
-          {x: 170, y: 60}, {x: 330, y: 60},
-          {x: 60, y: 140}, {x: 440, y: 140},
-          {x: 170, y: 300}, {x: 330, y: 300}
-        ]
-      },
-      {
-        map: 'map1'
-      }
-    ];
 
     this.map = game.add.tilemap(this.conf.mapName);
 
