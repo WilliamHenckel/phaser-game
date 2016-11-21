@@ -1,9 +1,26 @@
 var playState = {
-  init: function(param){
-    console.log('yolo');
-    console.log(param);
+  init: function (map, playerX, playerY) {
+    switch (map) {
+      case 2:
+        this.levelData = JSON.parse(this.game.cache.getText('level2'));
+        break;
+
+      case 3:
+        this.levelData = JSON.parse(this.game.cache.getText('level3'));
+        break;
+
+      default:
+        this.levelData = JSON.parse(this.game.cache.getText('level1'));
+    }
+
     this.conf = {};
-    this.conf.mapName = param;
+    this.conf.mapName = map;
+    this.conf.playerX = this.levelData.playerStart.x;
+    this.conf.playerY = this.levelData.playerStart.y;
+    this.conf.coinX = this.levelData.coinStart.x;
+    this.conf.coinY = this.levelData.coinStart.y;
+    this.conf.coinPosition = this.levelData.coinPosition;
+    this.conf.potionPosition = this.levelData.potionPosition;
   },
 
   create: function () {
@@ -15,7 +32,7 @@ var playState = {
     this.createWorld();
 
     // Joueur
-    this.player = game.add.sprite(game.world.centerX, 230, 'slime');
+    this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'slime');
     this.player.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enable(this.player);
     this.player.body.gravity.y = 500;
@@ -25,7 +42,7 @@ var playState = {
     /* game.wallJump = false; */
 
     // Pièce
-    this.coin = game.add.sprite(60, 140, 'coin');
+    this.coin = game.add.sprite(this.conf.coinX, this.conf.coinY, 'coin');
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5, 0.5);
     this.coin.animations.add('turn', [0, 1, 2, 3, 2, 1], 10, true);
@@ -83,9 +100,10 @@ var playState = {
   update: function () {
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
-    game.physics.arcade.collide(this.enemies, this.movingWall);
-    game.physics.arcade.collide(this.movingWall, this.layer);
-    game.physics.arcade.collide(this.player, this.movingWall);
+
+    // game.physics.arcade.collide(this.enemies, this.movingWall);
+    // game.physics.arcade.collide(this.movingWall, this.layer);
+    // game.physics.arcade.collide(this.player, this.movingWall);
 
     game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
     game.physics.arcade.overlap(this.player, this.potion, this.takePotion, null, this);
@@ -107,11 +125,11 @@ var playState = {
       this.nextEnemy = game.time.now + delay;
     }
 
-    if (this.movingWall.x >= game.world.centerX + 50) {
+    /* if (this.movingWall.x >= game.world.centerX + 50) {
       this.movingWall.body.velocity.x = -50;
     } else if (this.movingWall.x <= game.world.centerX - 50) {
       this.movingWall.body.velocity.x = 50;
-    }
+    } */
   },
 
   movePlayer: function () {
@@ -158,7 +176,6 @@ var playState = {
   },
 
   createWorld: function () {
-
     this.map = game.add.tilemap(this.conf.mapName);
 
     this.map.addTilesetImage('tileset');
@@ -167,23 +184,28 @@ var playState = {
     this.map.setCollision(1);
 
     // moving wall
-    console.log(game.world.centerX);
-    this.movingWall = game.add.sprite(game.world.centerX, 180, 'wallH');
+    /* this.movingWall = game.add.sprite(game.world.centerX, 180, 'wallH');
     this.movingWall.anchor.setTo(0.5, 1);
     game.physics.arcade.enable(this.movingWall);
     this.movingWall.enableBody = true;
     this.movingWall.body.immovable = true;
-    this.movingWall.body.velocity.x = 50;
+    this.movingWall.body.velocity.x = 50; */
   },
 
-  nextLevel: function () {
-    var finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
-    finishLabel.anchor.setTo(0.5, 0.5);
-    game.time.events.add(2000, this.level2, this);
+  nextLevelText: function () {
+    if (this.conf.mapName <= 2) {
+      var finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
+      finishLabel.anchor.setTo(0.5, 0.5);
+      game.time.events.add(2000, this.nextLevelState, this);
+    } else {
+      var finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
+      finishLabel.anchor.setTo(0.5, 0.5);
+      game.time.events.add(2000, this.startMenu, this);
+    }
   },
 
-  level2: function () {
-    game.state.start('play2');
+  nextLevelState: function () {
+    game.state.start('play', true, false, this.conf.mapName + 1);
   },
 
   // Mise a jour des points de vie du personnage
@@ -248,7 +270,7 @@ var playState = {
     game.add.tween(this.player.scale).to({x: 1.3, y: 1.3}, 50).to({x: 1, y: 1}, 150).start();
 
     if (game.global.score === 100) {
-      this.nextLevel();
+      this.nextLevelText();
     }
   },
 
@@ -259,9 +281,9 @@ var playState = {
 
     this.potionSound.play();
 
-    var newPotionPosition = {x: -100, y: -100};
+    //var newPotionPosition = {x: -100, y: -100};
 
-    this.potion.reset(newPotionPosition.x, newPotionPosition.y);
+    //this.potion.reset(newPotionPosition.x, newPotionPosition.y);
 
     if (game.life_points <= 4) {
       game.time.events.add(10000, this.updatePotionPosition, this);
@@ -269,28 +291,22 @@ var playState = {
   },
 
   updateCoinPosition: function () {
-    /* var coinPosition = [
-      {x: 170, y: 60}, {x: 330, y: 60},
-      {x: 60, y: 140}, {x: 440, y: 140},
-      {x: 170, y: 300}, {x: 330, y: 300}
-    ]; */
+    var coinPosition = this.conf.coinPosition;
 
     for (var i = 0; i < coinPosition.length; i++) {
       if (coinPosition[i].x === this.coin.x) {
-        coinPosition.splice(i, 1);
+        //coinPosition.splice(i, 1);
       }
     }
 
     var newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
+console.log(newCoinPosition);
 
     this.coin.reset(newCoinPosition.x, newCoinPosition.y);
   },
 
   updatePotionPosition: function () {
-    var potionPosition = [
-      {x: game.world.centerX, y: 50},
-      {x: game.world.centerX, y: 290}
-    ];
+    var potionPosition = this.conf.potionPosition;
 
     for (var j = 0; j < potionPosition.length; j++) {
       if (potionPosition[j].x === this.potion.x) {
@@ -299,6 +315,7 @@ var playState = {
     }
 
     var newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
+//console.log(newPotionPosition);
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
   },

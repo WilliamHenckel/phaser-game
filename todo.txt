@@ -1,0 +1,22 @@
+Faire transition couleur plus douce sur la mort -> HARD
+Tuer ennemi lors de la collision -> HARD
+
+SEQUENCE JEU
+ajouter pieges (piques sur plateforme)
+ajouter ennemis avec pattern
+ajouter ennemis avec IA (pathfinding)
+ajout niveau scrolling auto
+ajout d’un boss
+
+MENU
+choix perso
+choix controles + barre espace pour le saut
+
+BONUS
+cinematiques
+faire des vrais graphismes
+
+OPTIMISATION
+utiliser les « séquences » afin de faire des vrais déplacement + saut etc (et donc améliorer sprites)
+transition entre le menu et le niveau (genre rideau qui s’ouvre / dégradé)
+Mise en commun dans un fichier des fonctions entre levels -> utiliser paramètre json

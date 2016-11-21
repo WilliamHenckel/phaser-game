@@ -24,9 +24,9 @@ var loadState = {
     game.load.image('arrows', 'assets/arrowKeys.png');
     game.load.image('wallH', 'assets/wallHorizontal.png')
 
-    game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.tilemap('map2', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.tilemap('map3', 'assets/map3.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('1', 'assets/map1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('2', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('3', 'assets/map3.json', null, Phaser.Tilemap.TILED_JSON);
 
     game.load.audio('jump',['assets/jump.ogg','assets/jump.mp3']);
     game.load.audio('coin',['assets/coin.ogg','assets/coin.mp3']);
@@ -34,7 +34,9 @@ var loadState = {
     game.load.audio('elephant',['assets/elephant.mp3']);
     game.load.audio('potion',['assets/powerup.ogg','assets/powerup.mp3']);
 
-    game.load.text('level', 'assets/data/level.json');
+    game.load.text('level1', 'assets/data/level1.json');
+    game.load.text('level2', 'assets/data/level2.json');
+    game.load.text('level3', 'assets/data/level3.json');
   },
 
   create: function() {
