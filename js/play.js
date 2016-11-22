@@ -299,7 +299,7 @@ var playState = {
     for (var i = 0; i < coinPosition.length; i++) {
       if (coinPosition[i].x === this.coin.x) {
         coinPosition.splice(i, 1);
-        coinPosition.splice(0,coinPosition[i]);
+        coinPosition.splice(0, coinPosition[i]);
       }
     }
 
