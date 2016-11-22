@@ -1,5 +1,5 @@
 {
-  "playerStart": {"x": 250, "y": 224},
+  "playerStart": {"x": 350, "y": 224},
   "coinStart": {"x": 60, "y": 140},
   "coinPosition": [
     {"x": 170, "y": 60},
@@ -9,6 +9,7 @@
     {"x": 170, "y": 300},
     {"x": 330, "y": 300}
   ],
+  "potionStart": {"x": 250, "y": 50},
   "potionPosition": [
     {"x": 250, "y": 50},
     {"x": 250, "y": 290}

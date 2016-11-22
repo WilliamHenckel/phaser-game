@@ -20,6 +20,8 @@ var playState = {
     this.conf.coinX = this.levelData.coinStart.x;
     this.conf.coinY = this.levelData.coinStart.y;
     this.conf.coinPosition = this.levelData.coinPosition;
+    this.conf.potionX = this.levelData.potionStart.x;
+    this.conf.potionY = this.levelData.potionStart.y;
     this.conf.potionPosition = this.levelData.potionPosition;
   },
 
@@ -50,7 +52,7 @@ var playState = {
     this.coin.scale.setTo(0.3, 0.3);
 
     // Power Up
-    this.potion = game.add.sprite(250, 50, 'potion');
+    this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
     game.physics.arcade.enable(this.potion);
     this.potion.anchor.setTo(0.5, 0.5);
 
@@ -281,9 +283,9 @@ var playState = {
 
     this.potionSound.play();
 
-    //var newPotionPosition = {x: -100, y: -100};
+    var newPotionPosition = {x: -100, y: -100};
 
-    //this.potion.reset(newPotionPosition.x, newPotionPosition.y);
+    this.potion.reset(newPotionPosition.x, newPotionPosition.y);
 
     if (game.life_points <= 4) {
       game.time.events.add(10000, this.updatePotionPosition, this);
@@ -291,22 +293,24 @@ var playState = {
   },
 
   updateCoinPosition: function () {
-    var coinPosition = this.conf.coinPosition;
+    var coinPositionJson = this.conf.coinPosition;
+    var coinPosition = coinPositionJson.slice(0);
 
     for (var i = 0; i < coinPosition.length; i++) {
       if (coinPosition[i].x === this.coin.x) {
-        //coinPosition.splice(i, 1);
+        coinPosition.splice(i, 1);
+        coinPosition.splice(0,coinPosition[i]);
       }
     }
 
     var newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
-console.log(newCoinPosition);
 
     this.coin.reset(newCoinPosition.x, newCoinPosition.y);
   },
 
   updatePotionPosition: function () {
-    var potionPosition = this.conf.potionPosition;
+    var potionPositionJson = this.conf.potionPosition;
+    var potionPosition = potionPositionJson.slice(0);
 
     for (var j = 0; j < potionPosition.length; j++) {
       if (potionPosition[j].x === this.potion.x) {
@@ -315,7 +319,6 @@ console.log(newCoinPosition);
     }
 
     var newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
-//console.log(newPotionPosition);
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
   },
