@@ -38,9 +38,14 @@ var playState = {
     this.player.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enable(this.player);
     this.player.body.gravity.y = 500;
-    this.player.animations.add('right', [2, 3], 6, true);
-    this.player.animations.add('left', [0, 1], 6, true);
+    this.player.animations.add('right', [1, 2, 3, 2], 8, true);
+    this.player.animations.add('left', [5, 6, 7, 6], 8, true);
+    this.player.animations.add('jump-right', [8], 8, true);
+    this.player.animations.add('down-right', [9], 8, true);
+    this.player.animations.add('jump-left', [10], 8, true);
+    this.player.animations.add('down-left', [11], 8, true);
     game.life_points = 3;
+    game.direction = 'right';
     /* game.wallJump = false; */
 
     // Pièce
@@ -138,9 +143,11 @@ var playState = {
     if (this.cursor.left.isDown /* && game.wallJump == false */) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
+      game.direction = 'left';
     } else if (this.cursor.right.isDown /* && game.wallJump == false */) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
+      game.direction = 'right';
     } /* else if (this.cursor.left.isDown && game.wallJump == true) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
@@ -150,7 +157,11 @@ var playState = {
     } */ else {
       this.player.body.velocity.x = 0;
       this.player.animations.stop();
-      this.player.frame = 0;
+      if (game.direction == 'left') {
+        this.player.frame = 4;
+      } else {
+        this.player.frame = 0;
+      }
     }
 
     // Reset walljump
@@ -168,6 +179,20 @@ var playState = {
       } */
 
       this.jumpSound.play();
+    }
+
+    if ((this.cursor.up.isDown && game.direction == 'right') || (!this.player.body.onFloor() && game.direction == 'right')) {
+      this.player.animations.play('jump-right');
+      if (this.player.body.velocity.y >= 0 && this.player.scale.y == 1) {
+        this.player.animations.play('down-right');
+      }
+    }
+
+    if ((this.cursor.up.isDown && game.direction == 'left') || (!this.player.body.onFloor() && game.direction == 'left')) {
+      this.player.animations.play('jump-left');
+      if (this.player.body.velocity.y >= 0 && this.player.scale.y == 1) {
+        this.player.animations.play('down-left');
+      }
     }
 
     // Wall jump
@@ -254,6 +279,10 @@ var playState = {
   },
 
   takeCoin: function () {
+    /* this.emitter.x = this.coin.x;
+    this.emitter.y = this.coin.y;
+    this.emitter.start(true, 600, null, 15); */
+
     if (game.global.score < 90) {
       this.updateCoinPosition();
     } else {
@@ -269,7 +298,7 @@ var playState = {
     this.coin.scale.setTo(0, 0);
     game.add.tween(this.coin.scale).to({x: 0.3, y: 0.3}, 300).start();
 
-    game.add.tween(this.player.scale).to({x: 1.3, y: 1.3}, 50).to({x: 1, y: 1}, 150).start();
+    game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y:1}, 150).start();
 
     if (game.global.score === 100) {
       this.nextLevelText();
@@ -277,6 +306,7 @@ var playState = {
   },
 
   takePotion: function () {
+    game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y:1}, 150).start();
     this.updatePotionPosition();
     game.life_points += 1;
     game.life_pointsLabel.text = game.life_points;
@@ -338,6 +368,13 @@ var playState = {
     enemy.body.bounce.x = 1;
     enemy.checkWorldBounds = true;
     enemy.outOfBoundsKill = true;
+
+    if (enemy.body.velocity.x <= 0) {
+    /*enemy.callAll('animations.add', 'animations', 'walk', [0, 1, 2, 1], 6, true);
+    enemy.callAll('play', null, 'walk');*/
+      enemy.animations.add('right', [0, 1, 2, 1], 8, true);
+      enemy.animations.play('right');
+    }
   },
 
   startMenu: function () {
