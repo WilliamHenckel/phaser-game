@@ -26,19 +26,19 @@ var menuState = {
     var blob = game.add.sprite(game.world.centerX, game.world.centerY, 'blob');
     blob.anchor.set(0.5);
 
-    var bouton1 = game.add.sprite(game.world.centerX - 150, 280, 'bouton1');
+    var bouton1 = game.add.sprite(game.world.centerX - 150, 530, 'bouton1');
     bouton1.scale.setTo(0.5);
     bouton1.anchor.set(0.5);
     bouton1.inputEnabled = true;
     bouton1.events.onInputDown.add(this.level1, this);
 
-    var bouton2 = game.add.sprite(game.world.centerX, 280, 'bouton2');
+    var bouton2 = game.add.sprite(game.world.centerX, 530, 'bouton2');
     bouton2.scale.setTo(0.5);
     bouton2.anchor.set(0.5);
     bouton2.inputEnabled = true;
     bouton2.events.onInputDown.add(this.level2, this);
 
-    var bouton3 = game.add.sprite(game.world.centerX + 150, 280, 'bouton3');
+    var bouton3 = game.add.sprite(game.world.centerX + 150, 530, 'bouton3');
     bouton3.scale.setTo(0.5);
     bouton3.anchor.set(0.5);
     bouton3.inputEnabled = true;

@@ -1,4 +1,4 @@
-var game = new Phaser.Game(500, 340, Phaser.AUTO, 'gameDiv', null, false);
+var game = new Phaser.Game(800, 640, Phaser.AUTO, 'gameDiv', null, false);
 var textColor = '#ffffff';      // Couleur du texte
 var textFont = 'Monaco';        // Police du texte
 var fontxl = '50px ' + textFont;  // Énorme taille de texte

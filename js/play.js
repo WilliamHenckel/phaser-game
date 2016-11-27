@@ -74,6 +74,9 @@ var playState = {
     this.enemies.createMultiple(10, 'enemy');
     this.nextEnemy = 0;
 
+    this.enemies.callAll('animations.add', 'animations', 'walk', [0, 1, 2, 1], 6, true);
+    this.enemies.callAll('play', null, 'walk');
+
     // Sons
     this.jumpSound = game.add.audio('jump');
     this.coinSound = game.add.audio('coin');
@@ -171,7 +174,7 @@ var playState = {
 
     // Jump simple
     if (this.cursor.up.isDown && this.player.body.onFloor() && this.player.alive) {
-      this.player.body.velocity.y = -300;
+      this.player.body.velocity.y = -330;
       /* if (this.cursor.left.isDown) {
         game.add.tween(this.player).to({angle:-360}, 500, Phaser.Easing.Linear.None, true);
       } else if (this.cursor.right.isDown) {
@@ -208,7 +211,7 @@ var playState = {
     this.map.addTilesetImage('tileset');
     this.layer = this.map.createLayer('Tile Layer 1');
     this.layer.resizeWorld();
-    this.map.setCollision(1);
+    this.map.setCollisionBetween(1, 14);
 
     // moving wall
     /* this.movingWall = game.add.sprite(game.world.centerX, 180, 'wallH');
@@ -368,13 +371,6 @@ var playState = {
     enemy.body.bounce.x = 1;
     enemy.checkWorldBounds = true;
     enemy.outOfBoundsKill = true;
-
-    if (enemy.body.velocity.x <= 0) {
-    /*enemy.callAll('animations.add', 'animations', 'walk', [0, 1, 2, 1], 6, true);
-    enemy.callAll('play', null, 'walk');*/
-      enemy.animations.add('right', [0, 1, 2, 1], 8, true);
-      enemy.animations.play('right');
-    }
   },
 
   startMenu: function () {
