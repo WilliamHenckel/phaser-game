@@ -248,6 +248,8 @@ var playState = {
       this.executed = true;
       game.life_points -= 1;
       this.player.alpha = 0.5;
+      this.player.tint = 0xffffff;
+      game.tint = game.time.events.loop(50, this.changeTint, this);
       game.life_pointsLabel.text = game.life_points;
       game.time.events.add(1000, this.reset_executed, this);
 
@@ -259,9 +261,25 @@ var playState = {
     }
   },
 
+  changeTint: function () {
+    /* if (this.player.tint == 0xff0000) {
+      this.player.tint = 0xffffff;
+    } else {
+      this.player.tint = 0xff0000;
+    } */
+    this.player.tint = (this.player.tint === 0xff0000) ? 0xffffff : 0xff0000;
+    game.time.events.add(1000, this.resetTint, this);
+  },
+
+  resetTint: function () {
+    game.time.events.remove(game.tint);
+    this.player.tint = 0xffffff;
+  },
+
   reset_executed: function () {
     this.executed = false;
     this.player.alpha = 1;
+    this.player.tint = 0xffffff;
   },
 
   playerDie: function () {
