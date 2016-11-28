@@ -1,25 +1,16 @@
 # phaser-game
 
 
-```javascript
+```shell
  git clone git@github.com:WilliamHenckel/phaser-game.git
 ```
-```
+```shell
  cd phaser-game
-``` 
 ```
- npm install
-``` 
+```shell
+ npm i;npm start
 ```
- npm install http-server
-``` 
-```
-  http-server 
-``` 
-option for http-server : 
--p Port to use (defaults to 8080)
+<!-- option for http-server : -->
+<!-- -p Port to use (defaults to 8080) -->
 
-now open http://127.0.0.1:8080
-
-
-
+now open http://127.0.0.1:7070
