@@ -37,7 +37,7 @@ var playState = {
     this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'slime');
     this.player.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enable(this.player);
-    this.player.body.gravity.y = 500;
+    this.player.body.gravity.y = 1000;
     this.player.animations.add('right', [1, 2, 3, 2], 8, true);
     this.player.animations.add('left', [5, 6, 7, 6], 8, true);
     this.player.animations.add('jump-right', [8], 8, true);
@@ -111,6 +111,9 @@ var playState = {
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
 
+    /* console.log('x : ' + this.player.body.x);
+    console.log('y : ' + this.player.body.y); */
+
     // game.physics.arcade.collide(this.enemies, this.movingWall);
     // game.physics.arcade.collide(this.movingWall, this.layer);
     // game.physics.arcade.collide(this.player, this.movingWall);
@@ -174,7 +177,7 @@ var playState = {
 
     // Jump simple
     if (this.cursor.up.isDown && this.player.body.onFloor() && this.player.alive) {
-      this.player.body.velocity.y = -330;
+      this.player.body.velocity.y = -470;
       /* if (this.cursor.left.isDown) {
         game.add.tween(this.player).to({angle:-360}, 500, Phaser.Easing.Linear.None, true);
       } else if (this.cursor.right.isDown) {
