@@ -46,6 +46,7 @@ var playState = {
     this.player.animations.add('down-left', [11], 8, true);
     game.life_points = 3;
     game.direction = 'right';
+    this.player.body.checkCollision.up = false;
     /* game.wallJump = false; */
 
     // Pièce
