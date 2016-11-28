@@ -53,9 +53,9 @@ var playState = {
     this.coin = game.add.sprite(this.conf.coinX, this.conf.coinY, 'coin');
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5, 0.5);
-    this.coin.animations.add('turn', [0, 1, 2, 3, 2, 1], 10, true);
+    this.coin.animations.add('turn', [0, 1, 2, 3], 8, true);
     this.coin.animations.play('turn');
-    this.coin.scale.setTo(0.3, 0.3);
+    this.coin.scale.setTo(1, 1);
 
     // Power Up
     this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
@@ -300,7 +300,7 @@ var playState = {
     this.emitter.y = this.player.y;
     this.emitter.start(true, 600, null, 15);
 
-    game.time.events.add(1000, this.startMenu, this);
+    game.time.events.add(1000, this.restartLevel, this);
   },
 
   takeCoin: function () {
@@ -321,7 +321,7 @@ var playState = {
     this.coinSound.play();
 
     this.coin.scale.setTo(0, 0);
-    game.add.tween(this.coin.scale).to({x: 0.3, y: 0.3}, 300).start();
+    game.add.tween(this.coin.scale).to({x: 1, y: 1}, 300).start();
 
     game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y:1}, 150).start();
 
@@ -352,7 +352,7 @@ var playState = {
     var coinPosition = coinPositionJson.slice(0);
 
     for (var i = 0; i < coinPosition.length; i++) {
-      if (coinPosition[i].x === this.coin.x) {
+      if (coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
         coinPosition.splice(i, 1);
         coinPosition.splice(0, coinPosition[i]);
       }
@@ -397,5 +397,9 @@ var playState = {
 
   startMenu: function () {
     game.state.start('menu');
+  },
+
+  restartLevel: function () {
+    game.state.start('play', true, false, 1);
   }
 };
