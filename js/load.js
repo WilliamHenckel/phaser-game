@@ -7,7 +7,7 @@ var loadState = {
     progressBar.anchor.setTo(0.5, 0.5);
     game.load.setPreloadSprite(progressBar);
 
-    game.load.spritesheet('slime', 'assets/heros.png', 60, 54, 12);
+    game.load.spritesheet('slime', 'assets/heros.png', 40, 36, 12);
     game.load.spritesheet('coin', 'assets/coin.png', 32, 32, 4);
     game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
     game.load.spritesheet('enemy', 'assets/enemy.png', 32, 32, 8);
