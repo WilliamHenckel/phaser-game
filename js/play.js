@@ -75,8 +75,10 @@ var playState = {
     this.enemies.createMultiple(10, 'enemy');
     this.nextEnemy = 0;
 
-    this.enemies.callAll('animations.add', 'animations', 'walk', [0, 1, 2, 1], 6, true);
-    this.enemies.callAll('play', null, 'walk');
+    // this.enemies.callAll('animations.add', 'animations', 'walk', [0, 1, 2, 1], 6, true);
+    this.enemies.callAll('animations.add', 'animations', 'walk-left', [0, 1, 2, 1], 6, true);
+    this.enemies.callAll('animations.add', 'animations', 'walk-right', [7, 6, 5, 6], 6, true);
+    // this.enemies.callAll('play', null, 'walk');
 
     // Sons
     this.jumpSound = game.add.audio('jump');
@@ -138,7 +140,7 @@ var playState = {
       this.addEnemy();
       this.nextEnemy = game.time.now + delay;
     }
-
+    this.enemies.forEach(this.annimateEnemy, this, true); 
     /* if (this.movingWall.x >= game.world.centerX + 50) {
       this.movingWall.body.velocity.x = -50;
     } else if (this.movingWall.x <= game.world.centerX - 50) {
@@ -393,6 +395,13 @@ var playState = {
     enemy.body.bounce.x = 1;
     enemy.checkWorldBounds = true;
     enemy.outOfBoundsKill = true;
+  },
+
+  annimateEnemy:function(enemy){ 
+    if(enemy.body.velocity.x < 0)
+      enemy.animations.play('walk-left');
+    else  
+      enemy.animations.play('walk-right');
   },
 
   startMenu: function () {
