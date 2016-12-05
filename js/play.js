@@ -75,10 +75,11 @@ var playState = {
     this.enemies.createMultiple(10, 'enemy');
     this.nextEnemy = 0;
 
-    // this.enemies.callAll('animations.add', 'animations', 'walk', [0, 1, 2, 1], 6, true);
-    this.enemies.callAll('animations.add', 'animations', 'walk-left', [0, 1, 2, 1], 6, true);
-    this.enemies.callAll('animations.add', 'animations', 'walk-right', [7, 6, 5, 6], 6, true);
-    // this.enemies.callAll('play', null, 'walk');
+    this.enemies.callAll('animations.add', 'animations', 'walk-left', [0, 1, 2, 1], 10);
+    this.enemies.callAll('animations.add', 'animations', 'walk-right', [7, 6, 5, 6], 10);
+
+    this.enemies.callAll('animations.add', 'animations', 'fall-left', [ 1, 2, 3], 10);
+    this.enemies.callAll('animations.add', 'animations', 'fall-right', [6, 5, 4], 10);
 
     // Sons
     this.jumpSound = game.add.audio('jump');
@@ -398,10 +399,24 @@ var playState = {
   },
 
   annimateEnemy:function(enemy){ 
-    if(enemy.body.velocity.x < 0)
+
+    if(enemy.body.velocity.y > 0 && enemy.body.velocity.x < 0 &&!enemy.falling){
+      enemy.animations.play('fall-left', 10, false);
+      enemy.falling = true;
+    }else if(enemy.body.velocity.y > 0 && enemy.body.velocity.x > 0 &&!enemy.falling){
+      enemy.animations.play('fall-right', 10, false);
+      enemy.falling = true;
+    }
+
+    if(enemy.body.velocity.y == 0 && enemy.body.velocity.x < 0 ){
       enemy.animations.play('walk-left');
-    else  
-      enemy.animations.play('walk-right');
+      enemy.falling = false;
+    }
+    else if(enemy.body.velocity.y == 0 && enemy.body.velocity.x > 0){
+      enemy.animations.play('walk-right');      
+      enemy.falling = false;
+    }
+
   },
 
   startMenu: function () {
