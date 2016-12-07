@@ -55,6 +55,13 @@ var playState = {
     /* this.player.body.setSize(30, 36, 5, 0); */
     /* game.wallJump = false; */
 
+    // Points de vie
+    this.health = game.add.sprite(game.world.width - 100, 5, 'health');
+    this.health.animations.add('3', [0], 1, true);
+    this.health.animations.add('2', [1], 1, true);
+    this.health.animations.add('1', [2], 1, true);
+    this.health.animations.add('0', [3], 1, true);
+
     // Boss
     this.boss = game.add.sprite(this.conf.bossX, this.conf.bossY, 'boss');
     game.physics.arcade.enable(this.boss);
@@ -95,9 +102,6 @@ var playState = {
     // Score
     this.scoreLabel = game.add.text(15, 5, 'Score : 0', {font: fontxs, fill: textColor});
     game.global.score = 0;
-
-    // Points de vie joueur
-    game.life_pointsLabel = game.add.text(game.world.width - 30, 5, game.life_points, {font: fontxs, fill: textColor});
 
     // Points de vie boss
     if (this.conf.mapName === 3) {
@@ -297,10 +301,10 @@ var playState = {
     if (!this.executed && game.life_points >= 1 && game.global.score < 100) {
       this.executed = true;
       game.life_points -= 1;
+      this.health.animations.play(game.life_points);
       this.player.alpha = 0.5;
       this.player.tint = 0xffffff;
       game.tint = game.time.events.loop(50, this.changeTint, this);
-      game.life_pointsLabel.text = game.life_points;
       game.time.events.add(1000, this.reset_executed, this);
 
       if (game.life_points >= 4) {
