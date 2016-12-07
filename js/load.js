@@ -13,7 +13,7 @@ var loadState = {
     game.load.spritesheet('enemy', 'assets/enemy.png', 32, 32, 8);
     game.load.spritesheet('boss', 'assets/boss.png', 56, 74, 5);
     game.load.spritesheet('bossHurt', 'assets/boss-hurt.png', 56, 74, 3);
-    game.load.spritesheet('health', 'assets/coeur.png', 92, 24, 4);
+    game.load.spritesheet('health', 'assets/coeur.png', 156, 24, 6);
 
     game.load.image('background', 'assets/background.jpg');
     game.load.image('potion', 'assets/red-potion.png');

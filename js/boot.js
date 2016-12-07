@@ -1,6 +1,7 @@
 var bootState = {
   preload: function () {
     game.load.image('progressBar', 'assets/progressBar.png');
+    game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
   },
 
   create: function () {

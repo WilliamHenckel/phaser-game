@@ -56,11 +56,14 @@ var playState = {
     /* game.wallJump = false; */
 
     // Points de vie
-    this.health = game.add.sprite(game.world.width - 100, 5, 'health');
-    this.health.animations.add('3', [0], 1, true);
-    this.health.animations.add('2', [1], 1, true);
-    this.health.animations.add('1', [2], 1, true);
-    this.health.animations.add('0', [3], 1, true);
+    this.health = game.add.sprite(game.world.width - 200, 5, 'health');
+    this.health.animations.add('5', [0], 1, true);
+    this.health.animations.add('4', [1], 1, true);
+    this.health.animations.add('3', [2], 1, true);
+    this.health.animations.add('2', [3], 1, true);
+    this.health.animations.add('1', [4], 1, true);
+    this.health.animations.add('0', [5], 1, true);
+    this.health.animations.play(game.life_points);
 
     // Boss
     this.boss = game.add.sprite(this.conf.bossX, this.conf.bossY, 'boss');
@@ -94,13 +97,15 @@ var playState = {
     this.coin.animations.play('turn');
     this.coin.scale.setTo(1, 1);
 
-    // Power Up
-    this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
+    // Potion
+    if (game.life_points <= 3) {
+      this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
+    }
     game.physics.arcade.enable(this.potion);
     this.potion.anchor.setTo(0.5, 0.5);
 
     // Score
-    this.scoreLabel = game.add.text(15, 5, 'Score : 0', {font: fontxs, fill: textColor});
+    this.scoreLabel = game.add.text(15, 5, 'Score : 0', {font: fontm, fill: textColor});
     game.global.score = 0;
 
     // Points de vie boss
@@ -432,7 +437,7 @@ var playState = {
     game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y:1}, 150).start();
     this.updatePotionPosition();
     game.life_points += 1;
-    game.life_pointsLabel.text = game.life_points;
+    this.health.animations.play(game.life_points);
 
     this.potionSound.play();
 
