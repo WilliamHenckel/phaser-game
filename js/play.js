@@ -64,8 +64,9 @@ var playState = {
     this.boss.body.bounce.x = 1;
     this.boss.direction = 'left';
     this.boss.body.setSize(56, 56, 0, 18);
+    game.boss_life_points = 5;
 
-    game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
+    game.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
 
     // Missiles
     this.missiles = game.add.group();
@@ -92,8 +93,13 @@ var playState = {
     this.scoreLabel = game.add.text(30, 30, 'Score : 0', {font: fontxs, fill: textColor});
     game.global.score = 0;
 
-    // Points de vie
-    game.life_pointsLabel = game.add.text(460, 30, game.life_points, {font: fontxs, fill: textColor});
+    // Points de vie joueur
+    game.life_pointsLabel = game.add.text(game.world.width - 45, 30, game.life_points, {font: fontxs, fill: textColor});
+
+    // Points de vie boss
+    if (this.conf.mapName === 3) {
+      game.boss_life_pointsLabel = game.add.text(game.world.centerX, game.world.centerY, game.boss_life_points, {font: fontxl, fill: textColor});
+    }
 
     // Ennemies
     this.enemies = game.add.group();
@@ -125,9 +131,11 @@ var playState = {
     // Damage
     this.executed = false;
 
-    this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY, 'Objectif : 100 points', {font: fontxs, fill: textColor});
-    this.tutoLabel.anchor.setTo(0.5, 0.5);
-    game.time.events.add(2000, this.eraseTuto, this);
+    if (this.conf.mapName < 3) {
+      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY, 'Objectif : 100 points', {font: fontxs, fill: textColor});
+      this.tutoLabel.anchor.setTo(0.5, 0.5);
+      game.time.events.add(2000, this.eraseTuto, this);
+    }
   },
 
   eraseTuto: function () {
@@ -304,7 +312,9 @@ var playState = {
   },
 
   bossHurt: function () {
-    if (!this.executed) {
+    if (!this.executed && game.boss_life_points >= 0) {
+      game.boss_life_points -= 1;
+      game.boss_life_pointsLabel.text = game.boss_life_points;
       game.time.events.add(1000, this.reset_executed, this);
       this.player.body.velocity.y = -200;
       this.boss.body.enable = false;
@@ -312,7 +322,14 @@ var playState = {
       this.emitter.y = this.boss.y;
       this.emitter.start(true, 300, null, 6);
       this.boss.animations.play('hurt');
-      game.time.events.add(Phaser.Timer.SECOND / 4, this.fireMissileUp, this);
+
+      if (game.boss_life_points >= 1) {
+        game.time.events.add(Phaser.Timer.SECOND / 4, this.fireMissileUp, this);
+      }
+
+      if (game.boss_life_points === 0) {
+        this.bossDie();
+      }
     }
   },
 
@@ -366,6 +383,18 @@ var playState = {
     this.emitter.start(true, 600, null, 6);
 
     game.time.events.add(1000, this.restartLevel, this);
+  },
+
+  bossDie: function () {
+    console.log('boss mort');
+    this.boss.kill();
+    game.boss_life_pointsLabel.kill();
+    game.time.events.remove(game.timer_missile);
+
+    var deathLabel = game.add.text(game.world.centerX, game.world.centerY, 'T\'as fini le jeu, retourne bosser !', {font: fontl, fill: textColor});
+    deathLabel.anchor.setTo(0.5, 0.5);
+
+    game.time.events.add(3000, this.startMenu, this);
   },
 
   takeCoin: function () {
