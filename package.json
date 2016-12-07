@@ -1,0 +1,21 @@
+{
+    "name": "phaser-game",
+    "version": "1.0.0",
+    "description": "",
+    "main": "js/game.js",
+    "scripts": {
+        "preinstall": "npm i http-server",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "http-server"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/WilliamHenckel/phaser-game.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/WilliamHenckel/phaser-game/issues"
+    },
+    "homepage": "https://github.com/WilliamHenckel/phaser-game#readme"
+}
