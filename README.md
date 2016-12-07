@@ -7,8 +7,19 @@
 ```shell
  cd phaser-game
 ```
+
+## Installation
 ```shell
- npm i;npm start
+yarn install
+```
+
+## Run
+```shell
+yarn run
+```
+### Run on specific port
+```shell
+yarn run -- -p 666
 ```
 <!-- option for http-server : -->
 <!-- -p Port to use (defaults to 8080) -->
