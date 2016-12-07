@@ -26,3 +26,4 @@ yarn run -- -p 666
 
 ## 🎮 Play
 You can now open http://127.0.0.1:8080 (if you specified a port, will run on this port, of course...)
+Or if you as lazy as Benoît, you can just go to http://bobtheblob.herokuapp.com (deploy based on develop's commits)
