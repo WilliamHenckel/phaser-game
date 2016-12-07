@@ -1,4 +1,4 @@
-# phaser-game
+# phaser-game 🎉
 
 
 ```shell
@@ -8,21 +8,21 @@
  cd phaser-game
 ```
 
-## Installation
+## Installation ⛏
 ```shell
 yarn install
 ```
 
-## Run
+## Run 🏎
 ```shell
 yarn run
 ```
-### Run on specific port
+### Run on specific port 🤘
 ```shell
 yarn run -- -p 666
 ```
 <!-- option for http-server : -->
 <!-- -p Port to use (defaults to 8080) -->
 
-## Play
+## Play 🎮
 You can now open http://127.0.0.1:8080 (if you specified a port, will run on this port, of course...)
