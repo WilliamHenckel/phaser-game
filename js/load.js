@@ -14,6 +14,7 @@ var loadState = {
     game.load.spritesheet('boss', 'assets/boss.png', 56, 74, 5);
     game.load.spritesheet('bossHurt', 'assets/boss-hurt.png', 56, 74, 3);
 
+    game.load.image('background', 'assets/background.jpg');
     game.load.image('potion', 'assets/red-potion.png');
     game.load.image('pixel', 'assets/particule.png');
     game.load.image('tileset', 'assets/tileset.png');

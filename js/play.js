@@ -28,6 +28,9 @@ var playState = {
   },
 
   create: function () {
+    // Fond
+    game.stage.backgroundColor = game.add.tileSprite(0, 0, 800, 640, "background");
+
     // Commandes
     this.cursor = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT]);
@@ -90,11 +93,11 @@ var playState = {
     this.potion.anchor.setTo(0.5, 0.5);
 
     // Score
-    this.scoreLabel = game.add.text(30, 30, 'Score : 0', {font: fontxs, fill: textColor});
+    this.scoreLabel = game.add.text(15, 5, 'Score : 0', {font: fontxs, fill: textColor});
     game.global.score = 0;
 
     // Points de vie joueur
-    game.life_pointsLabel = game.add.text(game.world.width - 45, 30, game.life_points, {font: fontxs, fill: textColor});
+    game.life_pointsLabel = game.add.text(game.world.width - 30, 5, game.life_points, {font: fontxs, fill: textColor});
 
     // Points de vie boss
     if (this.conf.mapName === 3) {
@@ -124,9 +127,6 @@ var playState = {
     this.emitter.gravity = 0;
     this.emitter.minParticleScale = 0.5;
     this.emitter.minRotation = 50;
-
-    // Fond
-    game.stage.backgroundColor = '#3498db';
 
     // Damage
     this.executed = false;
