@@ -23,11 +23,8 @@ var playState = {
     this.conf.potionX = this.levelData.potionStart.x;
     this.conf.potionY = this.levelData.potionStart.y;
     this.conf.potionPosition = this.levelData.potionPosition;
-
-    if (this.conf.mapName === 3) {
-      this.conf.bossX = this.levelData.bossStart.x;
-      this.conf.bossY = this.levelData.bossStart.y;
-    }
+    this.conf.bossX = this.levelData.bossStart.x;
+    this.conf.bossY = this.levelData.bossStart.y;
   },
 
   create: function () {
@@ -67,6 +64,16 @@ var playState = {
     this.boss.body.bounce.x = 1;
     this.boss.direction = 'left';
     this.boss.body.setSize(56, 56, 0, 18);
+
+    game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
+
+    // Missiles
+    this.missiles = game.add.group();
+    this.missiles.enableBody = true;
+    this.missiles.createMultiple(10, 'missile');
+    this.missiles.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', this.resetMissile);
+    this.missiles.callAll('anchor.setTo', 'anchor', 0.5, 1.0);
+    this.missiles.setAll('checkWorldBounds', true);
 
     // Pièce
     this.coin = game.add.sprite(this.conf.coinX, this.conf.coinY, 'coin');
@@ -142,6 +149,7 @@ var playState = {
     game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
     game.physics.arcade.overlap(this.player, this.potion, this.takePotion, null, this);
     game.physics.arcade.overlap(this.player, this.enemies, this.playerHurt, null, this);
+    game.physics.arcade.overlap(this.player, this.missiles, this.playerHurt, null, this);
     game.physics.arcade.overlap(this.player, this.boss, this.bossOrPlayerHurt, null, this);
 
     this.movePlayer();
@@ -172,10 +180,10 @@ var playState = {
 
   moveBoss: function () {
     if (this.boss.body.velocity.x > 0 && this.boss.direction === 'left') {
-      this.boss.scale.x *= -1;
+      this.boss.scale.x = -1;
       this.boss.direction = 'right';
     } else if (this.boss.body.velocity.x < 0 && this.boss.direction === 'right') {
-      this.boss.scale.x *= -1;
+      this.boss.scale.x = 1;
       this.boss.direction = 'left';
     }
   },
@@ -304,6 +312,7 @@ var playState = {
       this.emitter.y = this.boss.y;
       this.emitter.start(true, 300, null, 6);
       this.boss.animations.play('hurt');
+      game.time.events.add(Phaser.Timer.SECOND / 4, this.fireMissileUp, this);
     }
   },
 
@@ -449,6 +458,39 @@ var playState = {
     enemy.body.bounce.x = 1;
     enemy.checkWorldBounds = true;
     enemy.outOfBoundsKill = true;
+  },
+
+  fireMissile: function () {
+    var missile = this.missiles.getFirstDead();
+
+    if (missile && this.boss.x > this.player.x) {
+      missile.reset(this.boss.x - 30, this.boss.y + 20);
+      missile.body.velocity.x = -500;
+      missile.scale.x = 1;
+      missile.angle = 0;
+    } else if (missile && this.boss.x <= this.player.x) {
+      missile.scale.x = -1;
+      missile.angle = 0;
+      missile.reset(this.boss.x + 30, this.boss.y + 20);
+      missile.body.velocity.x = 500;
+    }
+  },
+
+  fireMissileUp: function () {
+    var missile = this.missiles.getFirstDead();
+
+    missile.reset(this.boss.x, this.boss.y);
+    missile.body.velocity.y = -500;
+
+    if (missile.scale.x === 1) {
+      missile.angle = 90;
+    } else {
+      missile.angle = -90;
+    }
+  },
+
+  resetMissile: function (missile) {
+    missile.kill();
   },
 
   startMenu: function () {
