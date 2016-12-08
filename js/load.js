@@ -11,9 +11,13 @@ var loadState = {
     game.load.spritesheet('coin', 'assets/coin.png', 32, 32, 4);
     game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
     game.load.spritesheet('enemy', 'assets/enemy.png', 32, 32, 8);
+    game.load.spritesheet('boss', 'assets/boss.png', 56, 74, 5);
+    game.load.spritesheet('bossHurt', 'assets/boss-hurt.png', 56, 74, 3);
+    game.load.spritesheet('health', 'assets/coeur.png', 156, 24, 6);
 
+    game.load.image('background', 'assets/background.jpg');
     game.load.image('potion', 'assets/red-potion.png');
-    game.load.image('pixel', 'assets/pixel.png');
+    game.load.image('pixel', 'assets/particule.png');
     game.load.image('tileset', 'assets/tileset.png');
     game.load.image('bouton1', 'assets/bouton1.png');
     game.load.image('bouton2', 'assets/bouton2.png');
@@ -22,6 +26,7 @@ var loadState = {
     game.load.image('blob', 'assets/blob.png');
     game.load.image('arrows', 'assets/arrowKeys.png');
     game.load.image('wallH', 'assets/wallHorizontal.png');
+    game.load.image('missile', 'assets/missile.png');
 
     game.load.tilemap('1', 'assets/map1.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('2', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);
