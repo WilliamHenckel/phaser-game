@@ -52,7 +52,7 @@ var playState = {
     game.life_points = 3;
     game.direction = 'right';
     this.player.body.checkCollision.up = false;
-    /* this.player.body.setSize(30, 36, 5, 0); */
+    this.player.body.setSize(30, 36, 5, 0);
     /* game.wallJump = false; */
 
     // Points de vie
@@ -141,7 +141,7 @@ var playState = {
     this.executed = false;
 
     if (this.conf.mapName < 3) {
-      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY, 'Objectif : 100 points', {font: fontxs, fill: textColor});
+      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : 100 points', {font: fontm, fill: textColor});
       this.tutoLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.eraseTuto, this);
     }
