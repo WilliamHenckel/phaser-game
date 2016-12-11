@@ -83,7 +83,7 @@ var menuState = {
   },
 
   level1: function () {
-    game.state.start('play', true, false, 1);
+    game.state.start('play', true, false, 2);
   },
 
   toggleSound: function () {
