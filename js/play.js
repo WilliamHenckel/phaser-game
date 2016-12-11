@@ -309,7 +309,8 @@ var playState = {
       this.health.animations.play(game.life_points);
       this.player.alpha = 0.5;
       this.player.tint = 0xffffff;
-      game.tint = game.time.events.loop(50, this.changeTint, this);
+      game.tint = game.time.events.loop(100, this.changeTint, this);
+      game.time.events.add(1000, this.resetTint, this);
       game.time.events.add(1000, this.reset_executed, this);
 
       if (game.life_points >= 4) {
@@ -318,6 +319,28 @@ var playState = {
     } else if (game.life_points === 0) {
       this.playerDie();
     }
+  },
+
+  changeTint: function () {
+    /* if (this.player.tint == 0xff0000) {
+      this.player.tint = 0xffffff;
+    } else {
+      this.player.tint = 0xff0000;
+    } */
+    this.player.tint = (this.player.tint === 0xff0000) ? 0xffffff : 0xff0000;
+  },
+
+  resetTint: function () {
+    game.time.events.remove(game.tint);
+    this.player.tint = 0xffffff;
+  },
+
+  reset_executed: function () {
+    this.executed = false;
+    this.player.alpha = 1;
+    this.player.tint = 0xffffff;
+    this.boss.body.enable = true;
+    this.boss.animations.play('walk');
   },
 
   bossHurt: function () {
@@ -348,29 +371,6 @@ var playState = {
     } else if (this.player.body.velocity.y > 0) {
       this.bossHurt();
     }
-  },
-
-  changeTint: function () {
-    /* if (this.player.tint == 0xff0000) {
-      this.player.tint = 0xffffff;
-    } else {
-      this.player.tint = 0xff0000;
-    } */
-    this.player.tint = (this.player.tint === 0xff0000) ? 0xffffff : 0xff0000;
-    game.time.events.add(1000, this.resetTint, this);
-  },
-
-  resetTint: function () {
-    game.time.events.remove(game.tint);
-    this.player.tint = 0xffffff;
-  },
-
-  reset_executed: function () {
-    this.executed = false;
-    this.player.alpha = 1;
-    this.player.tint = 0xffffff;
-    this.boss.body.enable = true;
-    this.boss.animations.play('walk');
   },
 
   playerDie: function () {
