@@ -116,7 +116,7 @@ var playState = {
     // Ennemies
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
-    this.enemies.createMultiple(10, 'enemy');
+    this.enemies.createMultiple(13, 'enemy');
     this.nextEnemy = 0;
 
     this.enemies.callAll('animations.add', 'animations', 'walk', [0, 1, 2, 1], 6, true);

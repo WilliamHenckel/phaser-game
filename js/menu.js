@@ -1,7 +1,6 @@
 var menuState = {
 
   create: function () {
-    // game.add.image(0, 0, 'background');
     game.stage.backgroundColor = '#313131';
 
     this.music = game.add.audio('elephant', 1, true);
