@@ -16,11 +16,11 @@ var loadState = {
     game.load.image('potion', 'assets/red-potion.png');
     game.load.image('pixel', 'assets/particule.png');
     game.load.image('tileset', 'assets/tileset.png');
-    game.load.image('bouton1', 'assets/bouton1.png');
-    game.load.image('bouton2', 'assets/bouton2.png');
-    game.load.image('bouton3', 'assets/bouton3.png');
+    game.load.image('startButton', 'assets/bouton1.png');
+    game.load.image('minion', 'assets/minion.png');
+    game.load.image('minion2', 'assets/minion2.png');
     game.load.image('explosion', 'assets/explosion.png');
-    game.load.image('blob', 'assets/blob.png');
+    game.load.image('random', 'assets/random.png');
     game.load.image('arrows', 'assets/arrowKeys.png');
     game.load.image('wallH', 'assets/wallHorizontal.png');
     game.load.image('missile', 'assets/missile.png');
