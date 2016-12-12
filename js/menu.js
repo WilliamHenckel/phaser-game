@@ -9,11 +9,12 @@ var menuState = {
     }
     this.musicplay = 1;
 
-    game.time.events.add(300, this.titleExplosion, this);
-    game.time.events.add(300, this.titleMinion, this);
-    game.time.events.add(1300, this.titleText, this);
-    game.time.events.add(1300, this.titleStart, this);
-    game.time.events.add(1300, this.titleControls, this);
+    game.time.events.add(500, this.titleRandom, this);
+    game.time.events.add(800, this.titleExplosion, this);
+    game.time.events.add(800, this.titleMinion, this);
+    game.time.events.add(1800, this.titleText, this);
+    game.time.events.add(1800, this.titleStart, this);
+    game.time.events.add(1800, this.titleControls, this);
 
     /* var text = 'Score : ' + game.global.score + '\nRecord : ' + localStorage.getItem('bestScore');
     var scoreLabel = game.add.text(game.world.centerX, game.world.centerY, text, {font: fontm, fill: textColor, align: 'center'});
@@ -23,9 +24,8 @@ var menuState = {
     game.explosion.anchor.set(0.5);
     game.explosion.scale.setTo(0);
 
-    var random = game.add.sprite(game.world.centerX, -10, 'random');
-    random.anchor.set(0.5);
-    game.add.tween(random).to({y: game.world.centerY}, 1000).easing(Phaser.Easing.Bounce.Out).start();
+    game.random = game.add.sprite(game.world.centerX, -70, 'random');
+    game.random.anchor.set(0.5);
 
     game.minion = game.add.sprite(game.world.centerX, game.world.centerY, 'minion');
     game.minion.anchor.set(0.5);
@@ -52,6 +52,10 @@ var menuState = {
     if (game.sound.mute) {
       this.muteButton.frame = 1;
     }
+  },
+
+  titleRandom: function () {
+    game.add.tween(game.random).to({y: game.world.centerY}, 1000).easing(Phaser.Easing.Bounce.Out).start();
   },
 
   titleText: function () {
@@ -83,7 +87,7 @@ var menuState = {
   },
 
   level1: function () {
-    game.state.start('play', true, false, 1);
+    game.state.start('play', true, false, 3);
   },
 
   toggleSound: function () {

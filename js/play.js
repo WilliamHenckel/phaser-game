@@ -25,6 +25,8 @@ var playState = {
     this.conf.potionPosition = this.levelData.potionPosition;
     this.conf.bossX = this.levelData.bossStart.x;
     this.conf.bossY = this.levelData.bossStart.y;
+    this.conf.bossHealthX = this.levelData.bossHealth.x;
+    this.conf.bossHealthY = this.levelData.bossHealth.y;
   },
 
   create: function () {
@@ -79,6 +81,16 @@ var playState = {
     this.boss.body.setSize(56, 56, 0, 18);
     game.boss_life_points = 5;
 
+    this.healthBoss = game.add.sprite(this.conf.bossHealthX, this.conf.bossHealthY, 'healthBoss');
+    this.healthBoss.anchor.setTo(0.5, 0.5);
+    this.healthBoss.animations.add('5', [0], 1, true);
+    this.healthBoss.animations.add('4', [1], 1, true);
+    this.healthBoss.animations.add('3', [2], 1, true);
+    this.healthBoss.animations.add('2', [3], 1, true);
+    this.healthBoss.animations.add('1', [4], 1, true);
+    this.healthBoss.animations.add('0', [5], 1, true);
+    this.healthBoss.animations.play(game.boss_life_points);
+
     game.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
 
     // Missiles
@@ -110,7 +122,8 @@ var playState = {
 
     // Points de vie boss
     if (this.conf.mapName === 3) {
-      game.boss_life_pointsLabel = game.add.text(game.world.centerX, game.world.centerY, game.boss_life_points, {font: fontxl, fill: textColor});
+      game.boss_life_pointsLabel = game.add.text(400, 170, 'Boss', {font: fontxl, fill: textColor});
+      game.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
     }
 
     // Ennemies
@@ -346,7 +359,6 @@ var playState = {
   bossHurt: function () {
     if (!this.executed && game.boss_life_points >= 0) {
       game.boss_life_points -= 1;
-      game.boss_life_pointsLabel.text = game.boss_life_points;
       game.time.events.add(1000, this.reset_executed, this);
       this.player.body.velocity.y = -200;
       this.boss.body.enable = false;
@@ -354,6 +366,7 @@ var playState = {
       this.emitter.y = this.boss.y;
       this.emitter.start(true, 300, null, 6);
       this.boss.animations.play('hurt');
+      this.healthBoss.animations.play(game.boss_life_points);
 
       if (game.boss_life_points >= 1) {
         game.time.events.add(Phaser.Timer.SECOND / 4, this.fireMissileUp, this);
@@ -395,12 +408,12 @@ var playState = {
   },
 
   bossDie: function () {
-    console.log('boss mort');
     this.boss.kill();
     game.boss_life_pointsLabel.kill();
+    this.healthBoss.kill();
     game.time.events.remove(game.timer_missile);
 
-    var deathLabel = game.add.text(game.world.centerX, game.world.centerY, 'T\'as fini le jeu, retourne bosser !', {font: fontl, fill: textColor});
+    var deathLabel = game.add.text(this.conf.bossHealthX, this.conf.bossHealthY, 'T\'as fini le jeu, retourne bosser !', {font: fontl, fill: textColor});
     deathLabel.anchor.setTo(0.5, 0.5);
 
     game.time.events.add(3000, this.startMenu, this);
