@@ -1,5 +1,5 @@
 {
-  "playerStart": {"x": 100, "y": 550},
+  "playerStart": {"x": 100, "y": 400},
   "coinStart": {"x": 150, "y": 220},
   "coinPosition": [
     {"x": 250, "y": 140},
