@@ -23,9 +23,14 @@ var playState = {
     this.conf.potionX = this.levelData.potionStart.x;
     this.conf.potionY = this.levelData.potionStart.y;
     this.conf.potionPosition = this.levelData.potionPosition;
+    this.conf.bossX = this.levelData.bossStart.x;
+    this.conf.bossY = this.levelData.bossStart.y;
   },
 
   create: function () {
+    // Fond
+    game.stage.backgroundColor = game.add.tileSprite(0, 0, 800, 640, "background");
+
     // Commandes
     this.cursor = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT]);
@@ -47,7 +52,42 @@ var playState = {
     game.life_points = 3;
     game.direction = 'right';
     this.player.body.checkCollision.up = false;
+    this.player.body.setSize(30, 36, 5, 0);
     /* game.wallJump = false; */
+
+    // Points de vie
+    this.health = game.add.sprite(game.world.width - 200, 5, 'health');
+    this.health.animations.add('5', [0], 1, true);
+    this.health.animations.add('4', [1], 1, true);
+    this.health.animations.add('3', [2], 1, true);
+    this.health.animations.add('2', [3], 1, true);
+    this.health.animations.add('1', [4], 1, true);
+    this.health.animations.add('0', [5], 1, true);
+    this.health.animations.play(game.life_points);
+
+    // Boss
+    this.boss = game.add.sprite(this.conf.bossX, this.conf.bossY, 'boss');
+    game.physics.arcade.enable(this.boss);
+    this.boss.anchor.setTo(0.5, 0.5);
+    this.boss.animations.add('walk', [0, 1], 8, true);
+    this.boss.animations.play('walk');
+    this.boss.animations.add('hurt', [2, 3, 4, 3, 2], 10, true);
+    this.boss.body.gravity.y = 1000;
+    this.boss.body.velocity.x = -100;
+    this.boss.body.bounce.x = 1;
+    this.boss.direction = 'left';
+    this.boss.body.setSize(56, 56, 0, 18);
+    game.boss_life_points = 5;
+
+    game.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
+
+    // Missiles
+    this.missiles = game.add.group();
+    this.missiles.enableBody = true;
+    this.missiles.createMultiple(10, 'missile');
+    this.missiles.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', this.resetMissile);
+    this.missiles.callAll('anchor.setTo', 'anchor', 0.5, 1.0);
+    this.missiles.setAll('checkWorldBounds', true);
 
     // Pièce
     this.coin = game.add.sprite(this.conf.coinX, this.conf.coinY, 'coin');
@@ -57,17 +97,21 @@ var playState = {
     this.coin.animations.play('turn');
     this.coin.scale.setTo(1, 1);
 
-    // Power Up
-    this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
+    // Potion
+    if (game.life_points <= 3) {
+      this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
+    }
     game.physics.arcade.enable(this.potion);
     this.potion.anchor.setTo(0.5, 0.5);
 
     // Score
-    this.scoreLabel = game.add.text(30, 30, 'Score : 0', {font: fontxs, fill: textColor});
+    this.scoreLabel = game.add.text(15, 5, 'Score : 0', {font: fontm, fill: textColor});
     game.global.score = 0;
 
-    // Points de vie
-    game.life_pointsLabel = game.add.text(460, 30, game.life_points, {font: fontxs, fill: textColor});
+    // Points de vie boss
+    if (this.conf.mapName === 3) {
+      game.boss_life_pointsLabel = game.add.text(game.world.centerX, game.world.centerY, game.boss_life_points, {font: fontxl, fill: textColor});
+    }
 
     // Ennemies
     this.enemies = game.add.group();
@@ -78,7 +122,7 @@ var playState = {
     this.enemies.callAll('animations.add', 'animations', 'walk-left', [0, 1, 2, 1], 10);
     this.enemies.callAll('animations.add', 'animations', 'walk-right', [7, 6, 5, 6], 10);
 
-    this.enemies.callAll('animations.add', 'animations', 'fall-left', [ 1, 2, 3], 10);
+    this.enemies.callAll('animations.add', 'animations', 'fall-left', [1, 2, 3], 10);
     this.enemies.callAll('animations.add', 'animations', 'fall-right', [6, 5, 4], 10);
 
     // Sons
@@ -90,21 +134,20 @@ var playState = {
     // Particules
     this.emitter = game.add.emitter(0, 0, 15);
     this.emitter.makeParticles('pixel');
-    this.emitter.setYSpeed(-150, 150);
-    this.emitter.setXSpeed(-150, 150);
+    this.emitter.setYSpeed(-200, 200);
+    this.emitter.setXSpeed(-200, 200);
     this.emitter.gravity = 0;
     this.emitter.minParticleScale = 0.5;
     this.emitter.minRotation = 50;
 
-    // Fond
-    game.stage.backgroundColor = '#3498db';
-
     // Damage
     this.executed = false;
 
-    this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY, 'Objectif : 100 points', {font: fontxs, fill: textColor});
-    this.tutoLabel.anchor.setTo(0.5, 0.5);
-    game.time.events.add(2000, this.eraseTuto, this);
+    if (this.conf.mapName < 3) {
+      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : 100 points', {font: fontm, fill: textColor});
+      this.tutoLabel.anchor.setTo(0.5, 0.5);
+      game.time.events.add(2000, this.eraseTuto, this);
+    }
   },
 
   eraseTuto: function () {
@@ -114,6 +157,7 @@ var playState = {
   update: function () {
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
+    game.physics.arcade.collide(this.boss, this.layer);
 
     /* console.log('x : ' + this.player.body.x);
     console.log('y : ' + this.player.body.y); */
@@ -125,8 +169,11 @@ var playState = {
     game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
     game.physics.arcade.overlap(this.player, this.potion, this.takePotion, null, this);
     game.physics.arcade.overlap(this.player, this.enemies, this.playerHurt, null, this);
+    game.physics.arcade.overlap(this.player, this.missiles, this.playerHurt, null, this);
+    game.physics.arcade.overlap(this.player, this.boss, this.bossOrPlayerHurt, null, this);
 
     this.movePlayer();
+    this.moveBoss();
 
     if (!this.player.inWorld && game.global.score < 100) {
       this.playerDie();
@@ -138,15 +185,27 @@ var playState = {
       var score = 100;
       var delay = Math.max(start - (start - end) * game.global.score / score, end);
 
-      this.addEnemy();
-      this.nextEnemy = game.time.now + delay;
+      if (this.conf.mapName < 3) {
+        this.addEnemy();
+        this.nextEnemy = game.time.now + delay;
+      }
     }
-    this.enemies.forEach(this.annimateEnemy, this, true); 
+    this.enemies.forEach(this.annimateEnemy, this, true);
     /* if (this.movingWall.x >= game.world.centerX + 50) {
       this.movingWall.body.velocity.x = -50;
     } else if (this.movingWall.x <= game.world.centerX - 50) {
       this.movingWall.body.velocity.x = 50;
     } */
+  },
+
+  moveBoss: function () {
+    if (this.boss.body.velocity.x > 0 && this.boss.direction === 'left') {
+      this.boss.scale.x = -1;
+      this.boss.direction = 'right';
+    } else if (this.boss.body.velocity.x < 0 && this.boss.direction === 'right') {
+      this.boss.scale.x = 1;
+      this.boss.direction = 'left';
+    }
   },
 
   movePlayer: function () {
@@ -250,10 +309,11 @@ var playState = {
     if (!this.executed && game.life_points >= 1 && game.global.score < 100) {
       this.executed = true;
       game.life_points -= 1;
+      this.health.animations.play(game.life_points);
       this.player.alpha = 0.5;
       this.player.tint = 0xffffff;
-      game.tint = game.time.events.loop(50, this.changeTint, this);
-      game.life_pointsLabel.text = game.life_points;
+      game.tint = game.time.events.loop(100, this.changeTint, this);
+      game.time.events.add(1000, this.resetTint, this);
       game.time.events.add(1000, this.reset_executed, this);
 
       if (game.life_points >= 4) {
@@ -271,7 +331,6 @@ var playState = {
       this.player.tint = 0xff0000;
     } */
     this.player.tint = (this.player.tint === 0xff0000) ? 0xffffff : 0xff0000;
-    game.time.events.add(1000, this.resetTint, this);
   },
 
   resetTint: function () {
@@ -283,6 +342,38 @@ var playState = {
     this.executed = false;
     this.player.alpha = 1;
     this.player.tint = 0xffffff;
+    this.boss.body.enable = true;
+    this.boss.animations.play('walk');
+  },
+
+  bossHurt: function () {
+    if (!this.executed && game.boss_life_points >= 0) {
+      game.boss_life_points -= 1;
+      game.boss_life_pointsLabel.text = game.boss_life_points;
+      game.time.events.add(1000, this.reset_executed, this);
+      this.player.body.velocity.y = -200;
+      this.boss.body.enable = false;
+      this.emitter.x = this.boss.x;
+      this.emitter.y = this.boss.y;
+      this.emitter.start(true, 300, null, 6);
+      this.boss.animations.play('hurt');
+
+      if (game.boss_life_points >= 1) {
+        game.time.events.add(Phaser.Timer.SECOND / 4, this.fireMissileUp, this);
+      }
+
+      if (game.boss_life_points === 0) {
+        this.bossDie();
+      }
+    }
+  },
+
+  bossOrPlayerHurt: function () {
+    if (this.player.body.velocity.y <= 0) {
+      this.playerHurt();
+    } else if (this.player.body.velocity.y > 0) {
+      this.bossHurt();
+    }
   },
 
   playerDie: function () {
@@ -301,9 +392,21 @@ var playState = {
 
     this.emitter.x = this.player.x;
     this.emitter.y = this.player.y;
-    this.emitter.start(true, 600, null, 15);
+    this.emitter.start(true, 600, null, 6);
 
     game.time.events.add(1000, this.restartLevel, this);
+  },
+
+  bossDie: function () {
+    console.log('boss mort');
+    this.boss.kill();
+    game.boss_life_pointsLabel.kill();
+    game.time.events.remove(game.timer_missile);
+
+    var deathLabel = game.add.text(game.world.centerX, game.world.centerY, 'T\'as fini le jeu, retourne bosser !', {font: fontl, fill: textColor});
+    deathLabel.anchor.setTo(0.5, 0.5);
+
+    game.time.events.add(3000, this.startMenu, this);
   },
 
   takeCoin: function () {
@@ -337,7 +440,7 @@ var playState = {
     game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y:1}, 150).start();
     this.updatePotionPosition();
     game.life_points += 1;
-    game.life_pointsLabel.text = game.life_points;
+    this.health.animations.play(game.life_points);
 
     this.potionSound.play();
 
@@ -398,7 +501,7 @@ var playState = {
     enemy.outOfBoundsKill = true;
   },
 
-  annimateEnemy:function(enemy){ 
+  annimateEnemy:function(enemy){
 
     if(enemy.body.velocity.y > 0 && enemy.body.velocity.x < 0 &&!enemy.falling){
       enemy.animations.play('fall-left', 10, false);
@@ -413,10 +516,42 @@ var playState = {
       enemy.falling = false;
     }
     else if(enemy.body.velocity.y == 0 && enemy.body.velocity.x > 0){
-      enemy.animations.play('walk-right');      
+      enemy.animations.play('walk-right');
       enemy.falling = false;
     }
+  },
 
+  fireMissile: function () {
+    var missile = this.missiles.getFirstDead();
+
+    if (missile && this.boss.x > this.player.x) {
+      missile.reset(this.boss.x - 30, this.boss.y + 20);
+      missile.body.velocity.x = -500;
+      missile.scale.x = 1;
+      missile.angle = 0;
+    } else if (missile && this.boss.x <= this.player.x) {
+      missile.scale.x = -1;
+      missile.angle = 0;
+      missile.reset(this.boss.x + 30, this.boss.y + 20);
+      missile.body.velocity.x = 500;
+    }
+  },
+
+  fireMissileUp: function () {
+    var missile = this.missiles.getFirstDead();
+
+    missile.reset(this.boss.x, this.boss.y);
+    missile.body.velocity.y = -500;
+
+    if (missile.scale.x === 1) {
+      missile.angle = 90;
+    } else {
+      missile.angle = -90;
+    }
+  },
+
+  resetMissile: function (missile) {
+    missile.kill();
   },
 
   startMenu: function () {
