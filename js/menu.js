@@ -83,11 +83,11 @@ var menuState = {
     game.minion = game.add.sprite(game.world.centerX, game.world.centerY, 'minion2');
     game.minion.anchor.setTo(0.5, 0.5);
     game.add.tween(game.minion).to({x: game.world.centerX - 200, y: game.world.centerY - 100}, 1000).easing(Phaser.Easing.Circular.Out).start();
-    game.add.tween(game.minion).to({angle:-50}, 1000, Phaser.Easing.Circular.Out, true);
+    game.add.tween(game.minion).to({angle: -50}, 1000, Phaser.Easing.Circular.Out, true);
   },
 
   level1: function () {
-    game.state.start('play', true, false, 3);
+    game.state.start('play', true, false, 1);
   },
 
   toggleSound: function () {

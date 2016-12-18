@@ -31,7 +31,7 @@ var playState = {
 
   create: function () {
     // Fond
-    game.stage.backgroundColor = game.add.tileSprite(0, 0, 800, 640, "background");
+    game.stage.backgroundColor = game.add.tileSprite(0, 0, 800, 640, 'background');
 
     // Commandes
     this.cursor = game.input.keyboard.createCursorKeys();
@@ -110,7 +110,7 @@ var playState = {
     this.coin.scale.setTo(1, 1);
 
     // Potion
-    if (game.life_points <= 3) {
+    if (game.life_points <= 3) {
       this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
     }
     game.physics.arcade.enable(this.potion);
@@ -236,7 +236,7 @@ var playState = {
     } */ else {
       this.player.body.velocity.x = 0;
       this.player.animations.stop();
-      if (game.direction == 'left') {
+      if (game.direction === 'left') {
         this.player.frame = 4;
       } else {
         this.player.frame = 0;
@@ -260,16 +260,16 @@ var playState = {
       this.jumpSound.play();
     }
 
-    if ((this.cursor.up.isDown && game.direction == 'right') || (!this.player.body.onFloor() && game.direction == 'right')) {
+    if ((this.cursor.up.isDown && game.direction === 'right') || (!this.player.body.onFloor() && game.direction === 'right')) {
       this.player.animations.play('jump-right');
-      if (this.player.body.velocity.y >= 0 && this.player.scale.y == 1) {
+      if (this.player.body.velocity.y >= 0 && this.player.scale.y === 1) {
         this.player.animations.play('down-right');
       }
     }
 
-    if ((this.cursor.up.isDown && game.direction == 'left') || (!this.player.body.onFloor() && game.direction == 'left')) {
+    if ((this.cursor.up.isDown && game.direction === 'left') || (!this.player.body.onFloor() && game.direction === 'left')) {
       this.player.animations.play('jump-left');
-      if (this.player.body.velocity.y >= 0 && this.player.scale.y == 1) {
+      if (this.player.body.velocity.y >= 0 && this.player.scale.y === 1) {
         this.player.animations.play('down-left');
       }
     }
@@ -299,12 +299,13 @@ var playState = {
   },
 
   nextLevelText: function () {
+    var finishLabel;
     if (this.conf.mapName <= 2) {
-      var finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
+      finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
       finishLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.nextLevelState, this);
     } else {
-      var finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
+      finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
       finishLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.startMenu, this);
     }
@@ -439,7 +440,7 @@ var playState = {
     this.coin.scale.setTo(0, 0);
     game.add.tween(this.coin.scale).to({x: 1, y: 1}, 300).start();
 
-    game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y:1}, 150).start();
+    game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y: 1}, 150).start();
 
     if (game.global.score === 100) {
       this.nextLevelText();
@@ -447,7 +448,7 @@ var playState = {
   },
 
   takePotion: function () {
-    game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y:1}, 150).start();
+    game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y: 1}, 150).start();
     this.updatePotionPosition();
     game.life_points += 1;
     this.health.animations.play(game.life_points);
