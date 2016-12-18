@@ -1,9 +1,6 @@
 var loadState = {
   preload: function () {
-    var loadingLabel = game.add.text(game.world.centerX, 150, 'Chargement...', {font: fontl, fill: textColor});
-    loadingLabel.anchor.setTo(0.5, 0.5);
-
-    var progressBar = game.add.sprite(game.world.centerX, 200, 'progressBar');
+    var progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
     progressBar.anchor.setTo(0.5, 0.5);
     game.load.setPreloadSprite(progressBar);
 
@@ -13,16 +10,17 @@ var loadState = {
     game.load.spritesheet('enemy', 'assets/enemy.png', 32, 32, 8);
     game.load.spritesheet('boss', 'assets/boss.png', 56, 74, 5);
     game.load.spritesheet('health', 'assets/coeur.png', 156, 24, 6);
+    game.load.spritesheet('healthBoss', 'assets/health-boss.png', 80, 16, 6);
 
     game.load.image('background', 'assets/background.jpg');
     game.load.image('potion', 'assets/red-potion.png');
     game.load.image('pixel', 'assets/particule.png');
     game.load.image('tileset', 'assets/tileset.png');
-    game.load.image('bouton1', 'assets/bouton1.png');
-    game.load.image('bouton2', 'assets/bouton2.png');
-    game.load.image('bouton3', 'assets/bouton3.png');
+    game.load.image('startButton', 'assets/bouton1.png');
+    game.load.image('minion', 'assets/minion.png');
+    game.load.image('minion2', 'assets/minion2.png');
     game.load.image('explosion', 'assets/explosion.png');
-    game.load.image('blob', 'assets/blob.png');
+    game.load.image('random', 'assets/random.png');
     game.load.image('arrows', 'assets/arrowKeys.png');
     game.load.image('wallH', 'assets/wallHorizontal.png');
     game.load.image('missile', 'assets/missile.png');

@@ -8,9 +8,6 @@ var fonts = '20px ' + textFont;   // Petite taille de texte
 var fontxs = '18px ' + textFont;  // Minuscule taille de texte
 
 WebFontConfig = {
-    active: function() {
-      game.time.events.add(Phaser.Timer.SECOND, createText, this);
-    },
     google: {
       families: ['VT323']
     }

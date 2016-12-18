@@ -1,7 +1,6 @@
 var menuState = {
 
   create: function () {
-    // game.add.image(0, 0, 'background');
     game.stage.backgroundColor = '#313131';
 
     this.music = game.add.audio('elephant', 1, true);
@@ -10,48 +9,34 @@ var menuState = {
     }
     this.musicplay = 1;
 
-    var nameLabel = game.add.text(game.world.centerX, -50, 'Bob le blob', {font: fontxl, fill: textColor});
-    nameLabel.anchor.setTo(0.5, 0.5);
-    game.add.tween(nameLabel).to({y: 50}, 1000).easing(Phaser.Easing.Bounce.Out).start();
+    game.time.events.add(500, this.titleRandom, this);
+    game.time.events.add(800, this.titleExplosion, this);
+    game.time.events.add(800, this.titleMinion, this);
+    game.time.events.add(1800, this.titleText, this);
+    game.time.events.add(1800, this.titleStart, this);
+    game.time.events.add(1800, this.titleControls, this);
 
     /* var text = 'Score : ' + game.global.score + '\nRecord : ' + localStorage.getItem('bestScore');
     var scoreLabel = game.add.text(game.world.centerX, game.world.centerY, text, {font: fontm, fill: textColor, align: 'center'});
     scoreLabel.anchor.setTo(0.5, 0.5); */
 
-    var explosion = game.add.sprite(game.world.centerX, game.world.centerY, 'explosion');
-    explosion.anchor.set(0.5);
-    game.add.tween(explosion).to({angle: -5}, 500).to({angle: 0}, 500).loop().start();
-    game.add.tween(explosion.scale).to({x: 0.8, y: 0.8}, 500).to({x: 1, y: 1}, 500).loop().start();
+    game.explosion = game.add.sprite(game.world.centerX, game.world.centerY, 'explosion');
+    game.explosion.anchor.set(0.5);
+    game.explosion.scale.setTo(0);
 
-    var blob = game.add.sprite(game.world.centerX, game.world.centerY, 'blob');
-    blob.anchor.set(0.5);
+    game.random = game.add.sprite(game.world.centerX, -70, 'random');
+    game.random.anchor.set(0.5);
 
-    var bouton1 = game.add.sprite(game.world.centerX - 150, 530, 'bouton1');
-    bouton1.scale.setTo(0.5);
-    bouton1.anchor.set(0.5);
-    bouton1.inputEnabled = true;
-    bouton1.events.onInputDown.add(this.level1, this);
+    game.minion = game.add.sprite(game.world.centerX, game.world.centerY, 'minion');
+    game.minion.anchor.set(0.5);
 
-    var bouton2 = game.add.sprite(game.world.centerX, 530, 'bouton2');
-    bouton2.scale.setTo(0.5);
-    bouton2.anchor.set(0.5);
-    bouton2.inputEnabled = true;
-    bouton2.events.onInputDown.add(this.level2, this);
+    game.startButton = game.add.text(game.world.centerX, 700, 'Click to start !', {font: fontxl, fill: textColor});
+    game.startButton.anchor.set(0.5);
 
-    var bouton3 = game.add.sprite(game.world.centerX + 150, 530, 'bouton3');
-    bouton3.scale.setTo(0.5);
-    bouton3.anchor.set(0.5);
-    bouton3.inputEnabled = true;
-    bouton3.events.onInputDown.add(this.level3, this);
+    game.input.onDown.add(this.level1, this);
 
-    var arrows = game.add.sprite(game.world.centerX + 160, game.world.centerY - 15, 'arrows');
-    arrows.anchor.set(0.5);
-    bouton3.scale.setTo(0.5);
-    game.add.tween(arrows.scale).to({x: 0.8, y: 0.8}, 250).to({x: 1, y: 1}, 250).loop().start();
-
-    /* var startLabel = game.add.text(game.world.centerX, game.world.height-80, 'Fleche haut pour commencer',{font: fonts, fill: textColor});
-    startLabel.anchor.setTo(0.5, 0.5);
-    game.add.tween(startLabel).to({angle: -5}, 500).to({angle: 0}, 500).loop().start(); */
+    game.arrows = game.add.sprite(900, game.world.centerY - 15, 'arrows');
+    game.arrows.anchor.set(0.5);
 
     /* if (!localStorage.getItem('bestScore')) {
       localStorage.setItem('bestScore', 0);
@@ -69,16 +54,40 @@ var menuState = {
     }
   },
 
+  titleRandom: function () {
+    game.add.tween(game.random).to({y: game.world.centerY}, 1000).easing(Phaser.Easing.Bounce.Out).start();
+  },
+
+  titleText: function () {
+    var nameLabel = game.add.text(game.world.centerX, -50, 'Random Guy Adventures', {font: fontxl, fill: textColor});
+    nameLabel.anchor.setTo(0.5, 0.5);
+    game.add.tween(nameLabel).to({y: 100}, 1000).easing(Phaser.Easing.Circular.Out).start();
+  },
+
+  titleExplosion: function () {
+    game.add.tween(game.explosion.scale).to({x: 1, y: 1}, 500, Phaser.Easing.Bounce.Out, true);
+    game.add.tween(game.explosion).to({angle: -5}, 500).to({angle: 0}, 500).loop().start();
+  },
+
+  titleStart: function () {
+    game.add.tween(game.startButton).to({y: game.world.centerY + 200}, 1000).easing(Phaser.Easing.Circular.Out).start();
+  },
+
+  titleControls: function () {
+    game.add.tween(game.arrows).to({x: game.world.centerX + 160, y: game.world.centerY - 15}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(game.arrows.scale).to({x: 0.8, y: 0.8}, 250).to({x: 1, y: 1}, 250).loop().start();
+  },
+
+  titleMinion: function () {
+    game.minion.destroy();
+    game.minion = game.add.sprite(game.world.centerX, game.world.centerY, 'minion2');
+    game.minion.anchor.setTo(0.5, 0.5);
+    game.add.tween(game.minion).to({x: game.world.centerX - 200, y: game.world.centerY - 100}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(game.minion).to({angle: -50}, 1000, Phaser.Easing.Circular.Out, true);
+  },
+
   level1: function () {
     game.state.start('play', true, false, 1);
-  },
-
-  level2: function () {
-    game.state.start('play', true, false, 2);
-  },
-
-  level3: function () {
-    game.state.start('play', true, false, 3);
   },
 
   toggleSound: function () {
