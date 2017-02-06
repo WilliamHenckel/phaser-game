@@ -34,6 +34,7 @@ var loadState = {
     game.load.audio('dead', ['assets/dead.ogg', 'assets/dead.mp3']);
     game.load.audio('elephant', ['assets/elephant.mp3']);
     game.load.audio('potion', ['assets/powerup.ogg', 'assets/powerup.mp3']);
+    game.load.audio('boom', ['assets/laser.ogg', 'assets/laser.mp3']);
 
     game.load.text('level1', 'assets/data/level1.json');
     game.load.text('level2', 'assets/data/level2.json');

@@ -143,6 +143,7 @@ var playState = {
     this.coinSound = game.add.audio('coin');
     this.deadSound = game.add.audio('dead');
     this.potionSound = game.add.audio('potion');
+    this.missileSound = game.add.audio('boom');
 
     // Particules
     this.emitter = game.add.emitter(0, 0, 15);
@@ -508,7 +509,7 @@ var playState = {
     enemy.anchor.setTo(0.5, 1);
     enemy.reset(game.world.centerX, 0);
     enemy.body.gravity.y = 500;
-    enemy.body.velocity.x = 100 * game.rnd.integerInRange(-1, 1);
+    enemy.body.velocity.x = 100 * game.rnd.integerInRange(0, 1);
     if (enemy.body.velocity.x === 0) { enemy.body.velocity.x = -100; }
     enemy.body.bounce.x = 1;
     enemy.checkWorldBounds = true;
@@ -543,11 +544,13 @@ var playState = {
       missile.body.velocity.x = -500;
       missile.scale.x = 1;
       missile.angle = 0;
+      this.missileSound.play();
     } else if (missile && this.boss.x <= this.player.x) {
       missile.scale.x = -1;
       missile.angle = 0;
       missile.reset(this.boss.x + 30, this.boss.y + 20);
       missile.body.velocity.x = 500;
+      this.missileSound.play();
     }
   },
 
@@ -556,6 +559,7 @@ var playState = {
 
     missile.reset(this.boss.x, this.boss.y);
     missile.body.velocity.y = -500;
+    this.missileSound.play();
 
     if (missile.scale.x === 1) {
       missile.angle = 90;
