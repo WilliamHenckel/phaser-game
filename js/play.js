@@ -23,10 +23,13 @@ var playState = {
     this.conf.potionX = this.levelData.potionStart.x;
     this.conf.potionY = this.levelData.potionStart.y;
     this.conf.potionPosition = this.levelData.potionPosition;
-    this.conf.bossX = this.levelData.bossStart.x;
-    this.conf.bossY = this.levelData.bossStart.y;
-    this.conf.bossHealthX = this.levelData.bossHealth.x;
-    this.conf.bossHealthY = this.levelData.bossHealth.y;
+
+    if (this.conf.mapName === 3) {
+      this.conf.bossX = this.levelData.bossStart.x;
+      this.conf.bossY = this.levelData.bossStart.y;
+      this.conf.bossHealthX = this.levelData.bossHealth.x;
+      this.conf.bossHealthY = this.levelData.bossHealth.y;
+    }
   },
 
   create: function () {
@@ -68,6 +71,7 @@ var playState = {
     this.health.animations.play(game.life_points);
 
     // Boss
+    if (this.conf.mapName === 3) {
     this.boss = game.add.sprite(this.conf.bossX, this.conf.bossY, 'boss');
     game.physics.arcade.enable(this.boss);
     this.boss.anchor.setTo(0.5, 0.5);
@@ -92,6 +96,7 @@ var playState = {
     this.healthBoss.animations.play(game.boss_life_points);
 
     game.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
+  }
 
     // Missiles
     this.missiles = game.add.group();
@@ -144,6 +149,10 @@ var playState = {
     this.deadSound = game.add.audio('dead');
     this.potionSound = game.add.audio('potion');
     this.missileSound = game.add.audio('boom');
+    this.missileSound.volume = 0.3;
+    this.bossDieSound = game.add.audio('bossDieSound');
+    this.bossDieSound.volume = 0.5;
+    this.bossHurtSound = game.add.audio('bossHurtSound');
 
     // Particules
     this.emitter = game.add.emitter(0, 0, 15);
@@ -213,12 +222,14 @@ var playState = {
   },
 
   moveBoss: function () {
-    if (this.boss.body.velocity.x > 0 && this.boss.direction === 'left') {
-      this.boss.scale.x = -1;
-      this.boss.direction = 'right';
-    } else if (this.boss.body.velocity.x < 0 && this.boss.direction === 'right') {
-      this.boss.scale.x = 1;
-      this.boss.direction = 'left';
+    if (this.conf.mapName === 3) {
+      if (this.boss.body.velocity.x > 0 && this.boss.direction === 'left') {
+        this.boss.scale.x = -1;
+        this.boss.direction = 'right';
+      } else if (this.boss.body.velocity.x < 0 && this.boss.direction === 'right') {
+        this.boss.scale.x = 1;
+        this.boss.direction = 'left';
+      }
     }
   },
 
@@ -357,8 +368,10 @@ var playState = {
     this.executed = false;
     this.player.alpha = 1;
     this.player.tint = 0xffffff;
-    this.boss.body.enable = true;
-    this.boss.animations.play('walk');
+    if (this.conf.mapName === 3) {
+      this.boss.body.enable = true;
+      this.boss.animations.play('walk');
+    }
   },
 
   bossHurt: function () {
@@ -375,6 +388,7 @@ var playState = {
 
       if (game.boss_life_points >= 1) {
         game.time.events.add(Phaser.Timer.SECOND / 4, this.fireMissileUp, this);
+        this.bossHurtSound.play();
       }
 
       if (game.boss_life_points === 0) {
@@ -413,6 +427,7 @@ var playState = {
   },
 
   bossDie: function () {
+    this.bossDieSound.play();
     this.boss.kill();
     game.boss_life_pointsLabel.kill();
     this.healthBoss.kill();

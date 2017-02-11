@@ -3,11 +3,11 @@ var menuState = {
   create: function () {
     game.stage.backgroundColor = '#313131';
 
-    this.music = game.add.audio('elephant', 1, true);
+    /* this.music = game.add.audio('elephant', 1, true);
     if (this.musicplay === undefined) {
       this.music.loopFull();
     }
-    this.musicplay = 1;
+    this.musicplay = 1; */
 
     game.time.events.add(500, this.titleRandom, this);
     game.time.events.add(800, this.titleExplosion, this);
@@ -96,6 +96,6 @@ var menuState = {
   },
 
   restartGame: function () {
-    this.elephant.stop();
+    //this.elephant.stop();
   }
 };
