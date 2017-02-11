@@ -31,6 +31,7 @@ var loadState = {
 
     game.load.audio('jump', ['assets/jump.ogg', 'assets/jump.mp3']);
     game.load.audio('coin', ['assets/coin.ogg', 'assets/coin.mp3']);
+    game.load.audio('hurtSound', ['assets/hurt.ogg', 'assets/hurt.mp3']);
     game.load.audio('dead', ['assets/dead.ogg', 'assets/dead.mp3']);
     //game.load.audio('elephant', ['assets/elephant.mp3']);
     game.load.audio('potion', ['assets/powerup.ogg', 'assets/powerup.mp3']);

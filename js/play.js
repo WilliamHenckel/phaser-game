@@ -77,7 +77,7 @@ var playState = {
     this.boss.anchor.setTo(0.5, 0.5);
     this.boss.animations.add('walk', [0, 1], 8, true);
     this.boss.animations.play('walk');
-    this.boss.animations.add('hurt', [2, 3, 4, 3, 2], 10, true);
+    this.boss.animations.add('hurtAnim', [2, 3, 4, 3, 2], 10, true);
     this.boss.body.gravity.y = 1000;
     this.boss.body.velocity.x = -100;
     this.boss.body.bounce.x = 1;
@@ -146,6 +146,7 @@ var playState = {
     // Sons
     this.jumpSound = game.add.audio('jump');
     this.coinSound = game.add.audio('coin');
+    this.hurtSound = game.add.audio('hurtSound');
     this.deadSound = game.add.audio('dead');
     this.potionSound = game.add.audio('potion');
     this.missileSound = game.add.audio('boom');
@@ -345,6 +346,10 @@ var playState = {
       if (game.life_points >= 4) {
         game.time.events.add(10000, this.updatePotionPosition, this);
       }
+
+      if (game.life_points >= 1) {
+        this.hurtSound.play();
+      }
     } else if (game.life_points === 0) {
       this.playerDie();
     }
@@ -383,7 +388,7 @@ var playState = {
       this.emitter.x = this.boss.x;
       this.emitter.y = this.boss.y;
       this.emitter.start(true, 300, null, 6);
-      this.boss.animations.play('hurt');
+      this.boss.animations.play('hurtAnim');
       this.healthBoss.animations.play(game.boss_life_points);
 
       if (game.boss_life_points >= 1) {
