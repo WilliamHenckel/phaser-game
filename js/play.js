@@ -538,7 +538,21 @@ var playState = {
     enemy.anchor.setTo(0.5, 1);
     enemy.reset(game.world.centerX, 0);
     enemy.body.gravity.y = 500;
-    enemy.body.velocity.x = 100 * game.rnd.integerInRange(0, 1);
+    var enemyVelocity = game.rnd.integerInRange(0, 3);
+    console.log(enemyVelocity);
+    switch (enemyVelocity) {
+      case 0:
+      case 1:
+        enemy.body.velocity.x = 100;
+        break;
+      case 2:
+      case 3:
+        enemy.body.velocity.x = -100;
+        break;
+      default:
+        enemy.body.velocity.x = 100;
+    }
+
     if (enemy.body.velocity.x === 0) { enemy.body.velocity.x = -100; }
     enemy.body.bounce.x = 1;
     enemy.checkWorldBounds = true;
