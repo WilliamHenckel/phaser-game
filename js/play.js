@@ -178,6 +178,10 @@ var playState = {
     game.add.tween(this.tutoLabel).to({ alpha: 0 }, 1000, 'Linear', true);
   },
 
+  eraseScore: function () {
+    game.add.tween(this.pointsLabel).to({ alpha: 0 }, 1000, 'Linear', true);
+  },
+
   update: function () {
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
@@ -448,6 +452,11 @@ var playState = {
     /* this.emitter.x = this.coin.x;
     this.emitter.y = this.coin.y;
     this.emitter.start(true, 600, null, 15); */
+
+    this.pointsLabel = game.add.text(this.coin.x, this.coin.y, '10', {font: fontm, fill: textColor});
+    this.pointsLabel.anchor.setTo(0.5, 0.5);
+    game.time.events.add(500, this.eraseScore, this);
+    game.add.tween(this.pointsLabel).to({ y: this.coin.y - 50}, 500, 'Linear', true);
 
     if (game.global.score < 90) {
       this.updateCoinPosition();
