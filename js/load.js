@@ -4,7 +4,8 @@ var loadState = {
     progressBar.anchor.setTo(0.5, 0.5);
     game.load.setPreloadSprite(progressBar);
 
-    game.load.spritesheet('slime', 'assets/heros.png', 40, 36, 12);
+    game.load.spritesheet('achille', 'assets/achille.png', 40, 36, 12);
+    game.load.spritesheet('ernest', 'assets/ernest.png', 40, 36, 12);
     game.load.spritesheet('coin', 'assets/coin.png', 32, 32, 4);
     game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
     game.load.spritesheet('enemy', 'assets/enemy.png', 32, 32, 8);
@@ -19,7 +20,8 @@ var loadState = {
     game.load.image('minion', 'assets/minion.png');
     game.load.image('minion2', 'assets/minion2.png');
     game.load.image('explosion', 'assets/explosion.png');
-    game.load.image('random', 'assets/random.png');
+    game.load.image('achilleimg', 'assets/achilleimg.png');
+    game.load.image('ernestimg', 'assets/ernestimg.png');
     game.load.image('arrows', 'assets/arrowKeys.png');
     game.load.image('wallH', 'assets/wallHorizontal.png');
     game.load.image('missile', 'assets/missile.png');

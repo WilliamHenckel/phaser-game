@@ -44,7 +44,11 @@ var playState = {
     this.createWorld();
 
     // Joueur
-    this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'slime');
+    if (game.character === 'achille') {
+      this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'achille');
+    } else if (game.character === 'ernest') {
+      this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'ernest');
+    }
     this.player.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enable(this.player);
     this.player.body.gravity.y = 1000;

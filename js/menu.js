@@ -1,5 +1,4 @@
 var menuState = {
-
   create: function () {
     game.stage.backgroundColor = '#313131';
 
@@ -24,13 +23,13 @@ var menuState = {
     game.explosion.anchor.set(0.5);
     game.explosion.scale.setTo(0);
 
-    game.random = game.add.sprite(game.world.centerX, -70, 'random');
+    game.random = game.add.sprite(game.world.centerX, -70, 'achilleimg');
     game.random.anchor.set(0.5);
 
     game.minion = game.add.sprite(game.world.centerX, game.world.centerY, 'minion');
     game.minion.anchor.set(0.5);
 
-    game.startButton = game.add.text(game.world.centerX, 700, 'Click to start !', {font: fontxl, fill: textColor});
+    game.startButton = game.add.text(game.world.centerX, 700, 'Cliquez pour commencer !', {font: fontxl, fill: textColor});
     game.startButton.anchor.set(0.5);
 
     game.input.onDown.add(this.level1, this);
@@ -87,7 +86,7 @@ var menuState = {
   },
 
   level1: function () {
-    game.state.start('play', true, false, 1);
+    game.state.start('character');
   },
 
   toggleSound: function () {
