@@ -183,7 +183,11 @@ var playState = {
   },
 
   eraseScore: function () {
-    game.add.tween(this.pointsLabel).to({ alpha: 0 }, 1000, 'Linear', true);
+    game.add.tween(this.pointsLabel).to({ alpha: 0 }, 500, 'Linear', true);
+  },
+
+  eraseHealthBonus: function () {
+    game.add.tween(this.healthBonus).to({ alpha: 0 }, 500, 'Linear', true);
   },
 
   update: function () {
@@ -485,6 +489,11 @@ var playState = {
   },
 
   takePotion: function () {
+    this.healthBonus = game.add.sprite(this.potion.x, this.potion.y, 'healthBonus');
+    this.healthBonus.anchor.setTo(0.5, 0.5);
+    game.time.events.add(500, this.eraseHealthBonus, this);
+    game.add.tween(this.healthBonus).to({ y: this.potion.y - 50}, 500, 'Linear', true);
+    
     game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y: 1}, 150).start();
     this.updatePotionPosition();
     game.life_points += 1;
