@@ -168,6 +168,8 @@ var playState = {
     this.emitter.minParticleScale = 0.5;
     this.emitter.minRotation = 50;
 
+    this.createWorld2();
+
     // Damage
     this.executed = false;
 
@@ -324,6 +326,11 @@ var playState = {
     this.movingWall.enableBody = true;
     this.movingWall.body.immovable = true;
     this.movingWall.body.velocity.x = 50; */
+  },
+
+  createWorld2: function () {
+    this.layer2 = this.map.createLayer('Tile Layer 2');
+    this.layer2.resizeWorld();
   },
 
   nextLevelText: function () {
@@ -493,7 +500,7 @@ var playState = {
     this.healthBonus.anchor.setTo(0.5, 0.5);
     game.time.events.add(500, this.eraseHealthBonus, this);
     game.add.tween(this.healthBonus).to({ y: this.potion.y - 50}, 500, 'Linear', true);
-    
+
     game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y: 1}, 150).start();
     this.updatePotionPosition();
     game.life_points += 1;
@@ -552,7 +559,6 @@ var playState = {
     enemy.reset(game.world.centerX, 0);
     enemy.body.gravity.y = 500;
     var enemyVelocity = game.rnd.integerInRange(0, 3);
-    console.log(enemyVelocity);
     switch (enemyVelocity) {
       case 0:
       case 1:
