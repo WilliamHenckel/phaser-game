@@ -23,7 +23,7 @@ var loadState = {
     game.load.image('achilleimg', 'assets/achilleimg.png');
     game.load.image('ernestimg', 'assets/ernestimg.png');
     game.load.image('arrows', 'assets/arrowKeys.png');
-    game.load.image('wallH', 'assets/wallHorizontal.png');
+    game.load.image('wallH', 'assets/plateforme.png');
     game.load.image('missile', 'assets/missile.png');
     game.load.image('healthBonus', 'assets/healthBonus.png');
 

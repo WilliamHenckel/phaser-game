@@ -24,6 +24,11 @@ var playState = {
     this.conf.potionY = this.levelData.potionStart.y;
     this.conf.potionPosition = this.levelData.potionPosition;
 
+    if (this.conf.mapName === 1) {
+      this.conf.movingWallX = this.levelData.movingwallStart.x;
+      this.conf.movingWallY = this.levelData.movingwallStart.y;
+    }
+
     if (this.conf.mapName === 3) {
       this.conf.bossX = this.levelData.bossStart.x;
       this.conf.bossY = this.levelData.bossStart.y;
@@ -62,7 +67,6 @@ var playState = {
     game.direction = 'right';
     this.player.body.checkCollision.up = false;
     this.player.body.setSize(30, 36, 5, 0);
-    /* game.wallJump = false; */
 
     // Points de vie
     this.health = game.add.sprite(game.world.width - 200, 5, 'health');
@@ -196,13 +200,8 @@ var playState = {
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
     game.physics.arcade.collide(this.boss, this.layer);
-
-    /* console.log('x : ' + this.player.body.x);
-    console.log('y : ' + this.player.body.y); */
-
-    // game.physics.arcade.collide(this.enemies, this.movingWall);
-    // game.physics.arcade.collide(this.movingWall, this.layer);
-    // game.physics.arcade.collide(this.player, this.movingWall);
+    game.physics.arcade.collide(this.movingWall, this.layer);
+    game.physics.arcade.collide(this.player, this.movingWall);
 
     game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
     game.physics.arcade.overlap(this.player, this.potion, this.takePotion, null, this);
@@ -229,11 +228,12 @@ var playState = {
       }
     }
     this.enemies.forEach(this.annimateEnemy, this, true);
-    /* if (this.movingWall.x >= game.world.centerX + 50) {
+
+    if (this.movingWall.x >= this.conf.movingWallX + 50) {
       this.movingWall.body.velocity.x = -50;
-    } else if (this.movingWall.x <= game.world.centerX - 50) {
+    } else if (this.movingWall.x <= this.conf.movingWallX - 50) {
       this.movingWall.body.velocity.x = 50;
-    } */
+    }
   },
 
   moveBoss: function () {
@@ -249,23 +249,18 @@ var playState = {
   },
 
   movePlayer: function () {
-    if (this.cursor.left.isDown /* && game.wallJump == false */) {
+    if (this.cursor.left.isDown) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
       game.direction = 'left';
-    } else if (this.cursor.right.isDown /* && game.wallJump == false */) {
+    } else if (this.cursor.right.isDown) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
       game.direction = 'right';
-    } /* else if (this.cursor.left.isDown && game.wallJump == true) {
-      this.player.body.velocity.x = 200;
-      this.player.animations.play('right');
-    } else if (this.cursor.right.isDown && game.wallJump == true) {
-      this.player.body.velocity.x = -200;
-      this.player.animations.play('left');
-    } */ else {
+    } else {
       this.player.body.velocity.x = 0;
       this.player.animations.stop();
+
       if (game.direction === 'left') {
         this.player.frame = 4;
       } else {
@@ -273,42 +268,28 @@ var playState = {
       }
     }
 
-    // Reset walljump
-    /* if (this.player.body.onFloor()) {
-      game.wallJump = false;
-    } */
-
-    // Jump simple
-    if (this.cursor.up.isDown && this.player.body.onFloor() && this.player.alive) {
+    if (this.cursor.up.isDown && (this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
       this.player.body.velocity.y = -470;
-      /* if (this.cursor.left.isDown) {
-        game.add.tween(this.player).to({angle:-360}, 500, Phaser.Easing.Linear.None, true);
-      } else if (this.cursor.right.isDown) {
-        game.add.tween(this.player).to({angle:360}, 500, Phaser.Easing.Linear.None, true);
-      } */
-
       this.jumpSound.play();
     }
 
-    if ((this.cursor.up.isDown && game.direction === 'right') || (!this.player.body.onFloor() && game.direction === 'right')) {
+    if ((this.cursor.up.isDown && game.direction === 'right') || (!this.player.body.onFloor() && game.direction === 'right' && this.player.body.velocity.y !== 0)) {
       this.player.animations.play('jump-right');
-      if (this.player.body.velocity.y >= 0 && this.player.scale.y === 1) {
+      if (this.player.body.velocity.y > 0 && this.player.scale.y === 1) {
         this.player.animations.play('down-right');
+      } else if (this.player.body.velocity.y === 0 && this.player.body.velocity.x === 0) {
+        this.player.frame = 0;
       }
     }
 
-    if ((this.cursor.up.isDown && game.direction === 'left') || (!this.player.body.onFloor() && game.direction === 'left')) {
+    if ((this.cursor.up.isDown && game.direction === 'left') || (!this.player.body.onFloor() && game.direction === 'left' && this.player.body.velocity.y !== 0)) {
       this.player.animations.play('jump-left');
-      if (this.player.body.velocity.y >= 0 && this.player.scale.y === 1) {
+      if (this.player.body.velocity.y > 0 && this.player.scale.y === 1) {
         this.player.animations.play('down-left');
+      } else if (this.player.body.velocity.y === 0 && this.player.body.velocity.x === 0) {
+        this.player.frame = 4;
       }
     }
-
-    // Wall jump
-    /* if (!this.player.body.onFloor() && this.player.body.onWall() && this.cursor.up.isDown && this.cursor.left.isDown || !this.player.body.onFloor() && this.player.body.onWall() && this.cursor.up.isDown && this.cursor.right.isDown) {
-      game.wallJump = true;
-      this.player.body.velocity.y = -200;
-    } */
   },
 
   createWorld: function () {
@@ -320,12 +301,12 @@ var playState = {
     this.map.setCollisionBetween(1, 14);
 
     // moving wall
-    /* this.movingWall = game.add.sprite(game.world.centerX, 180, 'wallH');
+    this.movingWall = game.add.sprite(this.conf.movingWallX, this.conf.movingWallY, 'wallH');
     this.movingWall.anchor.setTo(0.5, 1);
     game.physics.arcade.enable(this.movingWall);
     this.movingWall.enableBody = true;
     this.movingWall.body.immovable = true;
-    this.movingWall.body.velocity.x = 50; */
+    this.movingWall.body.velocity.x = 50;
   },
 
   createWorld2: function () {
@@ -375,11 +356,6 @@ var playState = {
   },
 
   changeTint: function () {
-    /* if (this.player.tint == 0xff0000) {
-      this.player.tint = 0xffffff;
-    } else {
-      this.player.tint = 0xff0000;
-    } */
     this.player.tint = (this.player.tint === 0xff0000) ? 0xffffff : 0xff0000;
   },
 
@@ -464,10 +440,6 @@ var playState = {
   },
 
   takeCoin: function () {
-    /* this.emitter.x = this.coin.x;
-    this.emitter.y = this.coin.y;
-    this.emitter.start(true, 600, null, 15); */
-
     this.pointsLabel = game.add.text(this.coin.x, this.coin.y, '10', {font: fontm, fill: textColor});
     this.pointsLabel.anchor.setTo(0.5, 0.5);
     game.time.events.add(500, this.eraseScore, this);
