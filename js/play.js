@@ -207,7 +207,7 @@ var playState = {
 
     game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
     game.physics.arcade.overlap(this.player, this.potion, this.takePotion, null, this);
-    game.physics.arcade.overlap(this.player, this.enemies, this.playerHurt, null, this);
+    game.physics.arcade.overlap(this.player, this.enemies, this.enemyOrPlayerHurt, null, this);
     game.physics.arcade.overlap(this.player, this.missiles, this.playerHurt, null, this);
     game.physics.arcade.overlap(this.player, this.boss, this.bossOrPlayerHurt, null, this);
 
@@ -229,7 +229,8 @@ var playState = {
         this.nextEnemy = game.time.now + delay;
       }
     }
-    this.enemies.forEach(this.animateEnemy, this, true);
+
+    this.enemies.forEach(this.animateEnemy);
 
     if (this.movingWall.x >= this.conf.movingWallX + 50) {
       this.movingWall.body.velocity.x = -50;
@@ -406,6 +407,18 @@ var playState = {
     }
   },
 
+  enemyOrPlayerHurt: function (pPlayer,pEnemy) {
+    if (this.player.body.velocity.y <= 0) {
+      this.playerHurt();
+    } else if (this.player.body.velocity.y > 0) {
+      pEnemy.kill();
+      pPlayer.body.velocity.y = -200;
+      this.emitter.x = pEnemy.x;
+      this.emitter.y = pEnemy.y;
+      this.emitter.start(true, 300, null, 6);
+    }
+  },
+
   playerDie: function () {
     if (!this.player.alive) {
       return;
@@ -535,33 +548,32 @@ var playState = {
     switch (enemyVelocity) {
       case 0:
       case 1:
-        enemy.body.velocity.x = 100;
+        enemy.body.velocity.x = 110;
         break;
       case 2:
       case 3:
-        enemy.body.velocity.x = -100;
+        enemy.body.velocity.x = -110;
         break;
       default:
-        enemy.body.velocity.x = 100;
+        enemy.body.velocity.x = 110;
     }
 
-    if (enemy.body.velocity.x === 0) { enemy.body.velocity.x = -100; }
     enemy.body.bounce.x = 1;
     enemy.checkWorldBounds = true;
     enemy.outOfBoundsKill = true;
   },
 
-  animateEnemy: function (enemy) {
-    if (!enemy.body.onFloor() && enemy.body.velocity.x <= 0) {
-      enemy.animations.play('fall-left');
-    } else if (!enemy.body.onFloor() && enemy.body.velocity.x >= 0) {
-      enemy.animations.play('fall-right');
+  animateEnemy: function (pEnemy) {
+    if (!pEnemy.body.onFloor() && pEnemy.body.velocity.x <= 0) {
+      pEnemy.animations.play('fall-left');
+    } else if (!pEnemy.body.onFloor() && pEnemy.body.velocity.x >= 0) {
+      pEnemy.animations.play('fall-right');
     }
 
-    if (enemy.body.onFloor() && enemy.body.velocity.x < 0) {
-      enemy.animations.play('walk-left');
-    } else if (enemy.body.onFloor() && enemy.body.velocity.x > 0) {
-      enemy.animations.play('walk-right');
+    if (pEnemy.body.onFloor() && pEnemy.body.velocity.x < 0) {
+      pEnemy.animations.play('walk-left');
+    } else if (pEnemy.body.onFloor() && pEnemy.body.velocity.x > 0) {
+      pEnemy.animations.play('walk-right');
     }
   },
 
