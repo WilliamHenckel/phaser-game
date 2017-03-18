@@ -1,5 +1,5 @@
 var playState = {
-  init: function (map, playerX, playerY) {
+  init: function (map) {
     switch (map) {
       case 2:
         this.levelData = JSON.parse(this.game.cache.getText('level2'));
@@ -45,7 +45,7 @@ var playState = {
     this.cursor = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT]);
 
-    // Murs
+    // Décor
     this.createWorld();
 
     // Joueur
@@ -54,6 +54,7 @@ var playState = {
     } else if (game.character === 'ernest') {
       this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'ernest');
     }
+
     this.player.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enable(this.player);
     this.player.body.gravity.y = 1000;
@@ -80,31 +81,31 @@ var playState = {
 
     // Boss
     if (this.conf.mapName === 3) {
-    this.boss = game.add.sprite(this.conf.bossX, this.conf.bossY, 'boss');
-    game.physics.arcade.enable(this.boss);
-    this.boss.anchor.setTo(0.5, 0.5);
-    this.boss.animations.add('walk', [0, 1], 8, true);
-    this.boss.animations.play('walk');
-    this.boss.animations.add('hurtAnim', [2, 3, 4, 3, 2], 10, true);
-    this.boss.body.gravity.y = 1000;
-    this.boss.body.velocity.x = -100;
-    this.boss.body.bounce.x = 1;
-    this.boss.direction = 'left';
-    this.boss.body.setSize(56, 56, 0, 18);
-    game.boss_life_points = 5;
+      this.boss = game.add.sprite(this.conf.bossX, this.conf.bossY, 'boss');
+      game.physics.arcade.enable(this.boss);
+      this.boss.anchor.setTo(0.5, 0.5);
+      this.boss.animations.add('walk', [0, 1], 8, true);
+      this.boss.animations.play('walk');
+      this.boss.animations.add('hurtAnim', [2, 3, 4, 3, 2], 10, true);
+      this.boss.body.gravity.y = 1000;
+      this.boss.body.velocity.x = -100;
+      this.boss.body.bounce.x = 1;
+      this.boss.direction = 'left';
+      this.boss.body.setSize(56, 56, 0, 18);
+      game.boss_life_points = 5;
 
-    this.healthBoss = game.add.sprite(this.conf.bossHealthX, this.conf.bossHealthY, 'healthBoss');
-    this.healthBoss.anchor.setTo(0.5, 0.5);
-    this.healthBoss.animations.add('5', [0], 1, true);
-    this.healthBoss.animations.add('4', [1], 1, true);
-    this.healthBoss.animations.add('3', [2], 1, true);
-    this.healthBoss.animations.add('2', [3], 1, true);
-    this.healthBoss.animations.add('1', [4], 1, true);
-    this.healthBoss.animations.add('0', [5], 1, true);
-    this.healthBoss.animations.play(game.boss_life_points);
+      this.healthBoss = game.add.sprite(this.conf.bossHealthX, this.conf.bossHealthY, 'healthBoss');
+      this.healthBoss.anchor.setTo(0.5, 0.5);
+      this.healthBoss.animations.add('5', [0], 1, true);
+      this.healthBoss.animations.add('4', [1], 1, true);
+      this.healthBoss.animations.add('3', [2], 1, true);
+      this.healthBoss.animations.add('2', [3], 1, true);
+      this.healthBoss.animations.add('1', [4], 1, true);
+      this.healthBoss.animations.add('0', [5], 1, true);
+      this.healthBoss.animations.play(game.boss_life_points);
 
-    game.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
-  }
+      game.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
+    }
 
     // Missiles
     this.missiles = game.add.group();
@@ -148,8 +149,8 @@ var playState = {
     this.enemies.callAll('animations.add', 'animations', 'walk-left', [0, 1, 2, 1], 10);
     this.enemies.callAll('animations.add', 'animations', 'walk-right', [7, 6, 5, 6], 10);
 
-    this.enemies.callAll('animations.add', 'animations', 'fall-left', [1, 2, 3], 10);
-    this.enemies.callAll('animations.add', 'animations', 'fall-right', [6, 5, 4], 10);
+    this.enemies.callAll('animations.add', 'animations', 'fall-left', [3], 10);
+    this.enemies.callAll('animations.add', 'animations', 'fall-right', [4], 10);
 
     // Sons
     this.jumpSound = game.add.audio('jump');
@@ -172,7 +173,8 @@ var playState = {
     this.emitter.minParticleScale = 0.5;
     this.emitter.minRotation = 50;
 
-    this.createWorld2();
+    // Décor premier plan
+    this.createWorldForeground();
 
     // Damage
     this.executed = false;
@@ -227,7 +229,7 @@ var playState = {
         this.nextEnemy = game.time.now + delay;
       }
     }
-    this.enemies.forEach(this.annimateEnemy, this, true);
+    this.enemies.forEach(this.animateEnemy, this, true);
 
     if (this.movingWall.x >= this.conf.movingWallX + 50) {
       this.movingWall.body.velocity.x = -50;
@@ -300,7 +302,6 @@ var playState = {
     this.layer.resizeWorld();
     this.map.setCollisionBetween(1, 14);
 
-    // moving wall
     this.movingWall = game.add.sprite(this.conf.movingWallX, this.conf.movingWallY, 'wallH');
     this.movingWall.anchor.setTo(0.5, 1);
     game.physics.arcade.enable(this.movingWall);
@@ -309,7 +310,7 @@ var playState = {
     this.movingWall.body.velocity.x = 50;
   },
 
-  createWorld2: function () {
+  createWorldForeground: function () {
     this.layer2 = this.map.createLayer('Tile Layer 2');
     this.layer2.resizeWorld();
   },
@@ -443,7 +444,7 @@ var playState = {
     this.pointsLabel = game.add.text(this.coin.x, this.coin.y, '10', {font: fontm, fill: textColor});
     this.pointsLabel.anchor.setTo(0.5, 0.5);
     game.time.events.add(500, this.eraseScore, this);
-    game.add.tween(this.pointsLabel).to({ y: this.coin.y - 50}, 500, 'Linear', true);
+    game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
 
     if (game.global.score < 90) {
       this.updateCoinPosition();
@@ -471,7 +472,7 @@ var playState = {
     this.healthBonus = game.add.sprite(this.potion.x, this.potion.y, 'healthBonus');
     this.healthBonus.anchor.setTo(0.5, 0.5);
     game.time.events.add(500, this.eraseHealthBonus, this);
-    game.add.tween(this.healthBonus).to({ y: this.potion.y - 50}, 500, 'Linear', true);
+    game.add.tween(this.healthBonus).to({y: this.potion.y - 50}, 500, 'Linear', true);
 
     game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y: 1}, 150).start();
     this.updatePotionPosition();
@@ -550,23 +551,17 @@ var playState = {
     enemy.outOfBoundsKill = true;
   },
 
-  annimateEnemy:function(enemy){
-
-    if(enemy.body.velocity.y > 0 && enemy.body.velocity.x < 0 &&!enemy.falling){
-      enemy.animations.play('fall-left', 10, false);
-      enemy.falling = true;
-    }else if(enemy.body.velocity.y > 0 && enemy.body.velocity.x > 0 &&!enemy.falling){
-      enemy.animations.play('fall-right', 10, false);
-      enemy.falling = true;
+  animateEnemy: function (enemy) {
+    if (!enemy.body.onFloor() && enemy.body.velocity.x <= 0) {
+      enemy.animations.play('fall-left');
+    } else if (!enemy.body.onFloor() && enemy.body.velocity.x >= 0) {
+      enemy.animations.play('fall-right');
     }
 
-    if(enemy.body.velocity.y == 0 && enemy.body.velocity.x < 0 ){
+    if (enemy.body.onFloor() && enemy.body.velocity.x < 0) {
       enemy.animations.play('walk-left');
-      enemy.falling = false;
-    }
-    else if(enemy.body.velocity.y == 0 && enemy.body.velocity.x > 0){
+    } else if (enemy.body.onFloor() && enemy.body.velocity.x > 0) {
       enemy.animations.play('walk-right');
-      enemy.falling = false;
     }
   },
 
