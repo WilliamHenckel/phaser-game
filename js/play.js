@@ -413,9 +413,18 @@ var playState = {
     if (this.player.body.velocity.y <= 0) {
       this.playerHurt();
     } else if (this.player.body.velocity.y > 0) {
-      pEnemy.kill();
+      pEnemy.body.checkCollision.down = false;
+      pEnemy.body.checkCollision.left = false;
+      pEnemy.body.checkCollision.right = false;
+      pEnemy.body.checkCollision.up = false;
+      if (pEnemy.body.velocity.x <= 0) {
+        game.add.tween(pEnemy).to({angle: -180}, 750, Phaser.Easing.Linear.Out, true);
+      } else if (pEnemy.body.velocity.x > 0) {
+        game.add.tween(pEnemy).to({angle: 180}, 750, Phaser.Easing.Linear.Out, true);
+      }
       this.enemyDieSound.play();
       pPlayer.body.velocity.y = -200;
+      pEnemy.body.velocity.y = -100;
       this.emitter.x = pEnemy.x;
       this.emitter.y = pEnemy.y;
       this.emitter.start(true, 300, null, 6);
@@ -544,9 +553,15 @@ var playState = {
       return;
     }
 
-    enemy.anchor.setTo(0.5, 1);
+    enemy.anchor.setTo(0.5, 0.5);
     enemy.reset(game.world.centerX, 0);
     enemy.body.gravity.y = 500;
+    enemy.body.checkCollision.down = true;
+    enemy.body.checkCollision.left = true;
+    enemy.body.checkCollision.right = true;
+    enemy.body.checkCollision.up = true;
+    enemy.angle = 0;
+
     var enemyVelocity = game.rnd.integerInRange(0, 3);
     switch (enemyVelocity) {
       case 0:
