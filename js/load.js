@@ -40,6 +40,7 @@ var loadState = {
     game.load.audio('boom', ['assets/laser.ogg', 'assets/laser.mp3']);
     game.load.audio('bossDieSound', ['assets/bossDie.ogg', 'assets/bossDie.mp3']);
     game.load.audio('bossHurtSound', ['assets/bossHurt.ogg', 'assets/bossHurt.mp3']);
+    game.load.audio('enemyDieSound', ['assets/enemyDie.ogg', 'assets/enemyDie.mp3']);
 
     game.load.text('level1', 'assets/data/level1.json');
     game.load.text('level2', 'assets/data/level2.json');

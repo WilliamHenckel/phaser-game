@@ -163,6 +163,8 @@ var playState = {
     this.bossDieSound = game.add.audio('bossDieSound');
     this.bossDieSound.volume = 0.5;
     this.bossHurtSound = game.add.audio('bossHurtSound');
+    this.enemyDieSound = game.add.audio('enemyDieSound');
+    this.enemyDieSound.volume = 0.4;
 
     // Particules
     this.emitter = game.add.emitter(0, 0, 15);
@@ -412,6 +414,7 @@ var playState = {
       this.playerHurt();
     } else if (this.player.body.velocity.y > 0) {
       pEnemy.kill();
+      this.enemyDieSound.play();
       pPlayer.body.velocity.y = -200;
       this.emitter.x = pEnemy.x;
       this.emitter.y = pEnemy.y;
