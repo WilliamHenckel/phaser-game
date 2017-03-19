@@ -144,7 +144,7 @@ var playState = {
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
 
-    for (var k = 0; k < 14; k++) {
+    for (var k = 0; k < 12; k++) {
     var tirage = game.rnd.integerInRange(0, 3);
       switch (tirage) {
         case 0:
@@ -193,6 +193,7 @@ var playState = {
 
     // Damage
     this.executed = false;
+    this.hurtAgain = true;
 
     if (this.conf.mapName < 3) {
       this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : 100 points', {font: fontm, fill: textColor});
@@ -251,6 +252,10 @@ var playState = {
       this.movingWall.body.velocity.x = -50;
     } else if (this.movingWall.x <= this.conf.movingWallX - 50) {
       this.movingWall.body.velocity.x = 50;
+    }
+
+    if (game.life_points === 0) {
+      this.playerDie();
     }
   },
 
@@ -367,8 +372,6 @@ var playState = {
       if (game.life_points >= 1) {
         this.hurtSound.play();
       }
-    } else if (game.life_points === 0) {
-      this.playerDie();
     }
   },
 
@@ -423,25 +426,35 @@ var playState = {
   },
 
   enemyOrPlayerHurt: function (pPlayer,pEnemy) {
-    if (this.player.body.velocity.y <= 0) {
-      this.playerHurt(pPlayer,pEnemy);
-    } else if (this.player.body.velocity.y > 0) {
-      pEnemy.body.checkCollision.down = false;
-      pEnemy.body.checkCollision.left = false;
-      pEnemy.body.checkCollision.right = false;
-      pEnemy.body.checkCollision.up = false;
-      if (pEnemy.body.velocity.x <= 0) {
-        game.add.tween(pEnemy).to({angle: -180}, 750, Phaser.Easing.Linear.Out, true);
-      } else if (pEnemy.body.velocity.x > 0) {
-        game.add.tween(pEnemy).to({angle: 180}, 750, Phaser.Easing.Linear.Out, true);
+    if (this.hurtAgain === true) {
+      if (this.player.body.velocity.y <= 0) {
+        this.playerHurt(pPlayer,pEnemy);
+        this.hurtAgain = false;
+        game.time.events.add(500, this.resetHurtAgain, this);
+      } else if (this.player.body.velocity.y > 0) {
+        pEnemy.body.checkCollision.down = false;
+        pEnemy.body.checkCollision.left = false;
+        pEnemy.body.checkCollision.right = false;
+        pEnemy.body.checkCollision.up = false;
+        if (pEnemy.body.velocity.x <= 0) {
+          game.add.tween(pEnemy).to({angle: -180}, 750, Phaser.Easing.Linear.Out, true);
+        } else if (pEnemy.body.velocity.x > 0) {
+          game.add.tween(pEnemy).to({angle: 180}, 750, Phaser.Easing.Linear.Out, true);
+        }
+        this.enemyDieSound.play();
+        pPlayer.body.velocity.y = -200;
+        pEnemy.body.velocity.y = -100;
+        this.emitter.x = pEnemy.x;
+        this.emitter.y = pEnemy.y;
+        this.emitter.start(true, 300, null, 6);
+        this.hurtAgain = false;
+        game.time.events.add(500, this.resetHurtAgain, this);
       }
-      this.enemyDieSound.play();
-      pPlayer.body.velocity.y = -200;
-      pEnemy.body.velocity.y = -100;
-      this.emitter.x = pEnemy.x;
-      this.emitter.y = pEnemy.y;
-      this.emitter.start(true, 300, null, 6);
     }
+  },
+
+  resetHurtAgain: function () {
+    this.hurtAgain = true;
   },
 
   playerDie: function () {
