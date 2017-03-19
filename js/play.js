@@ -143,7 +143,7 @@ var playState = {
     // Ennemies
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
-    this.enemies.createMultiple(13, 'enemy');
+    this.enemies.createMultiple(13, 'enemy2');
     this.nextEnemy = 0;
 
     this.enemies.callAll('animations.add', 'animations', 'walk-left', [0, 1, 2, 1], 10);
@@ -336,7 +336,7 @@ var playState = {
   },
 
   // Mise a jour des points de vie du personnage
-  playerHurt: function () {
+  playerHurt: function (pPlayer, pEnemy) {
     if (!this.executed && game.life_points >= 1 && game.global.score < 100) {
       this.executed = true;
       game.life_points -= 1;
@@ -401,9 +401,9 @@ var playState = {
     }
   },
 
-  bossOrPlayerHurt: function () {
+  bossOrPlayerHurt: function (pPlayer,pEnemy) {
     if (this.player.body.velocity.y <= 0) {
-      this.playerHurt();
+      this.playerHurt(pPlayer,pEnemy);
     } else if (this.player.body.velocity.y > 0) {
       this.bossHurt();
     }
@@ -411,7 +411,7 @@ var playState = {
 
   enemyOrPlayerHurt: function (pPlayer,pEnemy) {
     if (this.player.body.velocity.y <= 0) {
-      this.playerHurt();
+      this.playerHurt(pPlayer,pEnemy);
     } else if (this.player.body.velocity.y > 0) {
       pEnemy.body.checkCollision.down = false;
       pEnemy.body.checkCollision.left = false;
