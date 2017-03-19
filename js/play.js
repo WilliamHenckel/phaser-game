@@ -143,7 +143,20 @@ var playState = {
     // Ennemies
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
-    this.enemies.createMultiple(13, 'enemy2');
+
+    for (var k = 0; k < 14; k++) {
+    var tirage = game.rnd.integerInRange(0, 3);
+      switch (tirage) {
+        case 0:
+        case 1:
+          this.enemies.createMultiple(1, 'enemy');
+          break;
+        case 2:
+        case 3:
+          this.enemies.createMultiple(1, 'enemy2');
+          break;
+      }
+    }
     this.nextEnemy = 0;
 
     this.enemies.callAll('animations.add', 'animations', 'walk-left', [0, 1, 2, 1], 10);
