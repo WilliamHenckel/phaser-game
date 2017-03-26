@@ -48,6 +48,6 @@ var characterState = {
       return;
     }
 
-    game.state.start('play', true, false, 4);
+    game.state.start('play', true, false, 1);
   }
 };
