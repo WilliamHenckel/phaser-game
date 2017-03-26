@@ -9,6 +9,10 @@ var playState = {
         this.levelData = JSON.parse(this.game.cache.getText('level3'));
         break;
 
+      case 4:
+        this.levelData = JSON.parse(this.game.cache.getText('level4'));
+        break;
+
       default:
         this.levelData = JSON.parse(this.game.cache.getText('level1'));
     }
@@ -39,7 +43,11 @@ var playState = {
 
   create: function () {
     // Fond
-    game.stage.backgroundColor = game.add.tileSprite(0, 0, 800, 640, 'background');
+    if (this.conf.mapName <= 3) {
+      game.stage.backgroundColor = game.add.tileSprite(0, 0, 800, 640, 'background');
+    } else if (this.conf.mapName === 4) {
+      game.stage.backgroundColor = game.add.tileSprite(0, 0, 3840, 640, 'backgroundscroll');
+    }
 
     // Commandes
     this.cursor = game.input.keyboard.createCursorKeys();
@@ -54,6 +62,8 @@ var playState = {
     } else if (game.character === 'ernest') {
       this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'ernest');
     }
+
+    game.camera.follow(this.player);
 
     this.player.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enable(this.player);
@@ -70,7 +80,8 @@ var playState = {
     this.player.body.setSize(30, 36, 5, 0);
 
     // Points de vie
-    this.health = game.add.sprite(game.world.width - 200, 5, 'health');
+    this.health = game.add.sprite(630, 10, 'health');
+    this.health.fixedToCamera = true;
     this.health.animations.add('5', [0], 1, true);
     this.health.animations.add('4', [1], 1, true);
     this.health.animations.add('3', [2], 1, true);
@@ -122,6 +133,7 @@ var playState = {
     this.coin.animations.add('turn', [0, 1, 2, 3], 8, true);
     this.coin.animations.play('turn');
     this.coin.scale.setTo(1, 1);
+    game.coinCount = 0;
 
     // Potion
     if (game.life_points <= 3) {
@@ -132,6 +144,7 @@ var playState = {
 
     // Score
     this.scoreLabel = game.add.text(15, 5, 'Score : 0', {font: fontm, fill: textColor});
+    this.scoreLabel.fixedToCamera = true;
     game.global.score = 0;
 
     // Points de vie boss
@@ -195,7 +208,7 @@ var playState = {
     this.executed = false;
     this.hurtAgain = true;
 
-    if (this.conf.mapName < 3) {
+    if (this.conf.mapName === 1) {
       this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : 100 points', {font: fontm, fill: textColor});
       this.tutoLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.eraseTuto, this);
@@ -338,12 +351,13 @@ var playState = {
 
   nextLevelText: function () {
     var finishLabel;
-    if (this.conf.mapName <= 2) {
+    if (this.conf.mapName <= 3) {
       finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
       finishLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.nextLevelState, this);
-    } else {
-      finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
+    } else if (this.conf.mapName === 4) {
+      finishLabel = game.add.text(400, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
+      finishLabel.fixedToCamera = true;
       finishLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.startMenu, this);
     }
@@ -427,20 +441,22 @@ var playState = {
 
   enemyOrPlayerHurt: function (pPlayer,pEnemy) {
     if (this.hurtAgain === true) {
-      if (this.player.body.velocity.y <= 0) {
+      if (pPlayer.body.velocity.y <= 0 || pPlayer.body.y >= pEnemy.body.y) {
         this.playerHurt(pPlayer,pEnemy);
         this.hurtAgain = false;
         game.time.events.add(500, this.resetHurtAgain, this);
-      } else if (this.player.body.velocity.y > 0) {
+      } else if (pPlayer.body.velocity.y > 0) {
         pEnemy.body.checkCollision.down = false;
         pEnemy.body.checkCollision.left = false;
         pEnemy.body.checkCollision.right = false;
         pEnemy.body.checkCollision.up = false;
+
         if (pEnemy.body.velocity.x <= 0) {
           game.add.tween(pEnemy).to({angle: -180}, 750, Phaser.Easing.Linear.Out, true);
         } else if (pEnemy.body.velocity.x > 0) {
           game.add.tween(pEnemy).to({angle: 180}, 750, Phaser.Easing.Linear.Out, true);
         }
+
         this.enemyDieSound.play();
         pPlayer.body.velocity.y = -200;
         pEnemy.body.velocity.y = -100;
@@ -466,7 +482,8 @@ var playState = {
 
     this.deadSound.play();
 
-    var deathLabel = game.add.text(game.world.centerX, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
+    var deathLabel = game.add.text(400, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
+    deathLabel.fixedToCamera = true;
     deathLabel.anchor.setTo(0.5, 0.5);
 
     game.stage.backgroundColor = '#313131';
@@ -485,10 +502,7 @@ var playState = {
     this.healthBoss.kill();
     game.time.events.remove(game.timer_missile);
 
-    var deathLabel = game.add.text(this.conf.bossHealthX, this.conf.bossHealthY, 'T\'as fini le jeu, retourne bosser !', {font: fontl, fill: textColor});
-    deathLabel.anchor.setTo(0.5, 0.5);
-
-    game.time.events.add(3000, this.startMenu, this);
+    this.nextLevelText();
   },
 
   takeCoin: function () {
@@ -546,13 +560,17 @@ var playState = {
     var coinPosition = coinPositionJson.slice(0);
 
     for (var i = 0; i < coinPosition.length; i++) {
-      if (coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
+      if (this.conf.mapName < 4 && coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
         coinPosition.splice(i, 1);
         coinPosition.splice(0, coinPosition[i]);
       }
     }
 
-    var newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
+    if (this.conf.mapName < 4) {
+      var newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
+    } else if (this.conf.mapName === 4 && game.coinCount < 9) {
+      var newCoinPosition = coinPosition[game.coinCount += 1];
+    }
 
     this.coin.reset(newCoinPosition.x, newCoinPosition.y);
   },
@@ -662,6 +680,6 @@ var playState = {
   },
 
   restartLevel: function () {
-    game.state.start('play', true, false, 1);
+    game.state.start('play', true, false, this.conf.mapName);
   }
 };

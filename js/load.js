@@ -15,6 +15,7 @@ var loadState = {
     game.load.spritesheet('healthBoss', 'assets/health-boss.png', 80, 16, 6);
 
     game.load.image('background', 'assets/background.jpg');
+    game.load.image('backgroundscroll', 'assets/backgroundscroll.png');
     game.load.image('potion', 'assets/red-potion.png');
     game.load.image('pixel', 'assets/particule.png');
     game.load.image('tileset', 'assets/tileset.png');
@@ -31,6 +32,7 @@ var loadState = {
     game.load.tilemap('1', 'assets/map1.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('2', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('3', 'assets/map3.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('4', 'assets/map4.json', null, Phaser.Tilemap.TILED_JSON);
 
     game.load.audio('jump', ['assets/jump.ogg', 'assets/jump.mp3']);
     game.load.audio('coin', ['assets/coin.ogg', 'assets/coin.mp3']);
@@ -46,6 +48,7 @@ var loadState = {
     game.load.text('level1', 'assets/data/level1.json');
     game.load.text('level2', 'assets/data/level2.json');
     game.load.text('level3', 'assets/data/level3.json');
+    game.load.text('level4', 'assets/data/level4.json');
   },
 
   create: function () {

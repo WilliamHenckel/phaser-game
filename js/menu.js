@@ -19,17 +19,17 @@ var menuState = {
     var scoreLabel = game.add.text(game.world.centerX, game.world.centerY, text, {font: fontm, fill: textColor, align: 'center'});
     scoreLabel.anchor.setTo(0.5, 0.5); */
 
-    game.explosion = game.add.sprite(game.world.centerX, game.world.centerY, 'explosion');
+    game.explosion = game.add.sprite(400, game.world.centerY, 'explosion');
     game.explosion.anchor.set(0.5);
     game.explosion.scale.setTo(0);
 
-    game.random = game.add.sprite(game.world.centerX, -70, 'achilleimg');
+    game.random = game.add.sprite(400, -70, 'achilleimg');
     game.random.anchor.set(0.5);
 
-    game.minion = game.add.sprite(game.world.centerX, game.world.centerY, 'minion');
+    game.minion = game.add.sprite(400, game.world.centerY, 'minion');
     game.minion.anchor.set(0.5);
 
-    game.startButton = game.add.text(game.world.centerX, 700, 'Cliquez pour commencer !', {font: fontxl, fill: textColor});
+    game.startButton = game.add.text(400, 700, 'Cliquez pour commencer !', {font: fontxl, fill: textColor});
     game.startButton.anchor.set(0.5);
 
     game.input.onDown.add(this.level1, this);
@@ -58,7 +58,7 @@ var menuState = {
   },
 
   titleText: function () {
-    var nameLabel = game.add.text(game.world.centerX, -50, 'Random Guy Adventures', {font: fontxl, fill: textColor});
+    var nameLabel = game.add.text(400, -50, 'Random Guy Adventures', {font: fontxl, fill: textColor});
     nameLabel.anchor.setTo(0.5, 0.5);
     game.add.tween(nameLabel).to({y: 100}, 1000).easing(Phaser.Easing.Circular.Out).start();
   },
@@ -73,15 +73,15 @@ var menuState = {
   },
 
   titleControls: function () {
-    game.add.tween(game.arrows).to({x: game.world.centerX + 160, y: game.world.centerY - 15}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(game.arrows).to({x: 400 + 160, y: game.world.centerY - 15}, 1000).easing(Phaser.Easing.Circular.Out).start();
     game.add.tween(game.arrows.scale).to({x: 0.8, y: 0.8}, 250).to({x: 1, y: 1}, 250).loop().start();
   },
 
   titleMinion: function () {
     game.minion.destroy();
-    game.minion = game.add.sprite(game.world.centerX, game.world.centerY, 'minion2');
+    game.minion = game.add.sprite(400, game.world.centerY, 'minion2');
     game.minion.anchor.setTo(0.5, 0.5);
-    game.add.tween(game.minion).to({x: game.world.centerX - 200, y: game.world.centerY - 100}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(game.minion).to({x: 400 - 200, y: game.world.centerY - 100}, 1000).easing(Phaser.Easing.Circular.Out).start();
     game.add.tween(game.minion).to({angle: -50}, 1000, Phaser.Easing.Circular.Out, true);
   },
 
