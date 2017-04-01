@@ -231,7 +231,6 @@ var playState = {
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
     game.physics.arcade.collide(this.boss, this.layer);
-    game.physics.arcade.collide(this.movingWall, this.layer);
     game.physics.arcade.collide(this.player, this.movingWall);
 
     game.physics.arcade.overlap(this.player, this.coin, this.takeCoin, null, this);
@@ -445,7 +444,7 @@ var playState = {
         this.playerHurt(pPlayer,pEnemy);
         this.hurtAgain = false;
         game.time.events.add(500, this.resetHurtAgain, this);
-      } else if (pPlayer.body.velocity.y > 0) {
+      } else if (pEnemy.key === 'enemy2' && pPlayer.body.velocity.y > 0) {
         pEnemy.body.checkCollision.down = false;
         pEnemy.body.checkCollision.left = false;
         pEnemy.body.checkCollision.right = false;
