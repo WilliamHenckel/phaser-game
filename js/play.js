@@ -158,7 +158,8 @@ var playState = {
     this.enemies.enableBody = true;
 
     for (var k = 0; k < 12; k++) {
-    var tirage = game.rnd.integerInRange(0, 3);
+      var tirage = game.rnd.integerInRange(0, 3);
+
       switch (tirage) {
         case 0:
         case 1:
@@ -215,18 +216,6 @@ var playState = {
     }
   },
 
-  eraseTuto: function () {
-    game.add.tween(this.tutoLabel).to({ alpha: 0 }, 1000, 'Linear', true);
-  },
-
-  eraseScore: function () {
-    game.add.tween(this.pointsLabel).to({ alpha: 0 }, 500, 'Linear', true);
-  },
-
-  eraseHealthBonus: function () {
-    game.add.tween(this.healthBonus).to({ alpha: 0 }, 500, 'Linear', true);
-  },
-
   update: function () {
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
@@ -271,18 +260,33 @@ var playState = {
     }
   },
 
-  moveBoss: function () {
-    if (this.conf.mapName === 3) {
-      if (this.boss.body.velocity.x > 0 && this.boss.direction === 'left') {
-        this.boss.scale.x = -1;
-        this.boss.direction = 'right';
-      } else if (this.boss.body.velocity.x < 0 && this.boss.direction === 'right') {
-        this.boss.scale.x = 1;
-        this.boss.direction = 'left';
-      }
-    }
+  // WORLD
+  createWorld: function () {
+    this.map = game.add.tilemap(this.conf.mapName);
+
+    this.map.addTilesetImage('tileset');
+    this.layer = this.map.createLayer('Tile Layer 1');
+    this.layer.resizeWorld();
+    this.map.setCollisionBetween(1, 14);
+
+    this.movingWall = game.add.sprite(this.conf.movingWallX, this.conf.movingWallY, 'wallH');
+    this.movingWall.anchor.setTo(0.5, 1);
+    game.physics.arcade.enable(this.movingWall);
+    this.movingWall.enableBody = true;
+    this.movingWall.body.immovable = true;
+    this.movingWall.body.velocity.x = 50;
   },
 
+  createWorldForeground: function () {
+    this.layer2 = this.map.createLayer('Tile Layer 2');
+    this.layer2.resizeWorld();
+  },
+
+  eraseTuto: function () {
+    game.add.tween(this.tutoLabel).to({ alpha: 0 }, 1000, 'Linear', true);
+  },
+
+  // PLAYER
   movePlayer: function () {
     if (this.cursor.left.isDown) {
       this.player.body.velocity.x = -200;
@@ -327,46 +331,6 @@ var playState = {
     }
   },
 
-  createWorld: function () {
-    this.map = game.add.tilemap(this.conf.mapName);
-
-    this.map.addTilesetImage('tileset');
-    this.layer = this.map.createLayer('Tile Layer 1');
-    this.layer.resizeWorld();
-    this.map.setCollisionBetween(1, 14);
-
-    this.movingWall = game.add.sprite(this.conf.movingWallX, this.conf.movingWallY, 'wallH');
-    this.movingWall.anchor.setTo(0.5, 1);
-    game.physics.arcade.enable(this.movingWall);
-    this.movingWall.enableBody = true;
-    this.movingWall.body.immovable = true;
-    this.movingWall.body.velocity.x = 50;
-  },
-
-  createWorldForeground: function () {
-    this.layer2 = this.map.createLayer('Tile Layer 2');
-    this.layer2.resizeWorld();
-  },
-
-  nextLevelText: function () {
-    var finishLabel;
-    if (this.conf.mapName <= 3) {
-      finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
-      finishLabel.anchor.setTo(0.5, 0.5);
-      game.time.events.add(2000, this.nextLevelState, this);
-    } else if (this.conf.mapName === 4) {
-      finishLabel = game.add.text(400, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
-      finishLabel.fixedToCamera = true;
-      finishLabel.anchor.setTo(0.5, 0.5);
-      game.time.events.add(2000, this.startMenu, this);
-    }
-  },
-
-  nextLevelState: function () {
-    game.state.start('play', true, false, this.conf.mapName + 1);
-  },
-
-  // Mise a jour des points de vie du personnage
   playerHurt: function (pPlayer, pEnemy) {
     if (!this.executed && game.life_points >= 1 && game.global.score < 100) {
       this.executed = true;
@@ -407,6 +371,41 @@ var playState = {
     }
   },
 
+  playerDie: function () {
+    if (!this.player.alive) {
+      return;
+    }
+
+    this.player.kill();
+
+    this.deadSound.play();
+
+    var deathLabel = game.add.text(400, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
+    deathLabel.fixedToCamera = true;
+    deathLabel.anchor.setTo(0.5, 0.5);
+
+    game.stage.backgroundColor = '#313131';
+
+    this.emitter.x = this.player.x;
+    this.emitter.y = this.player.y;
+    this.emitter.start(true, 600, null, 6);
+
+    game.time.events.add(1000, this.restartLevel, this);
+  },
+
+  // BOSS
+  moveBoss: function () {
+    if (this.conf.mapName === 3) {
+      if (this.boss.body.velocity.x > 0 && this.boss.direction === 'left') {
+        this.boss.scale.x = -1;
+        this.boss.direction = 'right';
+      } else if (this.boss.body.velocity.x < 0 && this.boss.direction === 'right') {
+        this.boss.scale.x = 1;
+        this.boss.direction = 'left';
+      }
+    }
+  },
+
   bossHurt: function () {
     if (!this.executed && game.boss_life_points >= 0) {
       game.boss_life_points -= 1;
@@ -430,68 +429,12 @@ var playState = {
     }
   },
 
-  bossOrPlayerHurt: function (pPlayer,pEnemy) {
+  bossOrPlayerHurt: function (pPlayer, pEnemy) {
     if (this.player.body.velocity.y <= 0) {
-      this.playerHurt(pPlayer,pEnemy);
+      this.playerHurt(pPlayer, pEnemy);
     } else if (this.player.body.velocity.y > 0) {
       this.bossHurt();
     }
-  },
-
-  enemyOrPlayerHurt: function (pPlayer,pEnemy) {
-    if (this.hurtAgain === true) {
-      if (pPlayer.body.velocity.y <= 0 || pPlayer.body.y >= pEnemy.body.y) {
-        this.playerHurt(pPlayer,pEnemy);
-        this.hurtAgain = false;
-        game.time.events.add(500, this.resetHurtAgain, this);
-      } else if (pEnemy.key === 'enemy2' && pPlayer.body.velocity.y > 0) {
-        pEnemy.body.checkCollision.down = false;
-        pEnemy.body.checkCollision.left = false;
-        pEnemy.body.checkCollision.right = false;
-        pEnemy.body.checkCollision.up = false;
-
-        if (pEnemy.body.velocity.x <= 0) {
-          game.add.tween(pEnemy).to({angle: -180}, 750, Phaser.Easing.Linear.Out, true);
-        } else if (pEnemy.body.velocity.x > 0) {
-          game.add.tween(pEnemy).to({angle: 180}, 750, Phaser.Easing.Linear.Out, true);
-        }
-
-        this.enemyDieSound.play();
-        pPlayer.body.velocity.y = -200;
-        pEnemy.body.velocity.y = -100;
-        this.emitter.x = pEnemy.x;
-        this.emitter.y = pEnemy.y;
-        this.emitter.start(true, 300, null, 6);
-        this.hurtAgain = false;
-        game.time.events.add(500, this.resetHurtAgain, this);
-      }
-    }
-  },
-
-  resetHurtAgain: function () {
-    this.hurtAgain = true;
-  },
-
-  playerDie: function () {
-    if (!this.player.alive) {
-      return;
-    }
-
-    this.player.kill();
-
-    this.deadSound.play();
-
-    var deathLabel = game.add.text(400, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
-    deathLabel.fixedToCamera = true;
-    deathLabel.anchor.setTo(0.5, 0.5);
-
-    game.stage.backgroundColor = '#313131';
-
-    this.emitter.x = this.player.x;
-    this.emitter.y = this.player.y;
-    this.emitter.start(true, 600, null, 6);
-
-    game.time.events.add(1000, this.restartLevel, this);
   },
 
   bossDie: function () {
@@ -504,91 +447,43 @@ var playState = {
     this.nextLevelText();
   },
 
-  takeCoin: function () {
-    this.pointsLabel = game.add.text(this.coin.x, this.coin.y, '10', {font: fontm, fill: textColor});
-    this.pointsLabel.anchor.setTo(0.5, 0.5);
-    game.time.events.add(500, this.eraseScore, this);
-    game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
+  fireMissile: function () {
+    var missile = this.missiles.getFirstDead();
 
-    if (game.global.score < 90) {
-      this.updateCoinPosition();
+    if (missile && this.boss.x > this.player.x) {
+      missile.reset(this.boss.x - 30, this.boss.y + 20);
+      missile.body.velocity.x = -500;
+      missile.scale.x = 1;
+      missile.angle = 0;
+      this.missileSound.play();
+    } else if (missile && this.boss.x <= this.player.x) {
+      missile.scale.x = -1;
+      missile.angle = 0;
+      missile.reset(this.boss.x + 30, this.boss.y + 20);
+      missile.body.velocity.x = 500;
+      this.missileSound.play();
+    }
+  },
+
+  fireMissileUp: function () {
+    var missile = this.missiles.getFirstDead();
+
+    missile.reset(this.boss.x, this.boss.y);
+    missile.body.velocity.y = -500;
+    this.missileSound.play();
+
+    if (missile.scale.x === 1) {
+      missile.angle = 90;
     } else {
-      this.coin.kill();
-      this.potion.kill();
-    }
-
-    game.global.score += 10;
-    this.scoreLabel.text = 'Score : ' + game.global.score;
-
-    this.coinSound.play();
-
-    this.coin.scale.setTo(0, 0);
-    game.add.tween(this.coin.scale).to({x: 1, y: 1}, 300).start();
-
-    game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y: 1}, 150).start();
-
-    if (game.global.score === 100) {
-      this.nextLevelText();
+      missile.angle = -90;
     }
   },
 
-  takePotion: function () {
-    this.healthBonus = game.add.sprite(this.potion.x, this.potion.y, 'healthBonus');
-    this.healthBonus.anchor.setTo(0.5, 0.5);
-    game.time.events.add(500, this.eraseHealthBonus, this);
-    game.add.tween(this.healthBonus).to({y: this.potion.y - 50}, 500, 'Linear', true);
-
-    game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y: 1}, 150).start();
-    this.updatePotionPosition();
-    game.life_points += 1;
-    this.health.animations.play(game.life_points);
-
-    this.potionSound.play();
-
-    var newPotionPosition = {x: -100, y: -100};
-
-    this.potion.reset(newPotionPosition.x, newPotionPosition.y);
-
-    if (game.life_points <= 4) {
-      game.time.events.add(10000, this.updatePotionPosition, this);
-    }
+  resetMissile: function (missile) {
+    missile.kill();
   },
 
-  updateCoinPosition: function () {
-    var coinPositionJson = this.conf.coinPosition;
-    var coinPosition = coinPositionJson.slice(0);
-
-    for (var i = 0; i < coinPosition.length; i++) {
-      if (this.conf.mapName < 4 && coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
-        coinPosition.splice(i, 1);
-        coinPosition.splice(0, coinPosition[i]);
-      }
-    }
-
-    if (this.conf.mapName < 4) {
-      var newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
-    } else if (this.conf.mapName === 4 && game.coinCount < 9) {
-      var newCoinPosition = coinPosition[game.coinCount += 1];
-    }
-
-    this.coin.reset(newCoinPosition.x, newCoinPosition.y);
-  },
-
-  updatePotionPosition: function () {
-    var potionPositionJson = this.conf.potionPosition;
-    var potionPosition = potionPositionJson.slice(0);
-
-    for (var j = 0; j < potionPosition.length; j++) {
-      if (potionPosition[j].x === this.potion.x) {
-        potionPosition.splice(j, 1);
-      }
-    }
-
-    var newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
-
-    this.potion.reset(newPotionPosition.x, newPotionPosition.y);
-  },
-
+  // ENEMY
   addEnemy: function () {
     var enemy = this.enemies.getFirstDead();
 
@@ -638,44 +533,157 @@ var playState = {
     }
   },
 
-  fireMissile: function () {
-    var missile = this.missiles.getFirstDead();
+  enemyOrPlayerHurt: function (pPlayer, pEnemy) {
+    if (this.hurtAgain === true) {
+      if (pPlayer.body.velocity.y <= 0 || pPlayer.body.y >= pEnemy.body.y) {
+        this.playerHurt(pPlayer, pEnemy);
+        this.hurtAgain = false;
+        game.time.events.add(500, this.resetHurtAgain, this);
+      } else if (pEnemy.key === 'enemy2' && pPlayer.body.velocity.y > 0) {
+        pEnemy.body.checkCollision.down = false;
+        pEnemy.body.checkCollision.left = false;
+        pEnemy.body.checkCollision.right = false;
+        pEnemy.body.checkCollision.up = false;
 
-    if (missile && this.boss.x > this.player.x) {
-      missile.reset(this.boss.x - 30, this.boss.y + 20);
-      missile.body.velocity.x = -500;
-      missile.scale.x = 1;
-      missile.angle = 0;
-      this.missileSound.play();
-    } else if (missile && this.boss.x <= this.player.x) {
-      missile.scale.x = -1;
-      missile.angle = 0;
-      missile.reset(this.boss.x + 30, this.boss.y + 20);
-      missile.body.velocity.x = 500;
-      this.missileSound.play();
+        if (pEnemy.body.velocity.x <= 0) {
+          game.add.tween(pEnemy).to({angle: -180}, 750, Phaser.Easing.Linear.Out, true);
+        } else if (pEnemy.body.velocity.x > 0) {
+          game.add.tween(pEnemy).to({angle: 180}, 750, Phaser.Easing.Linear.Out, true);
+        }
+
+        this.enemyDieSound.play();
+        pPlayer.body.velocity.y = -200;
+        pEnemy.body.velocity.y = -100;
+        this.emitter.x = pEnemy.x;
+        this.emitter.y = pEnemy.y;
+        this.emitter.start(true, 300, null, 6);
+        this.hurtAgain = false;
+        game.time.events.add(500, this.resetHurtAgain, this);
+      }
     }
   },
 
-  fireMissileUp: function () {
-    var missile = this.missiles.getFirstDead();
+  resetHurtAgain: function () {
+    this.hurtAgain = true;
+  },
 
-    missile.reset(this.boss.x, this.boss.y);
-    missile.body.velocity.y = -500;
-    this.missileSound.play();
+  // COIN
+  takeCoin: function () {
+    this.pointsLabel = game.add.text(this.coin.x, this.coin.y, '10', {font: fontm, fill: textColor});
+    this.pointsLabel.anchor.setTo(0.5, 0.5);
+    game.time.events.add(500, this.eraseScore, this);
+    game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
 
-    if (missile.scale.x === 1) {
-      missile.angle = 90;
+    if (game.global.score < 90) {
+      this.updateCoinPosition();
     } else {
-      missile.angle = -90;
+      this.coin.kill();
+      this.potion.kill();
+    }
+
+    game.global.score += 10;
+    this.scoreLabel.text = 'Score : ' + game.global.score;
+
+    this.coinSound.play();
+
+    this.coin.scale.setTo(0, 0);
+    game.add.tween(this.coin.scale).to({x: 1, y: 1}, 300).start();
+
+    game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y: 1}, 150).start();
+
+    if (game.global.score === 100) {
+      this.nextLevelText();
     }
   },
 
-  resetMissile: function (missile) {
-    missile.kill();
+  eraseScore: function () {
+    game.add.tween(this.pointsLabel).to({ alpha: 0 }, 500, 'Linear', true);
   },
 
+  updateCoinPosition: function () {
+    var coinPositionJson = this.conf.coinPosition;
+    var coinPosition = coinPositionJson.slice(0);
+    var newCoinPosition;
+
+    for (var i = 0; i < coinPosition.length; i++) {
+      if (this.conf.mapName < 4 && coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
+        coinPosition.splice(i, 1);
+        coinPosition.splice(0, coinPosition[i]);
+      }
+    }
+
+    if (this.conf.mapName < 4) {
+      newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
+    } else if (this.conf.mapName === 4 && game.coinCount < 9) {
+      newCoinPosition = coinPosition[game.coinCount += 1];
+    }
+
+    this.coin.reset(newCoinPosition.x, newCoinPosition.y);
+  },
+
+  // POTION
+  takePotion: function () {
+    this.healthBonus = game.add.sprite(this.potion.x, this.potion.y, 'healthBonus');
+    this.healthBonus.anchor.setTo(0.5, 0.5);
+    game.time.events.add(500, this.eraseHealthBonus, this);
+    game.add.tween(this.healthBonus).to({y: this.potion.y - 50}, 500, 'Linear', true);
+
+    game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y: 1}, 150).start();
+    this.updatePotionPosition();
+    game.life_points += 1;
+    this.health.animations.play(game.life_points);
+
+    this.potionSound.play();
+
+    var newPotionPosition = {x: -100, y: -100};
+
+    this.potion.reset(newPotionPosition.x, newPotionPosition.y);
+
+    if (game.life_points <= 4) {
+      game.time.events.add(10000, this.updatePotionPosition, this);
+    }
+  },
+
+  eraseHealthBonus: function () {
+    game.add.tween(this.healthBonus).to({ alpha: 0 }, 500, 'Linear', true);
+  },
+
+  updatePotionPosition: function () {
+    var potionPositionJson = this.conf.potionPosition;
+    var potionPosition = potionPositionJson.slice(0);
+
+    for (var j = 0; j < potionPosition.length; j++) {
+      if (potionPosition[j].x === this.potion.x) {
+        potionPosition.splice(j, 1);
+      }
+    }
+
+    var newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
+
+    this.potion.reset(newPotionPosition.x, newPotionPosition.y);
+  },
+
+  // LEVELS
   startMenu: function () {
     game.state.start('menu');
+  },
+
+  nextLevelText: function () {
+    var finishLabel;
+    if (this.conf.mapName <= 3) {
+      finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
+      finishLabel.anchor.setTo(0.5, 0.5);
+      game.time.events.add(2000, this.nextLevelState, this);
+    } else if (this.conf.mapName === 4) {
+      finishLabel = game.add.text(400, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
+      finishLabel.fixedToCamera = true;
+      finishLabel.anchor.setTo(0.5, 0.5);
+      game.time.events.add(2000, this.startMenu, this);
+    }
+  },
+
+  nextLevelState: function () {
+    game.state.start('play', true, false, this.conf.mapName + 1);
   },
 
   restartLevel: function () {
