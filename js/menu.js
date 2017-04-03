@@ -34,6 +34,7 @@ var menuState = {
 
     game.input.onDown.add(this.level1, this);
 
+
     game.arrows = game.add.sprite(900, game.world.centerY - 15, 'arrows');
     game.arrows.anchor.set(0.5);
 
@@ -86,7 +87,9 @@ var menuState = {
   },
 
   level1: function () {
-    game.state.start('character');
+    if (!this.muteButton.input.pointerOver()) {
+      game.state.start('character');
+    }
   },
 
   toggleSound: function () {
