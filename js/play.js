@@ -54,6 +54,13 @@ var playState = {
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT]);
     this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+    this.zsqd = {
+      up: game.input.keyboard.addKey(Phaser.Keyboard.Z),
+      down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+      left: game.input.keyboard.addKey(Phaser.Keyboard.Q),
+      right: game.input.keyboard.addKey(Phaser.Keyboard.D),
+    };
+
     // Décor
     this.createWorld();
 
@@ -289,11 +296,11 @@ var playState = {
 
   // PLAYER
   movePlayer: function () {
-    if (this.cursor.left.isDown) {
+    if (this.cursor.left.isDown || this.zsqd.left.isDown) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
       game.direction = 'left';
-    } else if (this.cursor.right.isDown) {
+    } else if (this.cursor.right.isDown || this.zsqd.right.isDown) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
       game.direction = 'right';
@@ -308,7 +315,7 @@ var playState = {
       }
     }
 
-    if ((this.cursor.up.isDown || this.space.isDown) && (this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
+    if ((this.cursor.up.isDown || this.space.isDown || this.zsqd.up.isDown) && (this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
       this.player.body.velocity.y = -470;
       this.jumpSound.play();
     }
