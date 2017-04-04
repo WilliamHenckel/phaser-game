@@ -52,6 +52,7 @@ var playState = {
     // Commandes
     this.cursor = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT]);
+    this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     // Décor
     this.createWorld();
@@ -307,7 +308,7 @@ var playState = {
       }
     }
 
-    if (this.cursor.up.isDown && (this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
+    if ((this.cursor.up.isDown || this.space.isDown) && (this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
       this.player.body.velocity.y = -470;
       this.jumpSound.play();
     }
