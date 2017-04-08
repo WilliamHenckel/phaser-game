@@ -246,7 +246,7 @@ var playState = {
     this.movePlayer();
     this.moveBoss();
 
-    if (!this.player.inWorld && game.global.score < 100) {
+    if ((!this.player.inWorld && this.player.body.y > 0) && game.global.score < 100) {
       this.playerDie();
     }
 
