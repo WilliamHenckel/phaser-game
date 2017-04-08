@@ -38,7 +38,7 @@ var loadState = {
     game.load.audio('coin', ['assets/coin.ogg', 'assets/coin.mp3']);
     game.load.audio('hurtSound', ['assets/hurt.ogg', 'assets/hurt.mp3']);
     game.load.audio('dead', ['assets/dead.ogg', 'assets/dead.mp3']);
-    game.load.audio('elephant', ['assets/castelvania.mp3', 'assets/castelvania.ogg']);
+    game.load.audio('castelvania', ['assets/castelvania.mp3', 'assets/castelvania.ogg']);
     game.load.audio('potion', ['assets/powerup.ogg', 'assets/powerup.mp3']);
     game.load.audio('boom', ['assets/laser.ogg', 'assets/laser.mp3']);
     game.load.audio('bossDieSound', ['assets/bossDie.ogg', 'assets/bossDie.mp3']);

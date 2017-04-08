@@ -3,7 +3,7 @@ var menuState = {
     game.stage.backgroundColor = '#313131';
 
     this.explosion = game.add.audio('explosion');
-    this.music = game.add.audio('elephant', 1, true);
+    this.music = game.add.audio('castelvania', 1, true);
     this.fall = game.add.audio('fall');
     this.fall.play();
 
@@ -103,6 +103,6 @@ var menuState = {
   },
 
   restartGame: function () {
-    this.elephant.stop();
+    this.castelvania.stop();
   }
 };
