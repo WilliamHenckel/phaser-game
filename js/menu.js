@@ -2,11 +2,10 @@ var menuState = {
   create: function () {
     game.stage.backgroundColor = '#313131';
 
-    /* this.music = game.add.audio('elephant', 1, true);
-    if (this.musicplay === undefined) {
-      this.music.loopFull();
-    }
-    this.musicplay = 1; */
+    this.explosion = game.add.audio('explosion');
+    this.music = game.add.audio('elephant', 1, true);
+    this.fall = game.add.audio('fall');
+    this.fall.play();
 
     game.time.events.add(500, this.titleRandom, this);
     game.time.events.add(800, this.titleExplosion, this);
@@ -67,10 +66,16 @@ var menuState = {
   titleExplosion: function () {
     game.add.tween(game.explosion.scale).to({x: 1, y: 1}, 500, Phaser.Easing.Bounce.Out, true);
     game.add.tween(game.explosion).to({angle: -5}, 500).to({angle: 0}, 500).loop().start();
+    this.explosion.play();
   },
 
   titleStart: function () {
     game.add.tween(game.startButton).to({y: game.world.centerY + 200}, 1000).easing(Phaser.Easing.Circular.Out).start();
+
+    if (this.musicplay === undefined) {
+      this.music.loopFull();
+    }
+    this.musicplay = 1;
   },
 
   titleControls: function () {
@@ -98,6 +103,6 @@ var menuState = {
   },
 
   restartGame: function () {
-    //this.elephant.stop();
+    this.elephant.stop();
   }
 };
