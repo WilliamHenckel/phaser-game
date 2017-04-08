@@ -88,7 +88,7 @@ var playState = {
     this.player.body.setSize(30, 36, 5, 0);
 
     // Points de vie
-    this.health = game.add.sprite(630, 10, 'health');
+    this.health = game.add.sprite(625, 20, 'health');
     this.health.fixedToCamera = true;
     this.health.animations.add('5', [0], 1, true);
     this.health.animations.add('4', [1], 1, true);
@@ -151,7 +151,7 @@ var playState = {
     this.potion.anchor.setTo(0.5, 0.5);
 
     // Score
-    this.scoreLabel = game.add.text(15, 5, 'Score : 0', {font: fontm, fill: textColor});
+    this.scoreLabel = game.add.text(65, 17, 'Score : 0', {font: fontm, fill: textColor});
     this.scoreLabel.fixedToCamera = true;
     game.global.score = 0;
 
@@ -200,6 +200,12 @@ var playState = {
     this.bossHurtSound = game.add.audio('bossHurtSound');
     this.enemyDieSound = game.add.audio('enemyDieSound');
     this.enemyDieSound.volume = 0.4;
+    this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
+    this.muteButton.input.useHandCursor = true;
+
+    if (game.sound.mute) {
+      this.muteButton.frame = 1;
+    }
 
     // Particules
     this.emitter = game.add.emitter(0, 0, 15);
@@ -696,5 +702,11 @@ var playState = {
 
   restartLevel: function () {
     game.state.start('play', true, false, this.conf.mapName);
+  },
+
+  // SOUND
+  toggleSound: function () {
+    game.sound.mute = !game.sound.mute;
+    this.muteButton.frame = game.sound.mute ? 1 : 0;
   }
 };

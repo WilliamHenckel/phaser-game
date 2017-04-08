@@ -22,6 +22,13 @@ var characterState = {
     game.ernest.inputEnabled = true;
 
     game.input.onDown.add(this.characterChoice, this);
+
+    this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
+    this.muteButton.input.useHandCursor = true;
+
+    if (game.sound.mute) {
+      this.muteButton.frame = 1;
+    }
   },
 
   update: function () {
@@ -37,6 +44,11 @@ var characterState = {
       game.achilleName.alpha = 0;
       game.ernestName.alpha = 0;
     }
+  },
+
+  toggleSound: function () {
+    game.sound.mute = !game.sound.mute;
+    this.muteButton.frame = game.sound.mute ? 1 : 0;
   },
 
   characterChoice: function () {
