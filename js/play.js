@@ -202,6 +202,7 @@ var playState = {
     this.enemyDieSound.volume = 0.4;
     this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
     this.muteButton.input.useHandCursor = true;
+    this.muteButton.fixedToCamera = true;
 
     if (game.sound.mute) {
       this.muteButton.frame = 1;

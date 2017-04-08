@@ -3,8 +3,10 @@ var menuState = {
     game.stage.backgroundColor = '#313131';
 
     this.explosion = game.add.audio('explosion');
+    this.explosion.volume = 0.5;
     this.music = game.add.audio('castelvania', 1, true);
     this.fall = game.add.audio('fall');
+    this.fall.volume = 0.3;
     this.fall.play();
 
     game.time.events.add(500, this.titleRandom, this);
@@ -27,6 +29,9 @@ var menuState = {
 
     game.minion = game.add.sprite(400, game.world.centerY, 'minion');
     game.minion.anchor.set(0.5);
+
+    game.nameLabel = game.add.text(400, -50, 'Random Guy Adventures', {font: fontxl, fill: textColor});
+    game.nameLabel.anchor.setTo(0.5, 0.5);
 
     game.startButton = game.add.text(400, 700, 'Cliquez pour commencer !', {font: fontxl, fill: textColor});
     game.startButton.anchor.set(0.5);
@@ -58,9 +63,7 @@ var menuState = {
   },
 
   titleText: function () {
-    var nameLabel = game.add.text(400, -50, 'Random Guy Adventures', {font: fontxl, fill: textColor});
-    nameLabel.anchor.setTo(0.5, 0.5);
-    game.add.tween(nameLabel).to({y: 100}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(game.nameLabel).to({y: 100}, 1000).easing(Phaser.Easing.Circular.Out).start();
   },
 
   titleExplosion: function () {
@@ -92,7 +95,7 @@ var menuState = {
   },
 
   level1: function () {
-    if (!this.muteButton.input.pointerOver()) {
+    if (!this.muteButton.input.pointerOver() && game.nameLabel.y === 100) {
       game.state.start('character');
     }
   },
