@@ -1,0 +1,11 @@
+{
+  "playerStart": {"x": 100, "y": 400},
+  "coinStart": {"x": -100, "y": -100},
+  "potionStart": {"x": -100, "y": -100},
+  "potionPosition": [
+    {"x": 350, "y": 50},
+    {"x": 150, "y": 50}
+  ],
+  "bossStart": {"x": 700, "y": 550},
+  "bossHealth": {"x": 400, "y": 200}
+}
