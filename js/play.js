@@ -82,8 +82,8 @@ var playState = {
     this.player.animations.add('down-right', [9], 8, true);
     this.player.animations.add('jump-left', [10], 8, true);
     this.player.animations.add('down-left', [11], 8, true);
-    game.life_points = 3;
-    game.direction = 'right';
+    this.life_points = 3;
+    this.direction = 'right';
     this.player.body.checkCollision.up = false;
     this.player.body.setSize(30, 36, 5, 0);
 
@@ -96,7 +96,7 @@ var playState = {
     this.health.animations.add('2', [3], 1, true);
     this.health.animations.add('1', [4], 1, true);
     this.health.animations.add('0', [5], 1, true);
-    this.health.animations.play(game.life_points);
+    this.health.animations.play(this.life_points);
 
     // Boss
     if (this.conf.mapName === 3) {
@@ -111,7 +111,7 @@ var playState = {
       this.boss.body.bounce.x = 1;
       this.boss.direction = 'left';
       this.boss.body.setSize(56, 56, 0, 18);
-      game.boss_life_points = 5;
+      this.boss_life_points = 5;
 
       this.healthBoss = game.add.sprite(this.conf.bossHealthX, this.conf.bossHealthY, 'healthBoss');
       this.healthBoss.anchor.setTo(0.5, 0.5);
@@ -121,9 +121,9 @@ var playState = {
       this.healthBoss.animations.add('2', [3], 1, true);
       this.healthBoss.animations.add('1', [4], 1, true);
       this.healthBoss.animations.add('0', [5], 1, true);
-      this.healthBoss.animations.play(game.boss_life_points);
+      this.healthBoss.animations.play(this.boss_life_points);
 
-      game.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
+      this.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
     }
 
     // Missiles
@@ -141,10 +141,10 @@ var playState = {
     this.coin.animations.add('turn', [0, 1, 2, 3], 8, true);
     this.coin.animations.play('turn');
     this.coin.scale.setTo(1, 1);
-    game.coinCount = 0;
+    this.coinCount = 0;
 
     // Potion
-    if (game.life_points <= 3) {
+    if (this.life_points <= 3) {
       this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
     }
     game.physics.arcade.enable(this.potion);
@@ -153,12 +153,12 @@ var playState = {
     // Score
     this.scoreLabel = game.add.text(65, 17, 'Score : 0', {font: fontm, fill: textColor});
     this.scoreLabel.fixedToCamera = true;
-    game.global.score = 0;
+    this.score = 0;
 
     // Points de vie boss
     if (this.conf.mapName === 3) {
-      game.boss_life_pointsLabel = game.add.text(400, 170, 'Boss', {font: fontxl, fill: textColor});
-      game.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
+      this.boss_life_pointsLabel = game.add.text(400, 170, 'Boss', {font: fontxl, fill: textColor});
+      this.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
     }
 
     // Ennemies
@@ -246,7 +246,7 @@ var playState = {
     this.movePlayer();
     this.moveBoss();
 
-    if ((!this.player.inWorld && this.player.body.y > 0) && game.global.score < 100) {
+    if ((!this.player.inWorld && this.player.body.y > 0) && this.score < 100) {
       this.playerDie();
     }
 
@@ -254,7 +254,7 @@ var playState = {
       var start = 4000;
       var end = 1000;
       var score = 100;
-      var delay = Math.max(start - (start - end) * game.global.score / score, end);
+      var delay = Math.max(start - (start - end) * this.score / score, end);
 
       if (this.conf.mapName < 3) {
         this.addEnemy();
@@ -270,7 +270,7 @@ var playState = {
       this.movingWall.body.velocity.x = 50;
     }
 
-    if (game.life_points === 0) {
+    if (this.life_points === 0) {
       this.playerDie();
     }
   },
@@ -306,16 +306,16 @@ var playState = {
     if (this.cursor.left.isDown || this.zsqd.left.isDown) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
-      game.direction = 'left';
+      this.direction = 'left';
     } else if (this.cursor.right.isDown || this.zsqd.right.isDown) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
-      game.direction = 'right';
+      this.direction = 'right';
     } else {
       this.player.body.velocity.x = 0;
       this.player.animations.stop();
 
-      if (game.direction === 'left') {
+      if (this.direction === 'left') {
         this.player.frame = 4;
       } else {
         this.player.frame = 0;
@@ -327,7 +327,7 @@ var playState = {
       this.jumpSound.play();
     }
 
-    if ((this.cursor.up.isDown && game.direction === 'right') || (!this.player.body.onFloor() && game.direction === 'right' && this.player.body.velocity.y !== 0)) {
+    if ((this.cursor.up.isDown && this.direction === 'right') || (!this.player.body.onFloor() && this.direction === 'right' && this.player.body.velocity.y !== 0)) {
       this.player.animations.play('jump-right');
       if (this.player.body.velocity.y > 0 && this.player.scale.y === 1) {
         this.player.animations.play('down-right');
@@ -336,7 +336,7 @@ var playState = {
       }
     }
 
-    if ((this.cursor.up.isDown && game.direction === 'left') || (!this.player.body.onFloor() && game.direction === 'left' && this.player.body.velocity.y !== 0)) {
+    if ((this.cursor.up.isDown && this.direction === 'left') || (!this.player.body.onFloor() && this.direction === 'left' && this.player.body.velocity.y !== 0)) {
       this.player.animations.play('jump-left');
       if (this.player.body.velocity.y > 0 && this.player.scale.y === 1) {
         this.player.animations.play('down-left');
@@ -347,21 +347,21 @@ var playState = {
   },
 
   playerHurt: function (pPlayer, pEnemy) {
-    if (!this.executed && game.life_points >= 1 && game.global.score < 100) {
+    if (!this.executed && this.life_points >= 1 && this.score < 100) {
       this.executed = true;
-      game.life_points -= 1;
-      this.health.animations.play(game.life_points);
+      this.life_points -= 1;
+      this.health.animations.play(this.life_points);
       this.player.alpha = 0.5;
       this.player.tint = 0xffffff;
-      game.tint = game.time.events.loop(100, this.changeTint, this);
+      this.tint = game.time.events.loop(100, this.changeTint, this);
       game.time.events.add(1000, this.resetTint, this);
       game.time.events.add(1000, this.reset_executed, this);
 
-      if (game.life_points >= 4) {
+      if (this.life_points >= 4) {
         game.time.events.add(10000, this.updatePotionPosition, this);
       }
 
-      if (game.life_points >= 1) {
+      if (this.life_points >= 1) {
         this.hurtSound.play();
       }
     }
@@ -372,7 +372,7 @@ var playState = {
   },
 
   resetTint: function () {
-    game.time.events.remove(game.tint);
+    game.time.events.remove(this.tint);
     this.player.tint = 0xffffff;
   },
 
@@ -422,8 +422,8 @@ var playState = {
   },
 
   bossHurt: function () {
-    if (!this.executed && game.boss_life_points >= 0) {
-      game.boss_life_points -= 1;
+    if (!this.executed && this.boss_life_points >= 0) {
+      this.boss_life_points -= 1;
       game.time.events.add(1000, this.reset_executed, this);
       this.player.body.velocity.y = -200;
       this.boss.body.enable = false;
@@ -431,14 +431,14 @@ var playState = {
       this.emitter.y = this.boss.y;
       this.emitter.start(true, 300, null, 6);
       this.boss.animations.play('hurtAnim');
-      this.healthBoss.animations.play(game.boss_life_points);
+      this.healthBoss.animations.play(this.boss_life_points);
 
-      if (game.boss_life_points >= 1) {
+      if (this.boss_life_points >= 1) {
         game.time.events.add(Phaser.Timer.SECOND / 4, this.fireMissileUp, this);
         this.bossHurtSound.play();
       }
 
-      if (game.boss_life_points === 0) {
+      if (this.boss_life_points === 0) {
         this.bossDie();
       }
     }
@@ -455,9 +455,9 @@ var playState = {
   bossDie: function () {
     this.bossDieSound.play();
     this.boss.kill();
-    game.boss_life_pointsLabel.kill();
+    this.boss_life_pointsLabel.kill();
     this.healthBoss.kill();
-    game.time.events.remove(game.timer_missile);
+    game.time.events.remove(this.timer_missile);
 
     this.nextLevelText();
   },
@@ -589,15 +589,15 @@ var playState = {
     game.time.events.add(500, this.eraseScore, this);
     game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
 
-    if (game.global.score < 90) {
+    if (this.score < 90) {
       this.updateCoinPosition();
     } else {
       this.coin.kill();
       this.potion.kill();
     }
 
-    game.global.score += 10;
-    this.scoreLabel.text = 'Score : ' + game.global.score;
+    this.score += 10;
+    this.scoreLabel.text = 'Score : ' + this.score;
 
     this.coinSound.play();
 
@@ -606,7 +606,7 @@ var playState = {
 
     game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y: 1}, 150).start();
 
-    if (game.global.score === 100) {
+    if (this.score === 100) {
       this.nextLevelText();
     }
   },
@@ -629,8 +629,8 @@ var playState = {
 
     if (this.conf.mapName < 4) {
       newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
-    } else if (this.conf.mapName === 4 && game.coinCount < 9) {
-      newCoinPosition = coinPosition[game.coinCount += 1];
+    } else if (this.conf.mapName === 4 && this.coinCount < 9) {
+      newCoinPosition = coinPosition[this.coinCount += 1];
     }
 
     this.coin.reset(newCoinPosition.x, newCoinPosition.y);
@@ -645,8 +645,8 @@ var playState = {
 
     game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y: 1}, 150).start();
     this.updatePotionPosition();
-    game.life_points += 1;
-    this.health.animations.play(game.life_points);
+    this.life_points += 1;
+    this.health.animations.play(this.life_points);
 
     this.potionSound.play();
 
@@ -654,7 +654,7 @@ var playState = {
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
 
-    if (game.life_points <= 4) {
+    if (this.life_points <= 4) {
       game.time.events.add(10000, this.updatePotionPosition, this);
     }
   },
