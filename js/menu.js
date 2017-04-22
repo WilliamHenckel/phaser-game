@@ -2,8 +2,8 @@ var menuState = {
   create: function () {
     game.stage.backgroundColor = '#313131';
 
-    this.explosion = game.add.audio('explosion');
-    this.explosion.volume = 0.5;
+    this.explosionSound = game.add.audio('explosion');
+    this.explosionSound.volume = 0.5;
     this.music = game.add.audio('castelvania', 1, true);
     this.fall = game.add.audio('fall');
     this.fall.volume = 0.3;
@@ -57,7 +57,7 @@ var menuState = {
   titleExplosion: function () {
     game.add.tween(this.explosion.scale).to({x: 1, y: 1}, 500, Phaser.Easing.Bounce.Out, true);
     game.add.tween(this.explosion).to({angle: -5}, 500).to({angle: 0}, 500).loop().start();
-    this.explosion.play();
+    this.explosionSound.play();
   },
 
   titleStart: function () {
