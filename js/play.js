@@ -17,6 +17,8 @@ var playState = {
         this.levelData = JSON.parse(this.game.cache.getText('level1'));
     }
 
+    this.difficultyData = JSON.parse(this.game.cache.getText('difficulty'));
+
     this.conf = {};
     this.conf.mapName = map;
     this.conf.playerX = this.levelData.playerStart.x;
@@ -28,6 +30,20 @@ var playState = {
     this.conf.potionY = this.levelData.potionStart.y;
     this.conf.potionPosition = this.levelData.potionPosition;
 
+    switch (game.difficulty) {
+      case 'hard':
+        this.conf.difficultyScore = this.difficultyData.hard.score;
+        this.conf.difficultyPotion = this.difficultyData.hard.potionTime;
+        break;
+      case 'casual':
+        this.conf.difficultyScore = this.difficultyData.casual.score;
+        this.conf.difficultyPotion = this.difficultyData.casual.potionTime;
+        break;
+      default:
+        this.conf.difficultyScore = this.difficultyData.easy.score;
+        this.conf.difficultyPotion = this.difficultyData.easy.potionTime;
+    }
+
     if (this.conf.mapName === 1) {
       this.conf.movingWallX = this.levelData.movingwallStart.x;
       this.conf.movingWallY = this.levelData.movingwallStart.y;
@@ -38,6 +54,10 @@ var playState = {
       this.conf.bossY = this.levelData.bossStart.y;
       this.conf.bossHealthX = this.levelData.bossHealth.x;
       this.conf.bossHealthY = this.levelData.bossHealth.y;
+    }
+
+    if (this.conf.mapName === 4) {
+      this.conf.difficultyScore = 100;
     }
   },
 
@@ -225,7 +245,7 @@ var playState = {
     this.hurtAgain = true;
 
     if (this.conf.mapName === 1) {
-      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : 100 points', {font: fontm, fill: textColor});
+      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : ' + this.conf.difficultyScore + ' points', {font: fontm, fill: textColor});
       this.tutoLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.eraseTuto, this);
     }
@@ -246,14 +266,14 @@ var playState = {
     this.movePlayer();
     this.moveBoss();
 
-    if ((!this.player.inWorld && this.player.body.y > 0) && this.score < 100) {
+    if ((!this.player.inWorld && this.player.body.y > 0) && this.score < this.conf.difficultyScore) {
       this.playerDie();
     }
 
     if (this.nextEnemy < game.time.now) {
       var start = 4000;
       var end = 1000;
-      var score = 100;
+      var score = this.difficultyData.casual.score;
       var delay = Math.max(start - (start - end) * this.score / score, end);
 
       if (this.conf.mapName < 3) {
@@ -347,7 +367,7 @@ var playState = {
   },
 
   playerHurt: function (pPlayer, pEnemy) {
-    if (!this.executed && this.life_points >= 1 && this.score < 100) {
+    if (!this.executed && this.life_points >= 1 && this.score < this.conf.difficultyScore) {
       this.executed = true;
       this.life_points -= 1;
       this.health.animations.play(this.life_points);
@@ -357,8 +377,8 @@ var playState = {
       game.time.events.add(1000, this.resetTint, this);
       game.time.events.add(1000, this.reset_executed, this);
 
-      if (this.life_points >= 4) {
-        game.time.events.add(10000, this.updatePotionPosition, this);
+      if (this.life_points >= 4 && game.difficulty != 'hard') {
+        game.time.events.add(this.conf.difficultyPotion, this.updatePotionPosition, this);
       }
 
       if (this.life_points >= 1) {
@@ -589,7 +609,7 @@ var playState = {
     game.time.events.add(500, this.eraseScore, this);
     game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
 
-    if (this.score < 90) {
+    if (this.score < this.conf.difficultyScore - 10) {
       this.updateCoinPosition();
     } else {
       this.coin.kill();
@@ -606,7 +626,7 @@ var playState = {
 
     game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y: 1}, 150).start();
 
-    if (this.score === 100) {
+    if (this.score === this.conf.difficultyScore) {
       this.nextLevelText();
     }
   },
@@ -644,6 +664,7 @@ var playState = {
     game.add.tween(this.healthBonus).to({y: this.potion.y - 50}, 500, 'Linear', true);
 
     game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y: 1}, 150).start();
+
     this.updatePotionPosition();
     this.life_points += 1;
     this.health.animations.play(this.life_points);
@@ -654,8 +675,8 @@ var playState = {
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
 
-    if (this.life_points <= 4) {
-      game.time.events.add(10000, this.updatePotionPosition, this);
+    if (this.life_points <= 4 && game.difficulty != 'hard') {
+      game.time.events.add(this.conf.difficultyPotion, this.updatePotionPosition, this);
     }
   },
 
@@ -702,7 +723,11 @@ var playState = {
   },
 
   restartLevel: function () {
-    game.state.start('play', true, false, this.conf.mapName);
+    if (game.difficulty != 'hard') {
+      game.state.start('play', true, false, this.conf.mapName);
+    } else {
+      game.state.start('play', true, false, 1);
+    }
   },
 
   // SOUND

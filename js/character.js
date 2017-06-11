@@ -60,6 +60,6 @@ var characterState = {
       return;
     }
 
-    game.state.start('play', true, false, 1);
+    game.state.start('difficulty');
   }
 };
