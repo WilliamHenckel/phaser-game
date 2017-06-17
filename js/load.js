@@ -51,7 +51,9 @@ var loadState = {
     game.load.text('level2', 'assets/data/level2.json');
     game.load.text('level3', 'assets/data/level3.json');
     game.load.text('level4', 'assets/data/level4.json');
-    game.load.text('difficulty', 'assets/data/difficulty.json');
+    game.load.text('easy', 'assets/data/easy.json');
+    game.load.text('casual', 'assets/data/casual.json');
+    game.load.text('hard', 'assets/data/hard.json');
   },
 
   create: function () {

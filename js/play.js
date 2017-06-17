@@ -17,7 +17,18 @@ var playState = {
         this.levelData = JSON.parse(this.game.cache.getText('level1'));
     }
 
-    this.difficultyData = JSON.parse(this.game.cache.getText('difficulty'));
+    switch (game.difficulty) {
+      case 'easy':
+        this.difficultyData = JSON.parse(this.game.cache.getText('easy'));
+        break;
+
+      case 'hard':
+        this.difficultyData = JSON.parse(this.game.cache.getText('hard'));
+        break;
+
+      default:
+        this.difficultyData = JSON.parse(this.game.cache.getText('casual'));
+    }
 
     this.conf = {};
     this.conf.mapName = map;
@@ -29,20 +40,8 @@ var playState = {
     this.conf.potionX = this.levelData.potionStart.x;
     this.conf.potionY = this.levelData.potionStart.y;
     this.conf.potionPosition = this.levelData.potionPosition;
-
-    switch (game.difficulty) {
-      case 'hard':
-        this.conf.difficultyScore = this.difficultyData.hard.score;
-        this.conf.difficultyPotion = this.difficultyData.hard.potionTime;
-        break;
-      case 'casual':
-        this.conf.difficultyScore = this.difficultyData.casual.score;
-        this.conf.difficultyPotion = this.difficultyData.casual.potionTime;
-        break;
-      default:
-        this.conf.difficultyScore = this.difficultyData.easy.score;
-        this.conf.difficultyPotion = this.difficultyData.easy.potionTime;
-    }
+    this.conf.difficultyScore = this.difficultyData.score;
+    this.conf.difficultyPotion = this.difficultyData.potionTime;
 
     if (this.conf.mapName === 1) {
       this.conf.movingWallX = this.levelData.movingwallStart.x;
@@ -273,7 +272,7 @@ var playState = {
     if (this.nextEnemy < game.time.now) {
       var start = 4000;
       var end = 1000;
-      var score = this.difficultyData.casual.score;
+      var score = this.difficultyData.score;
       var delay = Math.max(start - (start - end) * this.score / score, end);
 
       if (this.conf.mapName < 3) {
