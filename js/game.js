@@ -18,6 +18,7 @@ game.global = {score: 0};
 game.state.add('boot', bootState);
 game.state.add('load', loadState);
 game.state.add('menu', menuState);
+game.state.add('help', helpState);
 game.state.add('character', characterState);
 game.state.add('difficulty', difficultyState);
 game.state.add('play', playState);

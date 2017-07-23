@@ -29,8 +29,15 @@ var menuState = {
     this.nameLabel = game.add.text(400, -50, 'Random Guy Adventures', {font: fontxl, fill: textColor});
     this.nameLabel.anchor.setTo(0.5, 0.5);
 
-    this.startButton = game.add.text(400, 700, 'Cliquez pour commencer !', {font: fontxl, fill: textColor});
+    this.startButton = game.add.text(400, 700, 'Démarrer', {font: fontxl, fill: textColor});
     this.startButton.anchor.set(0.5);
+    this.startButton.alpha = 0.5;
+    this.startButton.inputEnabled = true;
+
+    this.helpButton = game.add.text(400, 700, 'Aide', {font: fontxl, fill: textColor});
+    this.helpButton.anchor.set(0.5);
+    this.helpButton.alpha = 0.5;
+    this.helpButton.inputEnabled = true;
 
     game.input.onDown.add(this.level1, this);
 
@@ -43,6 +50,17 @@ var menuState = {
 
     if (game.sound.mute) {
       this.muteButton.frame = 1;
+    }
+  },
+
+  update: function () {
+    if (this.startButton.input.pointerOver()) {
+      this.startButton.alpha = 1;
+    } else if (this.helpButton.input.pointerOver()) {
+      this.helpButton.alpha = 1;
+    } else {
+      this.startButton.alpha = 0.5;
+      this.helpButton.alpha = 0.5;
     }
   },
 
@@ -61,7 +79,9 @@ var menuState = {
   },
 
   titleStart: function () {
-    game.add.tween(this.startButton).to({y: game.world.centerY + 200}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(this.startButton).to({y: game.world.centerY + 160}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(this.helpButton).to({y: game.world.centerY + 240}, 1000).easing(Phaser.Easing.Circular.Out).start();
+
 
     if (this.musicplay === undefined) {
       this.music.loopFull();
@@ -84,7 +104,13 @@ var menuState = {
 
   level1: function () {
     if (!this.muteButton.input.pointerOver() && this.nameLabel.y === 100) {
-      game.state.start('character');
+      if (this.startButton.input.pointerOver()) {
+        game.state.start('character');
+      } else if (this.helpButton.input.pointerOver()) {
+        game.state.start('help');
+      } else {
+        return;
+      }
     }
   },
 
@@ -95,5 +121,5 @@ var menuState = {
 
   restartGame: function () {
     this.castelvania.stop();
-  }
+  },
 };
