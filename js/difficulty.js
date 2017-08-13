@@ -1,19 +1,23 @@
 var difficultyState = {
   create: function () {
-    this.choiceDifficulty = game.add.text(400, 100, 'Difficulté', {font: fontxl, fill: textColor});
+    this.choiceDifficulty = game.add.text(1100, 100, 'Difficulté', {font: fontxl, fill: textColor});
+    game.add.tween(this.choiceDifficulty).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
     this.choiceDifficulty.anchor.set(0.5);
 
-    this.easyDifficulty = game.add.text(400, game.world.centerY - 100, 'Facile', {font: fontxl, fill: textColor});
+    this.easyDifficulty = game.add.text(1100, game.world.centerY - 100, 'Facile', {font: fontxl, fill: textColor});
+    game.add.tween(this.easyDifficulty).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
     this.easyDifficulty.anchor.set(0.5);
     this.easyDifficulty.alpha = 0.5;
     this.easyDifficulty.inputEnabled = true;
 
-    this.casualDifficulty = game.add.text(400, game.world.centerY, 'Normal', {font: fontxl, fill: textColor});
+    this.casualDifficulty = game.add.text(1100, game.world.centerY, 'Normal', {font: fontxl, fill: textColor});
+    game.add.tween(this.casualDifficulty).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
     this.casualDifficulty.anchor.set(0.5);
     this.casualDifficulty.alpha = 0.5;
     this.casualDifficulty.inputEnabled = true;
 
-    this.hardDifficulty = game.add.text(400, game.world.centerY + 100, 'Difficile', {font: fontxl, fill: textColor});
+    this.hardDifficulty = game.add.text(1100, game.world.centerY + 100, 'Difficile', {font: fontxl, fill: textColor});
+    game.add.tween(this.hardDifficulty).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
     this.hardDifficulty.anchor.set(0.5);
     this.hardDifficulty.alpha = 0.5;
     this.hardDifficulty.inputEnabled = true;
@@ -58,6 +62,19 @@ var difficultyState = {
       return;
     }
 
+    this.transitionAnimation();
+  },
+
+  transitionAnimation: function () {
+    game.add.tween(this.choiceDifficulty).to({x: this.choiceDifficulty.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.easyDifficulty).to({x: this.easyDifficulty.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.casualDifficulty).to({x: this.casualDifficulty.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.hardDifficulty).to({x: this.hardDifficulty.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+
+    game.time.events.add(500, this.statePlay, this);
+  },
+
+  statePlay: function () {
     game.state.start('play', true, false, 1);
   }
 };

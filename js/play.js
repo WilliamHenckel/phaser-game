@@ -300,6 +300,11 @@ var playState = {
 
     this.map.addTilesetImage('tileset');
     this.layer = this.map.createLayer('Tile Layer 1');
+
+    if (this.conf.mapName === 4) {
+      this.layer.resizeWorld();
+    }
+
     this.map.setCollisionBetween(1, 14);
 
     this.movingWall = game.add.sprite(this.conf.movingWallX, this.conf.movingWallY, 'wallH');
@@ -312,6 +317,10 @@ var playState = {
 
   createWorldForeground: function () {
     this.layer2 = this.map.createLayer('Tile Layer 2');
+
+    if (this.conf.mapName === 4) {
+      this.layer2.resizeWorld();
+    }
   },
 
   eraseTuto: function () {

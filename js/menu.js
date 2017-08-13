@@ -102,12 +102,36 @@ var menuState = {
     game.add.tween(this.minion).to({angle: -50}, 1000, Phaser.Easing.Circular.Out, true);
   },
 
+  transitionAnimation: function (pState) {
+    game.add.tween(this.random).to({x: this.random.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.nameLabel).to({x: this.nameLabel.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.explosion).to({x: this.explosion.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.startButton).to({x: this.startButton.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.helpButton).to({x: this.helpButton.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.arrows).to({x: this.arrows.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.minion).to({x: this.minion.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+
+    if (pState === 'character') {
+      game.time.events.add(500, this.stateCharacter, this);
+    } else if (pState === 'help') {
+      game.time.events.add(500, this.stateHelp, this);
+    }
+  },
+
+  stateCharacter: function () {
+    game.state.start('character');
+  },
+
+  stateHelp: function () {
+    game.state.start('help');
+  },
+
   level1: function () {
     if (!this.muteButton.input.pointerOver() && this.nameLabel.y === 100) {
       if (this.startButton.input.pointerOver()) {
-        game.state.start('character');
+        this.transitionAnimation('character');
       } else if (this.helpButton.input.pointerOver()) {
-        game.state.start('help');
+        this.transitionAnimation('help');
       } else {
         return;
       }
