@@ -68,7 +68,7 @@ var helpState = {
     }
   },
 
-  transitionAnimation: function (pState) {
+  transitionAnimation: function () {
     game.add.tween(this.title).to({x: this.title.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.returnButton).to({x: this.returnButton.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.coin).to({x: this.coin.x - 800}, 400, Phaser.Easing.Linear.Out, true);

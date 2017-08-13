@@ -4,6 +4,12 @@ var difficultyState = {
     game.add.tween(this.choiceDifficulty).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
     this.choiceDifficulty.anchor.set(0.5);
 
+    this.returnButton = game.add.text(1100, game.world.centerY + 240, 'Retour', {font: fontxl, fill: textColor});
+    game.add.tween(this.returnButton).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
+    this.returnButton.anchor.set(0.5);
+    this.returnButton.alpha = 0.5;
+    this.returnButton.inputEnabled = true;
+
     this.easyDifficulty = game.add.text(1100, game.world.centerY - 100, 'Facile', {font: fontxl, fill: textColor});
     game.add.tween(this.easyDifficulty).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
     this.easyDifficulty.anchor.set(0.5);
@@ -39,6 +45,8 @@ var difficultyState = {
       this.casualDifficulty.alpha = 1;
     } else if (this.hardDifficulty.input.pointerOver()) {
       this.hardDifficulty.alpha = 1;
+    } else if (this.returnButton.input.pointerOver()) {
+      this.returnButton.alpha = 1;
     } else {
       this.easyDifficulty.alpha = 0.5;
       this.casualDifficulty.alpha = 0.5;
@@ -54,27 +62,39 @@ var difficultyState = {
   difficultyChoice: function () {
     if (this.easyDifficulty.input.pointerOver()) {
       game.difficulty = 'easy';
+      this.transitionAnimation('play');
     } else if (this.casualDifficulty.input.pointerOver()) {
       game.difficulty = 'casual';
+      this.transitionAnimation('play');
     } else if (this.hardDifficulty.input.pointerOver()) {
       game.difficulty = 'hard';
+      this.transitionAnimation('play');
+    } else if (this.returnButton.input.pointerOver()) {
+      this.transitionAnimation('character');
     } else {
       return;
     }
-
-    this.transitionAnimation();
   },
 
-  transitionAnimation: function () {
+  transitionAnimation: function (pState) {
     game.add.tween(this.choiceDifficulty).to({x: this.choiceDifficulty.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.easyDifficulty).to({x: this.easyDifficulty.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.casualDifficulty).to({x: this.casualDifficulty.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.hardDifficulty).to({x: this.hardDifficulty.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.returnButton).to({x: this.returnButton.x - 800}, 400, Phaser.Easing.Linear.Out, true);
 
-    game.time.events.add(500, this.statePlay, this);
+    if (pState === 'play') {
+      game.time.events.add(500, this.statePlay, this);
+    } else if (pState === 'character') {
+      game.time.events.add(500, this.stateCharacter, this);
+    }
   },
 
   statePlay: function () {
     game.state.start('play', true, false, 1);
+  },
+
+  stateCharacter: function () {
+    game.state.start('character');
   }
 };

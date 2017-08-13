@@ -4,11 +4,17 @@ var characterState = {
     game.add.tween(this.choice).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
     this.choice.anchor.set(0.5);
 
-    this.achilleName = game.add.text(400, game.world.centerY + 200, 'Achille', {font: fontxl, fill: textColor});
+    this.returnButton = game.add.text(1100, game.world.centerY + 240, 'Retour', {font: fontxl, fill: textColor});
+    game.add.tween(this.returnButton).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
+    this.returnButton.anchor.set(0.5);
+    this.returnButton.alpha = 0.5;
+    this.returnButton.inputEnabled = true;
+
+    this.achilleName = game.add.text(400, game.world.centerY + 160, 'Achille', {font: fontxl, fill: textColor});
     this.achilleName.anchor.set(0.5);
     this.achilleName.alpha = 0;
 
-    this.ernestName = game.add.text(400, game.world.centerY + 200, 'Ernest', {font: fontxl, fill: textColor});
+    this.ernestName = game.add.text(400, game.world.centerY + 160, 'Ernest', {font: fontxl, fill: textColor});
     this.ernestName.anchor.set(0.5);
     this.ernestName.alpha = 0;
 
@@ -41,11 +47,14 @@ var characterState = {
     } else if (this.ernest.input.pointerOver()) {
       this.ernest.alpha = 1;
       this.ernestName.alpha = 1;
+    } else if (this.returnButton.input.pointerOver()) {
+      this.returnButton.alpha = 1;
     } else {
       this.achille.alpha = 0.5;
       this.ernest.alpha = 0.5;
       this.achilleName.alpha = 0;
       this.ernestName.alpha = 0;
+      this.returnButton.alpha = 0.5;
     }
   },
 
@@ -53,14 +62,23 @@ var characterState = {
     game.state.start('difficulty');
   },
 
+  stateMenu: function () {
+    game.state.start('menu')
+  },
+
   transitionAnimation: function (pState) {
     game.add.tween(this.choice).to({x: this.choice.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.achille).to({x: this.achille.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.ernest).to({x: this.ernest.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.returnButton).to({x: this.returnButton.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     this.achilleName.kill();
     this.ernestName.kill();
 
-    game.time.events.add(500, this.stateDifficulty, this);
+    if (pState === 'difficulty') {
+      game.time.events.add(500, this.stateDifficulty, this);
+    } else if (pState === 'menu') {
+      game.time.events.add(500, this.stateMenu, this);
+    }
   },
 
   toggleSound: function () {
@@ -71,12 +89,14 @@ var characterState = {
   characterChoice: function () {
     if (this.achille.input.pointerOver()) {
       game.character = 'achille';
+      this.transitionAnimation('difficulty');
     } else if (this.ernest.input.pointerOver()) {
       game.character = 'ernest';
+      this.transitionAnimation('difficulty');
+    } else if (this.returnButton.input.pointerOver()) {
+      this.transitionAnimation('menu');
     } else {
       return;
     }
-
-    this.transitionAnimation();
   }
 };
