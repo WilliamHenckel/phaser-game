@@ -32,31 +32,9 @@ var playState = {
 
     this.conf = {};
     this.conf.mapName = map;
-    this.conf.playerX = this.levelData.playerStart.x;
-    this.conf.playerY = this.levelData.playerStart.y;
-    this.conf.coinX = this.levelData.coinStart.x;
-    this.conf.coinY = this.levelData.coinStart.y;
-    this.conf.coinPosition = this.levelData.coinPosition;
-    this.conf.potionX = this.levelData.potionStart.x;
-    this.conf.potionY = this.levelData.potionStart.y;
-    this.conf.potionPosition = this.levelData.potionPosition;
-    this.conf.difficultyScore = this.difficultyData.score;
-    this.conf.difficultyPotion = this.difficultyData.potionTime;
-
-    if (this.conf.mapName === 1) {
-      this.conf.movingWallX = this.levelData.movingwallStart.x;
-      this.conf.movingWallY = this.levelData.movingwallStart.y;
-    }
-
-    if (this.conf.mapName === 3) {
-      this.conf.bossX = this.levelData.bossStart.x;
-      this.conf.bossY = this.levelData.bossStart.y;
-      this.conf.bossHealthX = this.levelData.bossHealth.x;
-      this.conf.bossHealthY = this.levelData.bossHealth.y;
-    }
 
     if (this.conf.mapName === 4) {
-      this.conf.difficultyScore = 100;
+      this.difficultyData.score = 100;
     }
   },
 
@@ -85,9 +63,9 @@ var playState = {
 
     // Joueur
     if (game.character === 'achille') {
-      this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'achille');
+      this.player = game.add.sprite(this.levelData.playerStart.x, this.levelData.playerStart.y, 'achille');
     } else if (game.character === 'ernest') {
-      this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'ernest');
+      this.player = game.add.sprite(this.levelData.playerStart.x, this.levelData.playerStart.y, 'ernest');
     }
 
     game.camera.follow(this.player);
@@ -119,7 +97,7 @@ var playState = {
 
     // Boss
     if (this.conf.mapName === 3) {
-      this.boss = game.add.sprite(this.conf.bossX, this.conf.bossY, 'boss');
+      this.boss = game.add.sprite(this.levelData.bossStart.x, this.levelData.bossStart.y, 'boss');
       game.physics.arcade.enable(this.boss);
       this.boss.anchor.setTo(0.5, 0.5);
       this.boss.animations.add('walk', [0, 1], 8, true);
@@ -132,7 +110,7 @@ var playState = {
       this.boss.body.setSize(56, 56, 0, 18);
       this.boss_life_points = 5;
 
-      this.healthBoss = game.add.sprite(this.conf.bossHealthX, this.conf.bossHealthY, 'healthBoss');
+      this.healthBoss = game.add.sprite(this.levelData.bossHealth.x, this.levelData.bossHealth.y, 'healthBoss');
       this.healthBoss.anchor.setTo(0.5, 0.5);
       this.healthBoss.animations.add('5', [0], 1, true);
       this.healthBoss.animations.add('4', [1], 1, true);
@@ -154,7 +132,7 @@ var playState = {
     this.missiles.setAll('checkWorldBounds', true);
 
     // Pièce
-    this.coin = game.add.sprite(this.conf.coinX, this.conf.coinY, 'coin');
+    this.coin = game.add.sprite(this.levelData.coinStart.x, this.levelData.coinStart.y, 'coin');
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5, 0.5);
     this.coin.animations.add('turn', [0, 1, 2, 3], 8, true);
@@ -164,7 +142,7 @@ var playState = {
 
     // Potion
     if (this.life_points <= 3) {
-      this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
+      this.potion = game.add.sprite(this.levelData.potionStart.x, this.levelData.potionStart.y, 'potion');
     }
     game.physics.arcade.enable(this.potion);
     this.potion.anchor.setTo(0.5, 0.5);
@@ -184,8 +162,8 @@ var playState = {
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
 
-    for (var k = 0; k < 12; k++) {
-      var tirage = game.rnd.integerInRange(0, 3);
+    for (let i = 0; i < 12; i++) {
+      let tirage = game.rnd.integerInRange(0, 3);
 
       switch (tirage) {
         case 0:
@@ -244,7 +222,7 @@ var playState = {
     this.hurtAgain = true;
 
     if (this.conf.mapName === 1) {
-      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : ' + this.conf.difficultyScore + ' points', {font: fontm, fill: textColor});
+      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : ' + this.difficultyData.score + ' points', {font: fontm, fill: textColor});
       this.tutoLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.eraseTuto, this);
     }
@@ -265,15 +243,15 @@ var playState = {
     this.movePlayer();
     this.moveBoss();
 
-    if ((!this.player.inWorld && this.player.body.y > 0) && this.score < this.conf.difficultyScore) {
+    if ((!this.player.inWorld && this.player.body.y > 0) && this.score < this.difficultyData.score) {
       this.playerDie();
     }
 
     if (this.nextEnemy < game.time.now) {
-      var start = 4000;
-      var end = 1000;
-      var score = this.difficultyData.score;
-      var delay = Math.max(start - (start - end) * this.score / score, end);
+      let start = 4000;
+      let end = 1000;
+      let score = this.difficultyData.score;
+      let delay = Math.max(start - (start - end) * this.score / score, end);
 
       if (this.conf.mapName < 3) {
         this.addEnemy();
@@ -283,9 +261,9 @@ var playState = {
 
     this.enemies.forEach(this.animateEnemy);
 
-    if (this.movingWall.x >= this.conf.movingWallX + 50) {
+    if (this.movingWall.x >= this.levelData.movingwallStart.x + 50) {
       this.movingWall.body.velocity.x = -50;
-    } else if (this.movingWall.x <= this.conf.movingWallX - 50) {
+    } else if (this.movingWall.x <= this.levelData.movingwallStart.x - 50) {
       this.movingWall.body.velocity.x = 50;
     }
 
@@ -307,7 +285,7 @@ var playState = {
 
     this.map.setCollisionBetween(1, 14);
 
-    this.movingWall = game.add.sprite(this.conf.movingWallX, this.conf.movingWallY, 'wallH');
+    this.movingWall = game.add.sprite(this.levelData.movingwallStart.x, this.levelData.movingwallStart.y, 'wallH');
     this.movingWall.anchor.setTo(0.5, 1);
     game.physics.arcade.enable(this.movingWall);
     this.movingWall.enableBody = true;
@@ -373,7 +351,7 @@ var playState = {
   },
 
   playerHurt: function (pPlayer, pEnemy) {
-    if (!this.executed && this.life_points >= 1 && this.score < this.conf.difficultyScore) {
+    if (!this.executed && this.life_points >= 1 && this.score < this.difficultyData.score) {
       this.executed = true;
       this.life_points -= 1;
       this.health.animations.play(this.life_points);
@@ -384,7 +362,7 @@ var playState = {
       game.time.events.add(1000, this.reset_executed, this);
 
       if (this.life_points >= 4 && game.difficulty != 'hard') {
-        game.time.events.add(this.conf.difficultyPotion, this.updatePotionPosition, this);
+        game.time.events.add(this.difficultyData.potionTime, this.updatePotionPosition, this);
       }
 
       if (this.life_points >= 1) {
@@ -421,7 +399,7 @@ var playState = {
 
     this.deadSound.play();
 
-    var deathLabel = game.add.text(400, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
+    let deathLabel = game.add.text(400, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
     deathLabel.fixedToCamera = true;
     deathLabel.anchor.setTo(0.5, 0.5);
 
@@ -526,7 +504,7 @@ var playState = {
 
   // ENEMY
   addEnemy: function () {
-    var enemy = this.enemies.getFirstDead();
+    let enemy = this.enemies.getFirstDead();
 
     if (!enemy) {
       return;
@@ -541,7 +519,7 @@ var playState = {
     enemy.body.checkCollision.up = true;
     enemy.angle = 0;
 
-    var enemyVelocity = game.rnd.integerInRange(0, 3);
+    let enemyVelocity = game.rnd.integerInRange(0, 3);
     switch (enemyVelocity) {
       case 0:
       case 1:
@@ -615,7 +593,7 @@ var playState = {
     game.time.events.add(500, this.eraseScore, this);
     game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
 
-    if (this.score < this.conf.difficultyScore - 10) {
+    if (this.score < this.difficultyData.score - 10) {
       this.updateCoinPosition();
     } else {
       this.coin.kill();
@@ -632,7 +610,7 @@ var playState = {
 
     game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y: 1}, 150).start();
 
-    if (this.score === this.conf.difficultyScore) {
+    if (this.score === this.difficultyData.score) {
       this.nextLevelText();
     }
   },
@@ -642,11 +620,11 @@ var playState = {
   },
 
   updateCoinPosition: function () {
-    var coinPositionJson = this.conf.coinPosition;
-    var coinPosition = coinPositionJson.slice(0);
-    var newCoinPosition;
+    let coinPositionJson = this.levelData.coinPosition;
+    let coinPosition = coinPositionJson.slice(0);
+    let newCoinPosition;
 
-    for (var i = 0; i < coinPosition.length; i++) {
+    for (let i = 0; i < coinPosition.length; i++) {
       if (this.conf.mapName < 4 && coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
         coinPosition.splice(i, 1);
         coinPosition.splice(0, coinPosition[i]);
@@ -677,12 +655,12 @@ var playState = {
 
     this.potionSound.play();
 
-    var newPotionPosition = {x: -100, y: -100};
+    let newPotionPosition = {x: -100, y: -100};
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
 
     if (this.life_points <= 4 && game.difficulty != 'hard') {
-      game.time.events.add(this.conf.difficultyPotion, this.updatePotionPosition, this);
+      game.time.events.add(this.difficultyData.potionTime, this.updatePotionPosition, this);
     }
   },
 
@@ -691,16 +669,16 @@ var playState = {
   },
 
   updatePotionPosition: function () {
-    var potionPositionJson = this.conf.potionPosition;
-    var potionPosition = potionPositionJson.slice(0);
+    let potionPositionJson = this.levelData.potionPosition;
+    let potionPosition = potionPositionJson.slice(0);
 
-    for (var j = 0; j < potionPosition.length; j++) {
-      if (potionPosition[j].x === this.potion.x) {
-        potionPosition.splice(j, 1);
+    for (let i = 0; i < potionPosition.length; i++) {
+      if (potionPosition[i].x === this.potion.x) {
+        potionPosition.splice(i, 1);
       }
     }
 
-    var newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
+    let newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
   },
@@ -711,7 +689,7 @@ var playState = {
   },
 
   nextLevelText: function () {
-    var finishLabel;
+    let finishLabel;
     if (this.conf.mapName <= 3) {
       finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
       finishLabel.anchor.setTo(0.5, 0.5);

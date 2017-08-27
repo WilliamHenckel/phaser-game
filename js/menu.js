@@ -2,29 +2,22 @@ var menuState = {
   create: function () {
     game.stage.backgroundColor = '#313131';
 
-    this.explosionSound = game.add.audio('explosion');
-    this.explosionSound.volume = 0.5;
     this.music = game.add.audio('castelvania', 1, true);
-    this.fall = game.add.audio('fall');
-    this.fall.volume = 0.3;
-    this.fall.play();
 
-    game.time.events.add(500, this.titleRandom, this);
-    game.time.events.add(800, this.titleExplosion, this);
-    game.time.events.add(800, this.titleMinion, this);
-    game.time.events.add(1800, this.titleText, this);
-    game.time.events.add(1800, this.titleStart, this);
-    game.time.events.add(1800, this.titleControls, this);
+    this.minion = game.add.sprite(400, game.world.centerY, 'minion');
+    this.minion.anchor.set(0.5);
 
     this.explosion = game.add.sprite(400, game.world.centerY, 'explosion');
     this.explosion.anchor.set(0.5);
     this.explosion.scale.setTo(0);
+    this.explosionSound = game.add.audio('explosion');
+    this.explosionSound.volume = 0.5;
 
     this.random = game.add.sprite(400, -70, 'achilleimg');
     this.random.anchor.set(0.5);
-
-    this.minion = game.add.sprite(400, game.world.centerY, 'minion');
-    this.minion.anchor.set(0.5);
+    this.fall = game.add.audio('fall');
+    this.fall.volume = 0.3;
+    this.fall.play();
 
     this.nameLabel = game.add.text(400, -50, 'Random Guy Adventures', {font: fontxl, fill: textColor});
     this.nameLabel.anchor.setTo(0.5, 0.5);
@@ -39,9 +32,6 @@ var menuState = {
     this.helpButton.alpha = 0.5;
     this.helpButton.inputEnabled = true;
 
-    game.input.onDown.add(this.level1, this);
-
-
     this.arrows = game.add.sprite(900, game.world.centerY - 15, 'arrows');
     this.arrows.anchor.set(0.5);
 
@@ -51,6 +41,15 @@ var menuState = {
     if (game.sound.mute) {
       this.muteButton.frame = 1;
     }
+
+    game.input.onDown.add(this.menuChoice, this);
+
+    game.time.events.add(500, this.titleRandom, this);
+    game.time.events.add(800, this.titleExplosion, this);
+    game.time.events.add(800, this.titleMinion, this);
+    game.time.events.add(1800, this.titleText, this);
+    game.time.events.add(1800, this.titleStart, this);
+    game.time.events.add(1800, this.titleControls, this);
   },
 
   update: function () {
@@ -126,7 +125,7 @@ var menuState = {
     game.state.start('help');
   },
 
-  level1: function () {
+  menuChoice: function () {
     if (!this.muteButton.input.pointerOver() && this.nameLabel.y === 100) {
       if (this.startButton.input.pointerOver()) {
         this.transitionAnimation('character');

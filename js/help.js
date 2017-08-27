@@ -12,8 +12,6 @@ var helpState = {
     this.returnButton.alpha = 0.5;
     this.returnButton.inputEnabled = true;
 
-    game.input.onDown.add(this.menu, this);
-
     this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
     this.muteButton.input.useHandCursor = true;
 
@@ -58,6 +56,8 @@ var helpState = {
     this.enemy2Text = game.add.text(900, 425, 'Ces ennemis peuvent être écrasés en sautant dessus', {font: fonts, fill: textColor});
     game.add.tween(this.enemy2Text).to({x: 200}, 400, Phaser.Easing.Linear.Out, true);
     this.enemy2Text.anchor.setTo(0, 0.5);
+
+    game.input.onDown.add(this.menu, this);
   },
 
   update: function () {

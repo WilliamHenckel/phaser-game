@@ -30,14 +30,14 @@ var characterState = {
     this.ernest.alpha = 0.5;
     this.ernest.inputEnabled = true;
 
-    game.input.onDown.add(this.characterChoice, this);
-
     this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
     this.muteButton.input.useHandCursor = true;
 
     if (game.sound.mute) {
       this.muteButton.frame = 1;
     }
+
+    game.input.onDown.add(this.characterChoice, this);
   },
 
   update: function () {

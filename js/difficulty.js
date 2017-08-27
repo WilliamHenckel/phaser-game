@@ -28,14 +28,14 @@ var difficultyState = {
     this.hardDifficulty.alpha = 0.5;
     this.hardDifficulty.inputEnabled = true;
 
-    game.input.onDown.add(this.difficultyChoice, this);
-
     this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
     this.muteButton.input.useHandCursor = true;
 
     if (game.sound.mute) {
       this.muteButton.frame = 1;
     }
+
+    game.input.onDown.add(this.difficultyChoice, this);
   },
 
   update: function () {

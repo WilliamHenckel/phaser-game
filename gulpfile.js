@@ -11,7 +11,9 @@ gulp.task('concat-js', function () {
       './js/boot.js',
       './js/load.js',
       './js/menu.js',
+      './js/help.js',
       './js/character.js',
+      './js/difficulty.js',
       './js/play.js',
       './js/game.js'
     ])
@@ -28,28 +30,35 @@ gulp.task('minify-js', ['concat-js'], function () {
 gulp.task('prod-js', ['concat-js', 'minify-js']);
 
 // COPY FILES
-gulp.task('copy-assets', function() {
+gulp.task('copy-assets', function () {
    gulp.src([
      'assets/**/*'
    ])
    .pipe(gulp.dest('./dist/assets'));
 });
 
-gulp.task('copy-css', function() {
+gulp.task('copy-css', function () {
    gulp.src([
      'css/**/*'
    ])
    .pipe(gulp.dest('./dist/css'));
 });
 
-gulp.task('copy-phaser', function() {
+gulp.task('copy-phaser', function () {
    gulp.src([
      'phaser.min.js'
    ])
    .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('copy-all', ['copy-assets', 'copy-css', 'copy-phaser']);
+/* gulp.task('copy-html', function () {
+  gulp.src([
+    'index.html'
+  ])
+  .pipe(gulp.dest('./dist/'));
+}); */
+
+gulp.task('copy-all', ['copy-assets', 'copy-css', 'copy-phaser'/*, 'copy-html'*/]);
 
 // FINAL COMMAND
 gulp.task('dist', ['prod-js', 'copy-all']);
