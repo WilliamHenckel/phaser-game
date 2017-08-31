@@ -261,10 +261,12 @@ var playState = {
 
     this.enemies.forEach(this.animateEnemy);
 
-    if (this.movingWall.x >= this.levelData.movingwallStart.x + 50) {
-      this.movingWall.body.velocity.x = -50;
-    } else if (this.movingWall.x <= this.levelData.movingwallStart.x - 50) {
-      this.movingWall.body.velocity.x = 50;
+    if (this.conf.mapName === 1) {
+      if (this.movingWall.x >= this.levelData.movingwallStart.x + 50) {
+        this.movingWall.body.velocity.x = -50;
+      } else if (this.movingWall.x <= this.levelData.movingwallStart.x - 50) {
+        this.movingWall.body.velocity.x = 50;
+      }
     }
 
     if (this.life_points === 0) {
@@ -285,12 +287,14 @@ var playState = {
 
     this.map.setCollisionBetween(1, 14);
 
-    this.movingWall = game.add.sprite(this.levelData.movingwallStart.x, this.levelData.movingwallStart.y, 'wallH');
-    this.movingWall.anchor.setTo(0.5, 1);
-    game.physics.arcade.enable(this.movingWall);
-    this.movingWall.enableBody = true;
-    this.movingWall.body.immovable = true;
-    this.movingWall.body.velocity.x = 50;
+    if (this.conf.mapName === 1) {
+      this.movingWall = game.add.sprite(this.levelData.movingwallStart.x, this.levelData.movingwallStart.y, 'wallH');
+      this.movingWall.anchor.setTo(0.5, 1);
+      game.physics.arcade.enable(this.movingWall);
+      this.movingWall.enableBody = true;
+      this.movingWall.body.immovable = true;
+      this.movingWall.body.velocity.x = 50;
+    }
   },
 
   createWorldForeground: function () {
