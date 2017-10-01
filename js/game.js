@@ -1,10 +1,11 @@
 /* global Phaser, bootState, loadState, menuState, helpState, characterState, difficultyState, levelState, playState */
 var game = new Phaser.Game(800, 640, Phaser.AUTO, 'gameDiv', null, false);
-var textColor = '#ffffff';      // Couleur du texte
-var textFont = 'VT323';        // Police du texte
-var fontxl = '50px ' + textFont;  // Énorme taille de texte
-var fontl = '30px ' + textFont;   // Grande taille de texte
-var fontm = '25px ' + textFont;   // Taille de texte moyenne
+var textColor = '#ffffff';
+var textFont = 'VT323';
+var fontxl = '50px ' + textFont;
+var fontl = '30px ' + textFont;
+var fontm = '25px ' + textFont;
+var fonts = '20px ' + textFont;
 
 WebFontConfig = {
   google: {
