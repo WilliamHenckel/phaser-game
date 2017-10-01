@@ -1,3 +1,4 @@
+/* global Phaser, game */
 var loadState = {
   preload: function () {
     let progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');

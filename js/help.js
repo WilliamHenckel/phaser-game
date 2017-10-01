@@ -1,3 +1,4 @@
+/* global Phaser, game, fontxl, textColor, fonts */
 var helpState = {
   create: function () {
     game.stage.backgroundColor = '#313131';
@@ -86,8 +87,6 @@ var helpState = {
   menu: function () {
     if (!this.muteButton.input.pointerOver() && this.returnButton.input.pointerOver()) {
       this.transitionAnimation();
-    } else {
-      return;
     }
   },
 

@@ -1,3 +1,4 @@
+/* global Phaser, game, fontxl, textColor */
 var difficultyState = {
   create: function () {
     this.choiceDifficulty = game.add.text(1100, 100, 'Difficulté', {font: fontxl, fill: textColor});
@@ -61,18 +62,16 @@ var difficultyState = {
 
   difficultyChoice: function () {
     if (this.easyDifficulty.input.pointerOver()) {
-      game.difficulty = 'easy';
+      game.conf.difficulty = 'easy';
       this.transitionAnimation('play');
     } else if (this.casualDifficulty.input.pointerOver()) {
-      game.difficulty = 'casual';
+      game.conf.difficulty = 'casual';
       this.transitionAnimation('play');
     } else if (this.hardDifficulty.input.pointerOver()) {
-      game.difficulty = 'hard';
+      game.conf.difficulty = 'hard';
       this.transitionAnimation('play');
     } else if (this.returnButton.input.pointerOver()) {
       this.transitionAnimation('character');
-    } else {
-      return;
     }
   },
 
@@ -84,14 +83,14 @@ var difficultyState = {
     game.add.tween(this.returnButton).to({x: this.returnButton.x - 800}, 400, Phaser.Easing.Linear.Out, true);
 
     if (pState === 'play') {
-      game.time.events.add(500, this.statePlay, this);
+      game.time.events.add(500, this.stateLevel, this);
     } else if (pState === 'character') {
       game.time.events.add(500, this.stateCharacter, this);
     }
   },
 
-  statePlay: function () {
-    game.state.start('play', true, false, 1);
+  stateLevel: function () {
+    game.state.start('level', true, false, 1);
   },
 
   stateCharacter: function () {

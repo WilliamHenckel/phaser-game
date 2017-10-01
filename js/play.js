@@ -1,3 +1,4 @@
+/* global Phaser, game, fontxl, fontl, fontm, textColor */
 var playState = {
   init: function (map) {
     switch (map) {
@@ -17,32 +18,16 @@ var playState = {
         this.levelData = JSON.parse(this.game.cache.getText('level1'));
     }
 
-    switch (game.difficulty) {
-      case 'easy':
-        this.difficultyData = JSON.parse(this.game.cache.getText('easy'));
-        break;
-
-      case 'hard':
-        this.difficultyData = JSON.parse(this.game.cache.getText('hard'));
-        break;
-
-      default:
-        this.difficultyData = JSON.parse(this.game.cache.getText('casual'));
-    }
-
-    this.conf = {};
-    this.conf.mapName = map;
-
-    if (this.conf.mapName === 4) {
-      this.difficultyData.score = 100;
+    if (game.conf.mapName === 4) {
+      game.conf.difficultyData.score = 100;
     }
   },
 
   create: function () {
     // Fond
-    if (this.conf.mapName <= 3) {
+    if (game.conf.mapName <= 3) {
       game.stage.backgroundColor = game.add.tileSprite(0, 0, 800, 640, 'background');
-    } else if (this.conf.mapName === 4) {
+    } else if (game.conf.mapName === 4) {
       game.stage.backgroundColor = game.add.tileSprite(0, 0, 3840, 640, 'backgroundscroll');
     }
 
@@ -55,7 +40,7 @@ var playState = {
       up: game.input.keyboard.addKey(Phaser.Keyboard.Z),
       down: game.input.keyboard.addKey(Phaser.Keyboard.S),
       left: game.input.keyboard.addKey(Phaser.Keyboard.Q),
-      right: game.input.keyboard.addKey(Phaser.Keyboard.D),
+      right: game.input.keyboard.addKey(Phaser.Keyboard.D)
     };
 
     // Décor
@@ -96,7 +81,7 @@ var playState = {
     this.health.animations.play(this.life_points);
 
     // Boss
-    if (this.conf.mapName === 3) {
+    if (game.conf.mapName === 3) {
       this.boss = game.add.sprite(this.levelData.bossStart.x, this.levelData.bossStart.y, 'boss');
       game.physics.arcade.enable(this.boss);
       this.boss.anchor.setTo(0.5, 0.5);
@@ -153,7 +138,7 @@ var playState = {
     this.score = 0;
 
     // Points de vie boss
-    if (this.conf.mapName === 3) {
+    if (game.conf.mapName === 3) {
       this.boss_life_pointsLabel = game.add.text(400, 170, 'Boss', {font: fontxl, fill: textColor});
       this.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
     }
@@ -220,12 +205,6 @@ var playState = {
     // Damage
     this.executed = false;
     this.hurtAgain = true;
-
-    if (this.conf.mapName === 1) {
-      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : ' + this.difficultyData.score + ' points', {font: fontm, fill: textColor});
-      this.tutoLabel.anchor.setTo(0.5, 0.5);
-      game.time.events.add(2000, this.eraseTuto, this);
-    }
   },
 
   update: function () {
@@ -243,25 +222,25 @@ var playState = {
     this.movePlayer();
     this.moveBoss();
 
-    if ((!this.player.inWorld && this.player.body.y > 0) && this.score < this.difficultyData.score) {
+    if ((!this.player.inWorld && this.player.body.y > 0) && this.score < game.conf.difficultyData.score) {
       this.playerDie();
     }
 
     if (this.nextEnemy < game.time.now) {
       let start = 4000;
       let end = 1000;
-      let score = this.difficultyData.score;
+      let score = game.conf.difficultyData.score;
       let delay = Math.max(start - (start - end) * this.score / score, end);
 
-      if (this.conf.mapName < 3) {
-        this.addEnemy();
+      if (game.conf.mapName < 3) {
+        game.time.events.add(3000, this.addEnemy, this);
         this.nextEnemy = game.time.now + delay;
       }
     }
 
     this.enemies.forEach(this.animateEnemy);
 
-    if (this.conf.mapName === 1) {
+    if (game.conf.mapName === 1) {
       if (this.movingWall.x >= this.levelData.movingwallStart.x + 50) {
         this.movingWall.body.velocity.x = -50;
       } else if (this.movingWall.x <= this.levelData.movingwallStart.x - 50) {
@@ -276,18 +255,18 @@ var playState = {
 
   // WORLD
   createWorld: function () {
-    this.map = game.add.tilemap(this.conf.mapName);
+    this.map = game.add.tilemap(game.conf.mapName);
 
     this.map.addTilesetImage('tileset');
     this.layer = this.map.createLayer('Tile Layer 1');
 
-    if (this.conf.mapName === 4) {
+    if (game.conf.mapName === 4) {
       this.layer.resizeWorld();
     }
 
     this.map.setCollisionBetween(1, 14);
 
-    if (this.conf.mapName === 1) {
+    if (game.conf.mapName === 1) {
       this.movingWall = game.add.sprite(this.levelData.movingwallStart.x, this.levelData.movingwallStart.y, 'wallH');
       this.movingWall.anchor.setTo(0.5, 1);
       game.physics.arcade.enable(this.movingWall);
@@ -300,13 +279,9 @@ var playState = {
   createWorldForeground: function () {
     this.layer2 = this.map.createLayer('Tile Layer 2');
 
-    if (this.conf.mapName === 4) {
+    if (game.conf.mapName === 4) {
       this.layer2.resizeWorld();
     }
-  },
-
-  eraseTuto: function () {
-    game.add.tween(this.tutoLabel).to({ alpha: 0 }, 1000, 'Linear', true);
   },
 
   // PLAYER
@@ -355,7 +330,7 @@ var playState = {
   },
 
   playerHurt: function (pPlayer, pEnemy) {
-    if (!this.executed && this.life_points >= 1 && this.score < this.difficultyData.score) {
+    if (!this.executed && this.life_points >= 1 && this.score < game.conf.difficultyData.score) {
       this.executed = true;
       this.life_points -= 1;
       this.health.animations.play(this.life_points);
@@ -365,8 +340,8 @@ var playState = {
       game.time.events.add(1000, this.resetTint, this);
       game.time.events.add(1000, this.reset_executed, this);
 
-      if (this.life_points >= 4 && game.difficulty != 'hard') {
-        game.time.events.add(this.difficultyData.potionTime, this.updatePotionPosition, this);
+      if (this.life_points >= 4 && game.conf.difficulty !== 'hard') {
+        game.time.events.add(game.conf.difficultyData.potionTime, this.updatePotionPosition, this);
       }
 
       if (this.life_points >= 1) {
@@ -388,7 +363,7 @@ var playState = {
     this.executed = false;
     this.player.alpha = 1;
     this.player.tint = 0xffffff;
-    if (this.conf.mapName === 3) {
+    if (game.conf.mapName === 3) {
       this.boss.body.enable = true;
       this.boss.animations.play('walk');
     }
@@ -418,7 +393,7 @@ var playState = {
 
   // BOSS
   moveBoss: function () {
-    if (this.conf.mapName === 3) {
+    if (game.conf.mapName === 3) {
       if (this.boss.body.velocity.x > 0 && this.boss.direction === 'left') {
         this.boss.scale.x = -1;
         this.boss.direction = 'right';
@@ -597,7 +572,7 @@ var playState = {
     game.time.events.add(500, this.eraseScore, this);
     game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
 
-    if (this.score < this.difficultyData.score - 10) {
+    if (this.score < game.conf.difficultyData.score - 10) {
       this.updateCoinPosition();
     } else {
       this.coin.kill();
@@ -614,7 +589,7 @@ var playState = {
 
     game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y: 1}, 150).start();
 
-    if (this.score === this.difficultyData.score) {
+    if (this.score === game.conf.difficultyData.score) {
       this.nextLevelText();
     }
   },
@@ -629,15 +604,15 @@ var playState = {
     let newCoinPosition;
 
     for (let i = 0; i < coinPosition.length; i++) {
-      if (this.conf.mapName < 4 && coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
+      if (game.conf.mapName < 4 && coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
         coinPosition.splice(i, 1);
         coinPosition.splice(0, coinPosition[i]);
       }
     }
 
-    if (this.conf.mapName < 4) {
+    if (game.conf.mapName < 4) {
       newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
-    } else if (this.conf.mapName === 4 && this.coinCount < 9) {
+    } else if (game.conf.mapName === 4 && this.coinCount < 9) {
       newCoinPosition = coinPosition[this.coinCount += 1];
     }
 
@@ -663,8 +638,8 @@ var playState = {
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
 
-    if (this.life_points <= 4 && game.difficulty != 'hard') {
-      game.time.events.add(this.difficultyData.potionTime, this.updatePotionPosition, this);
+    if (this.life_points <= 4 && game.conf.difficulty !== 'hard') {
+      game.time.events.add(game.conf.difficultyData.potionTime, this.updatePotionPosition, this);
     }
   },
 
@@ -694,11 +669,11 @@ var playState = {
 
   nextLevelText: function () {
     let finishLabel;
-    if (this.conf.mapName <= 3) {
+    if (game.conf.mapName <= 3) {
       finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
       finishLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.nextLevelState, this);
-    } else if (this.conf.mapName === 4) {
+    } else if (game.conf.mapName === 4) {
       finishLabel = game.add.text(400, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
       finishLabel.fixedToCamera = true;
       finishLabel.anchor.setTo(0.5, 0.5);
@@ -707,14 +682,14 @@ var playState = {
   },
 
   nextLevelState: function () {
-    game.state.start('play', true, false, this.conf.mapName + 1);
+    game.state.start('level', true, false, game.conf.mapName + 1);
   },
 
   restartLevel: function () {
-    if (game.difficulty != 'hard') {
-      game.state.start('play', true, false, this.conf.mapName);
+    if (game.conf.difficulty !== 'hard') {
+      game.state.start('level', true, false, game.conf.mapName);
     } else {
-      game.state.start('play', true, false, 1);
+      game.state.start('level', true, false, 1);
     }
   },
 

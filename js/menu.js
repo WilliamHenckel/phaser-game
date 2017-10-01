@@ -1,3 +1,4 @@
+/* global Phaser, game, fontxl, textColor */
 var menuState = {
   create: function () {
     game.stage.backgroundColor = '#313131';
@@ -81,7 +82,6 @@ var menuState = {
     game.add.tween(this.startButton).to({y: game.world.centerY + 160}, 1000).easing(Phaser.Easing.Circular.Out).start();
     game.add.tween(this.helpButton).to({y: game.world.centerY + 240}, 1000).easing(Phaser.Easing.Circular.Out).start();
 
-
     if (this.musicplay === undefined) {
       this.music.loopFull();
     }
@@ -131,8 +131,6 @@ var menuState = {
         this.transitionAnimation('character');
       } else if (this.helpButton.input.pointerOver()) {
         this.transitionAnimation('help');
-      } else {
-        return;
       }
     }
   },
@@ -144,5 +142,5 @@ var menuState = {
 
   restartGame: function () {
     this.castelvania.stop();
-  },
+  }
 };

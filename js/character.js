@@ -1,3 +1,4 @@
+/* global Phaser, game, fontxl, textColor */
 var characterState = {
   create: function () {
     this.choice = game.add.text(1100, 100, 'Choix du personnage', {font: fontxl, fill: textColor});
@@ -63,7 +64,7 @@ var characterState = {
   },
 
   stateMenu: function () {
-    game.state.start('menu')
+    game.state.start('menu');
   },
 
   transitionAnimation: function (pState) {
@@ -95,8 +96,6 @@ var characterState = {
       this.transitionAnimation('difficulty');
     } else if (this.returnButton.input.pointerOver()) {
       this.transitionAnimation('menu');
-    } else {
-      return;
     }
   }
 };
