@@ -1,6 +1,7 @@
+/* global Phaser, game */
 var loadState = {
   preload: function () {
-    var progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
+    let progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
     progressBar.anchor.setTo(0.5, 0.5);
     game.load.setPreloadSprite(progressBar);
 
@@ -38,17 +39,22 @@ var loadState = {
     game.load.audio('coin', ['assets/coin.ogg', 'assets/coin.mp3']);
     game.load.audio('hurtSound', ['assets/hurt.ogg', 'assets/hurt.mp3']);
     game.load.audio('dead', ['assets/dead.ogg', 'assets/dead.mp3']);
-    //game.load.audio('elephant', ['assets/elephant.mp3']);
+    game.load.audio('castelvania', ['assets/castelvania.mp3', 'assets/castelvania.ogg']);
     game.load.audio('potion', ['assets/powerup.ogg', 'assets/powerup.mp3']);
     game.load.audio('boom', ['assets/laser.ogg', 'assets/laser.mp3']);
     game.load.audio('bossDieSound', ['assets/bossDie.ogg', 'assets/bossDie.mp3']);
     game.load.audio('bossHurtSound', ['assets/bossHurt.ogg', 'assets/bossHurt.mp3']);
     game.load.audio('enemyDieSound', ['assets/enemyDie.ogg', 'assets/enemyDie.mp3']);
+    game.load.audio('explosion', ['assets/explosion.ogg', 'assets/explosion.mp3']);
+    game.load.audio('fall', ['assets/fall.ogg', 'assets/fall.mp3']);
 
     game.load.text('level1', 'assets/data/level1.json');
     game.load.text('level2', 'assets/data/level2.json');
     game.load.text('level3', 'assets/data/level3.json');
     game.load.text('level4', 'assets/data/level4.json');
+    game.load.text('easy', 'assets/data/easy.json');
+    game.load.text('casual', 'assets/data/casual.json');
+    game.load.text('hard', 'assets/data/hard.json');
   },
 
   create: function () {

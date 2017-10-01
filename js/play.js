@@ -1,3 +1,4 @@
+/* global Phaser, game, fontxl, fontl, fontm, textColor */
 var playState = {
   init: function (map) {
     switch (map) {
@@ -17,50 +18,39 @@ var playState = {
         this.levelData = JSON.parse(this.game.cache.getText('level1'));
     }
 
-    this.conf = {};
-    this.conf.mapName = map;
-    this.conf.playerX = this.levelData.playerStart.x;
-    this.conf.playerY = this.levelData.playerStart.y;
-    this.conf.coinX = this.levelData.coinStart.x;
-    this.conf.coinY = this.levelData.coinStart.y;
-    this.conf.coinPosition = this.levelData.coinPosition;
-    this.conf.potionX = this.levelData.potionStart.x;
-    this.conf.potionY = this.levelData.potionStart.y;
-    this.conf.potionPosition = this.levelData.potionPosition;
-
-    if (this.conf.mapName === 1) {
-      this.conf.movingWallX = this.levelData.movingwallStart.x;
-      this.conf.movingWallY = this.levelData.movingwallStart.y;
-    }
-
-    if (this.conf.mapName === 3) {
-      this.conf.bossX = this.levelData.bossStart.x;
-      this.conf.bossY = this.levelData.bossStart.y;
-      this.conf.bossHealthX = this.levelData.bossHealth.x;
-      this.conf.bossHealthY = this.levelData.bossHealth.y;
+    if (game.conf.mapName === 4) {
+      game.conf.difficultyData.score = 100;
     }
   },
 
   create: function () {
     // Fond
-    if (this.conf.mapName <= 3) {
+    if (game.conf.mapName <= 3) {
       game.stage.backgroundColor = game.add.tileSprite(0, 0, 800, 640, 'background');
-    } else if (this.conf.mapName === 4) {
+    } else if (game.conf.mapName === 4) {
       game.stage.backgroundColor = game.add.tileSprite(0, 0, 3840, 640, 'backgroundscroll');
     }
 
     // Commandes
     this.cursor = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.UP, Phaser.Keyboard.DOWN, Phaser.Keyboard.LEFT, Phaser.Keyboard.RIGHT]);
+    this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+    this.zsqd = {
+      up: game.input.keyboard.addKey(Phaser.Keyboard.Z),
+      down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+      left: game.input.keyboard.addKey(Phaser.Keyboard.Q),
+      right: game.input.keyboard.addKey(Phaser.Keyboard.D)
+    };
 
     // Décor
     this.createWorld();
 
     // Joueur
     if (game.character === 'achille') {
-      this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'achille');
+      this.player = game.add.sprite(this.levelData.playerStart.x, this.levelData.playerStart.y, 'achille');
     } else if (game.character === 'ernest') {
-      this.player = game.add.sprite(this.conf.playerX, this.conf.playerY, 'ernest');
+      this.player = game.add.sprite(this.levelData.playerStart.x, this.levelData.playerStart.y, 'ernest');
     }
 
     game.camera.follow(this.player);
@@ -74,13 +64,13 @@ var playState = {
     this.player.animations.add('down-right', [9], 8, true);
     this.player.animations.add('jump-left', [10], 8, true);
     this.player.animations.add('down-left', [11], 8, true);
-    game.life_points = 3;
-    game.direction = 'right';
+    this.life_points = 3;
+    this.direction = 'right';
     this.player.body.checkCollision.up = false;
     this.player.body.setSize(30, 36, 5, 0);
 
     // Points de vie
-    this.health = game.add.sprite(630, 10, 'health');
+    this.health = game.add.sprite(625, 20, 'health');
     this.health.fixedToCamera = true;
     this.health.animations.add('5', [0], 1, true);
     this.health.animations.add('4', [1], 1, true);
@@ -88,11 +78,11 @@ var playState = {
     this.health.animations.add('2', [3], 1, true);
     this.health.animations.add('1', [4], 1, true);
     this.health.animations.add('0', [5], 1, true);
-    this.health.animations.play(game.life_points);
+    this.health.animations.play(this.life_points);
 
     // Boss
-    if (this.conf.mapName === 3) {
-      this.boss = game.add.sprite(this.conf.bossX, this.conf.bossY, 'boss');
+    if (game.conf.mapName === 3) {
+      this.boss = game.add.sprite(this.levelData.bossStart.x, this.levelData.bossStart.y, 'boss');
       game.physics.arcade.enable(this.boss);
       this.boss.anchor.setTo(0.5, 0.5);
       this.boss.animations.add('walk', [0, 1], 8, true);
@@ -103,9 +93,9 @@ var playState = {
       this.boss.body.bounce.x = 1;
       this.boss.direction = 'left';
       this.boss.body.setSize(56, 56, 0, 18);
-      game.boss_life_points = 5;
+      this.boss_life_points = 5;
 
-      this.healthBoss = game.add.sprite(this.conf.bossHealthX, this.conf.bossHealthY, 'healthBoss');
+      this.healthBoss = game.add.sprite(this.levelData.bossHealth.x, this.levelData.bossHealth.y, 'healthBoss');
       this.healthBoss.anchor.setTo(0.5, 0.5);
       this.healthBoss.animations.add('5', [0], 1, true);
       this.healthBoss.animations.add('4', [1], 1, true);
@@ -113,9 +103,9 @@ var playState = {
       this.healthBoss.animations.add('2', [3], 1, true);
       this.healthBoss.animations.add('1', [4], 1, true);
       this.healthBoss.animations.add('0', [5], 1, true);
-      this.healthBoss.animations.play(game.boss_life_points);
+      this.healthBoss.animations.play(this.boss_life_points);
 
-      game.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
+      this.timer_missile = game.time.events.loop(Phaser.Timer.SECOND * 1.5, this.fireMissile, this);
     }
 
     // Missiles
@@ -127,38 +117,38 @@ var playState = {
     this.missiles.setAll('checkWorldBounds', true);
 
     // Pièce
-    this.coin = game.add.sprite(this.conf.coinX, this.conf.coinY, 'coin');
+    this.coin = game.add.sprite(this.levelData.coinStart.x, this.levelData.coinStart.y, 'coin');
     game.physics.arcade.enable(this.coin);
     this.coin.anchor.setTo(0.5, 0.5);
     this.coin.animations.add('turn', [0, 1, 2, 3], 8, true);
     this.coin.animations.play('turn');
     this.coin.scale.setTo(1, 1);
-    game.coinCount = 0;
+    this.coinCount = 0;
 
     // Potion
-    if (game.life_points <= 3) {
-      this.potion = game.add.sprite(this.conf.potionX, this.conf.potionY, 'potion');
+    if (this.life_points <= 3) {
+      this.potion = game.add.sprite(this.levelData.potionStart.x, this.levelData.potionStart.y, 'potion');
     }
     game.physics.arcade.enable(this.potion);
     this.potion.anchor.setTo(0.5, 0.5);
 
     // Score
-    this.scoreLabel = game.add.text(15, 5, 'Score : 0', {font: fontm, fill: textColor});
+    this.scoreLabel = game.add.text(65, 17, 'Score : 0 / ' + game.conf.difficultyData.score, {font: fontm, fill: textColor});
     this.scoreLabel.fixedToCamera = true;
-    game.global.score = 0;
+    this.score = 0;
 
     // Points de vie boss
-    if (this.conf.mapName === 3) {
-      game.boss_life_pointsLabel = game.add.text(400, 170, 'Boss', {font: fontxl, fill: textColor});
-      game.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
+    if (game.conf.mapName === 3) {
+      this.boss_life_pointsLabel = game.add.text(400, 170, 'Boss', {font: fontxl, fill: textColor});
+      this.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
     }
 
     // Ennemies
     this.enemies = game.add.group();
     this.enemies.enableBody = true;
 
-    for (var k = 0; k < 12; k++) {
-      var tirage = game.rnd.integerInRange(0, 3);
+    for (let i = 0; i < 12; i++) {
+      let tirage = game.rnd.integerInRange(0, 3);
 
       switch (tirage) {
         case 0:
@@ -192,6 +182,13 @@ var playState = {
     this.bossHurtSound = game.add.audio('bossHurtSound');
     this.enemyDieSound = game.add.audio('enemyDieSound');
     this.enemyDieSound.volume = 0.4;
+    this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
+    this.muteButton.input.useHandCursor = true;
+    this.muteButton.fixedToCamera = true;
+
+    if (game.sound.mute) {
+      this.muteButton.frame = 1;
+    }
 
     // Particules
     this.emitter = game.add.emitter(0, 0, 15);
@@ -208,12 +205,6 @@ var playState = {
     // Damage
     this.executed = false;
     this.hurtAgain = true;
-
-    if (this.conf.mapName === 1) {
-      this.tutoLabel = game.add.text(game.world.centerX, game.world.centerY - 150, 'Objectif : 100 points', {font: fontm, fill: textColor});
-      this.tutoLabel.anchor.setTo(0.5, 0.5);
-      game.time.events.add(2000, this.eraseTuto, this);
-    }
   },
 
   update: function () {
@@ -231,88 +222,95 @@ var playState = {
     this.movePlayer();
     this.moveBoss();
 
-    if (!this.player.inWorld && game.global.score < 100) {
+    if ((!this.player.inWorld && this.player.body.y > 0) && this.score < game.conf.difficultyData.score) {
       this.playerDie();
     }
 
     if (this.nextEnemy < game.time.now) {
-      var start = 4000;
-      var end = 1000;
-      var score = 100;
-      var delay = Math.max(start - (start - end) * game.global.score / score, end);
+      let start = 4000;
+      let end = 1000;
+      let score = game.conf.difficultyData.score;
+      let delay = Math.max(start - (start - end) * this.score / score, end);
 
-      if (this.conf.mapName < 3) {
-        this.addEnemy();
+      if (game.conf.mapName < 3) {
+        game.time.events.add(3000, this.addEnemy, this);
         this.nextEnemy = game.time.now + delay;
       }
     }
 
     this.enemies.forEach(this.animateEnemy);
 
-    if (this.movingWall.x >= this.conf.movingWallX + 50) {
-      this.movingWall.body.velocity.x = -50;
-    } else if (this.movingWall.x <= this.conf.movingWallX - 50) {
-      this.movingWall.body.velocity.x = 50;
+    if (game.conf.mapName === 1) {
+      if (this.movingWall.x >= this.levelData.movingwallStart.x + 50) {
+        this.movingWall.body.velocity.x = -50;
+      } else if (this.movingWall.x <= this.levelData.movingwallStart.x - 50) {
+        this.movingWall.body.velocity.x = 50;
+      }
     }
 
-    if (game.life_points === 0) {
+    if (this.life_points === 0) {
       this.playerDie();
     }
   },
 
   // WORLD
   createWorld: function () {
-    this.map = game.add.tilemap(this.conf.mapName);
+    this.map = game.add.tilemap(game.conf.mapName);
 
     this.map.addTilesetImage('tileset');
     this.layer = this.map.createLayer('Tile Layer 1');
-    this.layer.resizeWorld();
+
+    if (game.conf.mapName === 4) {
+      this.layer.resizeWorld();
+    }
+
     this.map.setCollisionBetween(1, 14);
 
-    this.movingWall = game.add.sprite(this.conf.movingWallX, this.conf.movingWallY, 'wallH');
-    this.movingWall.anchor.setTo(0.5, 1);
-    game.physics.arcade.enable(this.movingWall);
-    this.movingWall.enableBody = true;
-    this.movingWall.body.immovable = true;
-    this.movingWall.body.velocity.x = 50;
+    if (game.conf.mapName === 1) {
+      this.movingWall = game.add.sprite(this.levelData.movingwallStart.x, this.levelData.movingwallStart.y, 'wallH');
+      this.movingWall.anchor.setTo(0.5, 1);
+      game.physics.arcade.enable(this.movingWall);
+      this.movingWall.enableBody = true;
+      this.movingWall.body.immovable = true;
+      this.movingWall.body.velocity.x = 50;
+    }
   },
 
   createWorldForeground: function () {
     this.layer2 = this.map.createLayer('Tile Layer 2');
-    this.layer2.resizeWorld();
-  },
 
-  eraseTuto: function () {
-    game.add.tween(this.tutoLabel).to({ alpha: 0 }, 1000, 'Linear', true);
+    if (game.conf.mapName === 4) {
+      this.layer2.resizeWorld();
+    }
   },
 
   // PLAYER
   movePlayer: function () {
-    if (this.cursor.left.isDown) {
+    if (this.cursor.left.isDown || this.zsqd.left.isDown) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
-      game.direction = 'left';
-    } else if (this.cursor.right.isDown) {
+      this.direction = 'left';
+    } else if (this.cursor.right.isDown || this.zsqd.right.isDown) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
-      game.direction = 'right';
+      this.direction = 'right';
     } else {
       this.player.body.velocity.x = 0;
       this.player.animations.stop();
 
-      if (game.direction === 'left') {
+      if (this.direction === 'left') {
         this.player.frame = 4;
       } else {
         this.player.frame = 0;
       }
     }
 
-    if (this.cursor.up.isDown && (this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
+    if ((this.cursor.up.isDown || this.space.isDown || this.zsqd.up.isDown) && (this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
       this.player.body.velocity.y = -470;
       this.jumpSound.play();
     }
 
-    if ((this.cursor.up.isDown && game.direction === 'right') || (!this.player.body.onFloor() && game.direction === 'right' && this.player.body.velocity.y !== 0)) {
+    if ((this.cursor.up.isDown && this.direction === 'right') || (!this.player.body.onFloor() && this.direction === 'right' && this.player.body.velocity.y !== 0)) {
       this.player.animations.play('jump-right');
       if (this.player.body.velocity.y > 0 && this.player.scale.y === 1) {
         this.player.animations.play('down-right');
@@ -321,7 +319,7 @@ var playState = {
       }
     }
 
-    if ((this.cursor.up.isDown && game.direction === 'left') || (!this.player.body.onFloor() && game.direction === 'left' && this.player.body.velocity.y !== 0)) {
+    if ((this.cursor.up.isDown && this.direction === 'left') || (!this.player.body.onFloor() && this.direction === 'left' && this.player.body.velocity.y !== 0)) {
       this.player.animations.play('jump-left');
       if (this.player.body.velocity.y > 0 && this.player.scale.y === 1) {
         this.player.animations.play('down-left');
@@ -332,21 +330,21 @@ var playState = {
   },
 
   playerHurt: function (pPlayer, pEnemy) {
-    if (!this.executed && game.life_points >= 1 && game.global.score < 100) {
+    if (!this.executed && this.life_points >= 1 && this.score < game.conf.difficultyData.score) {
       this.executed = true;
-      game.life_points -= 1;
-      this.health.animations.play(game.life_points);
+      this.life_points -= 1;
+      this.health.animations.play(this.life_points);
       this.player.alpha = 0.5;
       this.player.tint = 0xffffff;
-      game.tint = game.time.events.loop(100, this.changeTint, this);
+      this.tint = game.time.events.loop(100, this.changeTint, this);
       game.time.events.add(1000, this.resetTint, this);
       game.time.events.add(1000, this.reset_executed, this);
 
-      if (game.life_points >= 4) {
-        game.time.events.add(10000, this.updatePotionPosition, this);
+      if (this.life_points >= 4 && game.conf.difficulty !== 'hard') {
+        game.time.events.add(game.conf.difficultyData.potionTime, this.updatePotionPosition, this);
       }
 
-      if (game.life_points >= 1) {
+      if (this.life_points >= 1) {
         this.hurtSound.play();
       }
     }
@@ -357,7 +355,7 @@ var playState = {
   },
 
   resetTint: function () {
-    game.time.events.remove(game.tint);
+    game.time.events.remove(this.tint);
     this.player.tint = 0xffffff;
   },
 
@@ -365,7 +363,7 @@ var playState = {
     this.executed = false;
     this.player.alpha = 1;
     this.player.tint = 0xffffff;
-    if (this.conf.mapName === 3) {
+    if (game.conf.mapName === 3) {
       this.boss.body.enable = true;
       this.boss.animations.play('walk');
     }
@@ -380,7 +378,7 @@ var playState = {
 
     this.deadSound.play();
 
-    var deathLabel = game.add.text(400, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
+    let deathLabel = game.add.text(400, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
     deathLabel.fixedToCamera = true;
     deathLabel.anchor.setTo(0.5, 0.5);
 
@@ -395,7 +393,7 @@ var playState = {
 
   // BOSS
   moveBoss: function () {
-    if (this.conf.mapName === 3) {
+    if (game.conf.mapName === 3) {
       if (this.boss.body.velocity.x > 0 && this.boss.direction === 'left') {
         this.boss.scale.x = -1;
         this.boss.direction = 'right';
@@ -407,8 +405,8 @@ var playState = {
   },
 
   bossHurt: function () {
-    if (!this.executed && game.boss_life_points >= 0) {
-      game.boss_life_points -= 1;
+    if (!this.executed && this.boss_life_points >= 0) {
+      this.boss_life_points -= 1;
       game.time.events.add(1000, this.reset_executed, this);
       this.player.body.velocity.y = -200;
       this.boss.body.enable = false;
@@ -416,14 +414,14 @@ var playState = {
       this.emitter.y = this.boss.y;
       this.emitter.start(true, 300, null, 6);
       this.boss.animations.play('hurtAnim');
-      this.healthBoss.animations.play(game.boss_life_points);
+      this.healthBoss.animations.play(this.boss_life_points);
 
-      if (game.boss_life_points >= 1) {
+      if (this.boss_life_points >= 1) {
         game.time.events.add(Phaser.Timer.SECOND / 4, this.fireMissileUp, this);
         this.bossHurtSound.play();
       }
 
-      if (game.boss_life_points === 0) {
+      if (this.boss_life_points === 0) {
         this.bossDie();
       }
     }
@@ -440,9 +438,9 @@ var playState = {
   bossDie: function () {
     this.bossDieSound.play();
     this.boss.kill();
-    game.boss_life_pointsLabel.kill();
+    this.boss_life_pointsLabel.kill();
     this.healthBoss.kill();
-    game.time.events.remove(game.timer_missile);
+    game.time.events.remove(this.timer_missile);
 
     this.nextLevelText();
   },
@@ -485,7 +483,7 @@ var playState = {
 
   // ENEMY
   addEnemy: function () {
-    var enemy = this.enemies.getFirstDead();
+    let enemy = this.enemies.getFirstDead();
 
     if (!enemy) {
       return;
@@ -500,7 +498,7 @@ var playState = {
     enemy.body.checkCollision.up = true;
     enemy.angle = 0;
 
-    var enemyVelocity = game.rnd.integerInRange(0, 3);
+    let enemyVelocity = game.rnd.integerInRange(0, 3);
     switch (enemyVelocity) {
       case 0:
       case 1:
@@ -574,15 +572,15 @@ var playState = {
     game.time.events.add(500, this.eraseScore, this);
     game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
 
-    if (game.global.score < 90) {
+    if (this.score < game.conf.difficultyData.score - 10) {
       this.updateCoinPosition();
     } else {
       this.coin.kill();
       this.potion.kill();
     }
 
-    game.global.score += 10;
-    this.scoreLabel.text = 'Score : ' + game.global.score;
+    this.score += 10;
+    this.scoreLabel.text = 'Score : ' + this.score + ' / ' + game.conf.difficultyData.score;
 
     this.coinSound.play();
 
@@ -591,7 +589,7 @@ var playState = {
 
     game.add.tween(this.player.scale).to({x: 1.2, y: 0.8}, 50).to({x: 1, y: 1}, 150).start();
 
-    if (game.global.score === 100) {
+    if (this.score === game.conf.difficultyData.score) {
       this.nextLevelText();
     }
   },
@@ -601,21 +599,21 @@ var playState = {
   },
 
   updateCoinPosition: function () {
-    var coinPositionJson = this.conf.coinPosition;
-    var coinPosition = coinPositionJson.slice(0);
-    var newCoinPosition;
+    let coinPositionJson = this.levelData.coinPosition;
+    let coinPosition = coinPositionJson.slice(0);
+    let newCoinPosition;
 
-    for (var i = 0; i < coinPosition.length; i++) {
-      if (this.conf.mapName < 4 && coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
+    for (let i = 0; i < coinPosition.length; i++) {
+      if (game.conf.mapName < 4 && coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
         coinPosition.splice(i, 1);
         coinPosition.splice(0, coinPosition[i]);
       }
     }
 
-    if (this.conf.mapName < 4) {
+    if (game.conf.mapName < 4) {
       newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
-    } else if (this.conf.mapName === 4 && game.coinCount < 9) {
-      newCoinPosition = coinPosition[game.coinCount += 1];
+    } else if (game.conf.mapName === 4 && this.coinCount < 9) {
+      newCoinPosition = coinPosition[this.coinCount += 1];
     }
 
     this.coin.reset(newCoinPosition.x, newCoinPosition.y);
@@ -629,18 +627,19 @@ var playState = {
     game.add.tween(this.healthBonus).to({y: this.potion.y - 50}, 500, 'Linear', true);
 
     game.add.tween(this.player.scale).to({x: 0.8, y: 1.2}, 50).to({x: 1, y: 1}, 150).start();
+
     this.updatePotionPosition();
-    game.life_points += 1;
-    this.health.animations.play(game.life_points);
+    this.life_points += 1;
+    this.health.animations.play(this.life_points);
 
     this.potionSound.play();
 
-    var newPotionPosition = {x: -100, y: -100};
+    let newPotionPosition = {x: -100, y: -100};
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
 
-    if (game.life_points <= 4) {
-      game.time.events.add(10000, this.updatePotionPosition, this);
+    if (this.life_points <= 4 && game.conf.difficulty !== 'hard') {
+      game.time.events.add(game.conf.difficultyData.potionTime, this.updatePotionPosition, this);
     }
   },
 
@@ -649,16 +648,16 @@ var playState = {
   },
 
   updatePotionPosition: function () {
-    var potionPositionJson = this.conf.potionPosition;
-    var potionPosition = potionPositionJson.slice(0);
+    let potionPositionJson = this.levelData.potionPosition;
+    let potionPosition = potionPositionJson.slice(0);
 
-    for (var j = 0; j < potionPosition.length; j++) {
-      if (potionPosition[j].x === this.potion.x) {
-        potionPosition.splice(j, 1);
+    for (let i = 0; i < potionPosition.length; i++) {
+      if (potionPosition[i].x === this.potion.x) {
+        potionPosition.splice(i, 1);
       }
     }
 
-    var newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
+    let newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
   },
@@ -669,12 +668,12 @@ var playState = {
   },
 
   nextLevelText: function () {
-    var finishLabel;
-    if (this.conf.mapName <= 3) {
+    let finishLabel;
+    if (game.conf.mapName <= 3) {
       finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
       finishLabel.anchor.setTo(0.5, 0.5);
       game.time.events.add(2000, this.nextLevelState, this);
-    } else if (this.conf.mapName === 4) {
+    } else if (game.conf.mapName === 4) {
       finishLabel = game.add.text(400, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
       finishLabel.fixedToCamera = true;
       finishLabel.anchor.setTo(0.5, 0.5);
@@ -683,10 +682,20 @@ var playState = {
   },
 
   nextLevelState: function () {
-    game.state.start('play', true, false, this.conf.mapName + 1);
+    game.state.start('level', true, false, game.conf.mapName + 1);
   },
 
   restartLevel: function () {
-    game.state.start('play', true, false, this.conf.mapName);
+    if (game.conf.difficulty !== 'hard') {
+      game.state.start('level', true, false, game.conf.mapName);
+    } else {
+      game.state.start('level', true, false, 1);
+    }
+  },
+
+  // SOUND
+  toggleSound: function () {
+    game.sound.mute = !game.sound.mute;
+    this.muteButton.frame = game.sound.mute ? 1 : 0;
   }
 };
