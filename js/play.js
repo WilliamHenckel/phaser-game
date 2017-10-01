@@ -133,7 +133,7 @@ var playState = {
     this.potion.anchor.setTo(0.5, 0.5);
 
     // Score
-    this.scoreLabel = game.add.text(65, 17, 'Score : 0', {font: fontm, fill: textColor});
+    this.scoreLabel = game.add.text(65, 17, 'Score : 0 / ' + game.conf.difficultyData.score, {font: fontm, fill: textColor});
     this.scoreLabel.fixedToCamera = true;
     this.score = 0;
 
@@ -580,7 +580,7 @@ var playState = {
     }
 
     this.score += 10;
-    this.scoreLabel.text = 'Score : ' + this.score;
+    this.scoreLabel.text = 'Score : ' + this.score + ' / ' + game.conf.difficultyData.score;
 
     this.coinSound.play();
 
