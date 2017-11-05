@@ -7,7 +7,7 @@ var fontl = '30px ' + textFont;
 var fontm = '25px ' + textFont;
 var fonts = '20px ' + textFont;
 
-WebFontConfig = {
+var WebFontConfig = {
   google: {
     families: ['VT323']
   }

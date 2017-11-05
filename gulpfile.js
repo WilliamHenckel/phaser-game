@@ -1,9 +1,8 @@
 var gulp = require('gulp');
+var babel = require('gulp-babel');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
-var paths = {
-  files: ['assets/']
-};
+var gutil = require('gulp-util');
 
 // JAVASCRIPT
 gulp.task('concat-js', function () {
@@ -14,6 +13,7 @@ gulp.task('concat-js', function () {
       './js/help.js',
       './js/character.js',
       './js/difficulty.js',
+      './js/level.js',
       './js/play.js',
       './js/game.js'
     ])
@@ -23,7 +23,11 @@ gulp.task('concat-js', function () {
 
 gulp.task('minify-js', ['concat-js'], function () {
     gulp.src('./dist/dist.js')
+    .pipe(babel({
+      presets: ['es2015']
+    }))
     .pipe(uglify())
+    .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
     .pipe(gulp.dest('dist'));
 });
 
@@ -41,24 +45,10 @@ gulp.task('copy-css', function () {
    gulp.src([
      'css/**/*'
    ])
-   .pipe(gulp.dest('./dist/css'));
+   .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-phaser', function () {
-   gulp.src([
-     'phaser.min.js'
-   ])
-   .pipe(gulp.dest('./dist/'));
-});
-
-/* gulp.task('copy-html', function () {
-  gulp.src([
-    'index.html'
-  ])
-  .pipe(gulp.dest('./dist/'));
-}); */
-
-gulp.task('copy-all', ['copy-assets', 'copy-css', 'copy-phaser'/*, 'copy-html'*/]);
+gulp.task('copy-all', ['copy-assets', 'copy-css']);
 
 // FINAL COMMAND
 gulp.task('dist', ['prod-js', 'copy-all']);

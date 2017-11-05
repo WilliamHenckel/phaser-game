@@ -330,13 +330,15 @@ var playState = {
   },
 
   playerHurt: function (pPlayer, pEnemy) {
-    if (!this.executed && this.life_points > 1 && this.score < game.conf.difficultyData.score) {
+    if (!this.executed && this.life_points >= 1 && this.score < game.conf.difficultyData.score) {
       this.executed = true;
       this.life_points -= 1;
       this.health.animations.play(this.life_points);
+      this.player.alpha = 0.5;
+      this.player.tint = 0xffffff;
       this.tint = game.time.events.loop(100, this.changeTint, this);
-      game.time.events.add(990, this.resetTint, this); // First
-      game.time.events.add(1000, this.reset_executed, this); // Second
+      game.time.events.add(990, this.resetTint, this);
+      game.time.events.add(1000, this.reset_executed, this);
 
       if (this.life_points >= 4 && game.conf.difficulty !== 'hard') {
         game.time.events.add(game.conf.difficultyData.potionTime, this.updatePotionPosition, this);
@@ -345,14 +347,10 @@ var playState = {
       if (this.life_points >= 1) {
         this.hurtSound.play();
       }
-      console.log('hurt');
-    } else if (this.life_points === 1) {
-      this.playerDie();
     }
   },
 
   changeTint: function () {
-    this.player.alpha = 0.5;
     this.player.tint = (this.player.tint === 0xff0000) ? 0xffffff : 0xff0000;
   },
 
