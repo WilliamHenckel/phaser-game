@@ -337,7 +337,7 @@ var playState = {
       this.player.alpha = 0.5;
       this.player.tint = 0xffffff;
       this.tint = game.time.events.loop(100, this.changeTint, this);
-      game.time.events.add(1000, this.resetTint, this);
+      game.time.events.add(990, this.resetTint, this);
       game.time.events.add(1000, this.reset_executed, this);
 
       if (this.life_points >= 4 && game.conf.difficulty !== 'hard') {
