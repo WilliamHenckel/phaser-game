@@ -185,6 +185,7 @@ var playState = {
     this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
     this.muteButton.input.useHandCursor = true;
     this.muteButton.fixedToCamera = true;
+    this.trophySound = game.add.audio('trophy');
 
     if (game.sound.mute) {
       this.muteButton.frame = 1;
@@ -557,8 +558,17 @@ var playState = {
         this.emitter.start(true, 300, null, 6);
         this.hurtAgain = false;
         game.time.events.add(500, this.resetHurtAgain, this);
+        game.conf.enemyKillCounter++;
+
+        if (game.conf.enemyKillCounter === 30) {
+          game.time.events.add(500, this.getTrophy, this);
+        }
       }
     }
+  },
+
+  getTrophy: function () {
+    this.trophySound.play();
   },
 
   resetHurtAgain: function () {
@@ -677,6 +687,18 @@ var playState = {
       finishLabel = game.add.text(400, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
       finishLabel.fixedToCamera = true;
       finishLabel.anchor.setTo(0.5, 0.5);
+
+      if (game.conf.difficulty === 'easy') {
+        game.conf.easyEnding = true;
+        game.time.events.add(500, this.getTrophy, this);
+      } else if (game.conf.difficulty === 'casual') {
+        game.conf.casualEnding = true;
+        game.time.events.add(500, this.getTrophy, this);
+      } else if (game.conf.difficulty === 'hard') {
+        game.conf.hardEnding = true;
+        game.time.events.add(500, this.getTrophy, this);
+      }
+
       game.time.events.add(2000, this.startMenu, this);
     }
   },

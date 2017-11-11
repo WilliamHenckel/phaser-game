@@ -24,12 +24,14 @@ var characterState = {
     this.achille.anchor.set(0.5);
     this.achille.alpha = 0.5;
     this.achille.inputEnabled = true;
+    this.achilleTween = game.add.tween(this.achille).to({angle: -5}, 200).to({angle: 0}, 200).to({angle: 5}, 200).to({angle: 0}, 200).loop().start();
 
     this.ernest = game.add.sprite(1175, game.world.centerY, 'ernestimg');
     game.add.tween(this.ernest).to({x: 400 + 75}, 400, Phaser.Easing.Linear.Out, true);
     this.ernest.anchor.set(0.5);
     this.ernest.alpha = 0.5;
     this.ernest.inputEnabled = true;
+    this.ernestTween = game.add.tween(this.ernest).to({angle: -5}, 200).to({angle: 0}, 200).to({angle: 5}, 200).to({angle: 0}, 200).loop().start();
 
     this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
     this.muteButton.input.useHandCursor = true;
@@ -45,9 +47,13 @@ var characterState = {
     if (this.achille.input.pointerOver()) {
       this.achille.alpha = 1;
       this.achilleName.alpha = 1;
+      this.achilleTween.resume();
+      this.ernestTween.pause();
     } else if (this.ernest.input.pointerOver()) {
       this.ernest.alpha = 1;
       this.ernestName.alpha = 1;
+      this.ernestTween.resume();
+      this.achilleTween.pause();
     } else if (this.returnButton.input.pointerOver()) {
       this.returnButton.alpha = 1;
     } else {
@@ -56,6 +62,12 @@ var characterState = {
       this.achilleName.alpha = 0;
       this.ernestName.alpha = 0;
       this.returnButton.alpha = 0.5;
+      this.ernestTween.pause();
+      this.achilleTween.pause();
+      // this.achille.angle = 0;
+      // this.ernest.angle = 0;
+      // game.add.tween(this.achille).to({angle: 0}, 100).start();
+      // game.add.tween(this.ernest).to({angle: 0}, 100).start();
     }
   },
 
