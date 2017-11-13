@@ -90,7 +90,7 @@ var difficultyState = {
   },
 
   stateLevel: function () {
-    game.state.start('level', true, false, 4);
+    game.state.start('level', true, false, 1);
   },
 
   stateCharacter: function () {
