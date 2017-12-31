@@ -1,5 +1,5 @@
 /* global Phaser, bootState, loadState, menuState, trophyState, helpState, characterState, difficultyState, levelState, playState */
-var game = new Phaser.Game(800, 640, Phaser.AUTO, 'gameDiv', null, false);
+var game = new Phaser.Game(800, 700, Phaser.AUTO, 'gameDiv', null, false);
 var textColor = '#ffffff';
 var textFont = 'VT323';
 var fontxl = '50px ' + textFont;

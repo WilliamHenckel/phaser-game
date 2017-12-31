@@ -23,17 +23,17 @@ var menuState = {
     this.nameLabel = game.add.text(400, -50, 'Random Guy Adventures', {font: fontxl, fill: textColor});
     this.nameLabel.anchor.setTo(0.5, 0.5);
 
-    this.startButton = game.add.text(150, 700, 'Démarrer', {font: fontxl, fill: textColor});
+    this.startButton = game.add.text(150, 720, 'Démarrer', {font: fontxl, fill: textColor});
     this.startButton.anchor.set(0.5);
     this.startButton.alpha = 0.5;
     this.startButton.inputEnabled = true;
 
-    this.helpButton = game.add.text(400, 700, 'Tutorial', {font: fontxl, fill: textColor});
+    this.helpButton = game.add.text(400, 720, 'Tutorial', {font: fontxl, fill: textColor});
     this.helpButton.anchor.set(0.5);
     this.helpButton.alpha = 0.5;
     this.helpButton.inputEnabled = true;
 
-    this.trophyButton = game.add.text(650, 700, 'Trophées', {font: fontxl, fill: textColor});
+    this.trophyButton = game.add.text(650, 720, 'Trophées', {font: fontxl, fill: textColor});
     this.trophyButton.anchor.set(0.5);
     this.trophyButton.alpha = 0.5;
     this.trophyButton.inputEnabled = true;
