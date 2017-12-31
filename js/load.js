@@ -30,6 +30,9 @@ var loadState = {
     game.load.image('missile', 'assets/missile.png');
     game.load.image('healthBonus', 'assets/healthBonus.png');
     game.load.image('trophy', 'assets/trophy.png');
+    game.load.image('jumpButton', 'assets/jumpButton.png');
+    game.load.image('rightButton', 'assets/rightButton.png');
+    game.load.image('leftButton', 'assets/leftButton.png');
 
     game.load.tilemap('1', 'assets/map1.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('2', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);

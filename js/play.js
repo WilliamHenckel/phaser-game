@@ -206,6 +206,11 @@ var playState = {
     // Damage
     this.executed = false;
     this.hurtAgain = true;
+
+    // Responsive
+    if (!game.device.desktop) {
+      this.addMobileInputs();
+    }
   },
 
   update: function () {
@@ -287,11 +292,11 @@ var playState = {
 
   // PLAYER
   movePlayer: function () {
-    if (this.cursor.left.isDown || this.zsqd.left.isDown) {
+    if (this.cursor.left.isDown || this.zsqd.left.isDown || this.moveLeft) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
       this.direction = 'left';
-    } else if (this.cursor.right.isDown || this.zsqd.right.isDown) {
+    } else if (this.cursor.right.isDown || this.zsqd.right.isDown || this.moveRight) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
       this.direction = 'right';
@@ -306,9 +311,8 @@ var playState = {
       }
     }
 
-    if ((this.cursor.up.isDown || this.space.isDown || this.zsqd.up.isDown) && (this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
-      this.player.body.velocity.y = -470;
-      this.jumpSound.play();
+    if (this.cursor.up.isDown || this.space.isDown || this.zsqd.up.isDown) {
+      this.playerJump();
     }
 
     if ((this.cursor.up.isDown && this.direction === 'right') || (!this.player.body.onFloor() && this.direction === 'right' && this.player.body.velocity.y !== 0)) {
@@ -327,6 +331,13 @@ var playState = {
       } else if (this.player.body.velocity.y === 0 && this.player.body.velocity.x === 0) {
         this.player.frame = 4;
       }
+    }
+  },
+
+  playerJump: function () {
+    if ((this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
+      this.player.body.velocity.y = -470;
+      this.jumpSound.play();
     }
   },
 
@@ -670,6 +681,50 @@ var playState = {
     let newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
 
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
+  },
+
+  addMobileInputs: function () {
+    this.jumpButton = game.add.sprite(650, 500, 'jumpButton');
+    this.jumpButton.inputEnabled = true;
+    this.jumpButton.alpha = 0.5;
+    this.jumpButton.events.onInputDown.add(function () {
+      this.playerJump();
+    }, this);
+
+    this.moveLeft = false;
+    this.moveRight = false;
+
+    this.leftButton = game.add.sprite(50, 500, 'leftButton');
+    this.leftButton.inputEnabled = true;
+    this.leftButton.alpha = 0.5;
+    this.leftButton.events.onInputOver.add(function () {
+      this.moveLeft = true;
+    }, this);
+    this.leftButton.events.onInputOut.add(function () {
+      this.moveLeft = false;
+    }, this);
+    this.leftButton.events.onInputDown.add(function () {
+      this.moveLeft = true;
+    }, this);
+    this.leftButton.events.onInputUp.add(function () {
+      this.moveLeft = false;
+    }, this);
+
+    this.rightButton = game.add.sprite(350, 500, 'rightButton');
+    this.rightButton.inputEnabled = true;
+    this.rightButton.alpha = 0.5;
+    this.rightButton.events.onInputOver.add(function () {
+      this.moveRight = true;
+    }, this);
+    this.rightButton.events.onInputOut.add(function () {
+      this.moveRight = false;
+    }, this);
+    this.rightButton.events.onInputDown.add(function () {
+      this.moveRight = true;
+    }, this);
+    this.rightButton.events.onInputUp.add(function () {
+      this.moveRight = false;
+    }, this);
   },
 
   // LEVELS
