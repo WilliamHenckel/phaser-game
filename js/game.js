@@ -1,5 +1,12 @@
 /* global Phaser, bootState, loadState, menuState, trophyState, helpState, characterState, difficultyState, levelState, playState */
-var game = new Phaser.Game(800, 700, Phaser.AUTO, 'gameDiv', null, false);
+if (window.innerWidth <= 800) {
+  var canvasHeight = 700;
+} else {
+  var canvasHeight = 640;
+}
+
+var game = new Phaser.Game(800, window.canvasHeight, Phaser.AUTO, 'gameDiv', null, false, false);
+
 var textColor = '#ffffff';
 var textFont = 'VT323';
 var fontxl = '50px ' + textFont;

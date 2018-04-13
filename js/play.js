@@ -685,7 +685,7 @@ var playState = {
   },
 
   addMobileInputs: function () {
-    this.jumpButton = game.add.sprite(350, 620, 'jumpButton');
+    this.jumpButton = game.add.sprite(650, 620, 'jumpButton');
     this.jumpButton.inputEnabled = true;
     this.jumpButton.alpha = 0.5;
     this.jumpButton.events.onInputDown.add(function () {
@@ -711,7 +711,7 @@ var playState = {
       this.moveLeft = false;
     }, this);
 
-    this.rightButton = game.add.sprite(650, 620, 'rightButton');
+    this.rightButton = game.add.sprite(350, 620, 'rightButton');
     this.rightButton.inputEnabled = true;
     this.rightButton.alpha = 0.5;
     this.rightButton.events.onInputOver.add(function () {
