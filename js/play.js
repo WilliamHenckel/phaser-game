@@ -209,9 +209,7 @@ var playState = {
     this.hurtAgain = true;
 
     // Responsive
-    if (!game.device.desktop) {
-      this.addMobileInputs();
-    }
+    this.addMobileInputs();
   },
 
   update: function () {
