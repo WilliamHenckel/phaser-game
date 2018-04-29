@@ -1,11 +1,13 @@
 /* global Phaser, bootState, loadState, menuState, trophyState, helpState, characterState, difficultyState, levelState, playState */
 if (window.innerWidth <= 800) {
   var canvasHeight = 700;
+  var antialias = true;
 } else {
   var canvasHeight = 640;
+  var antialias = false;
 }
 
-var game = new Phaser.Game(800, window.canvasHeight, Phaser.AUTO, 'gameDiv', null, false, false);
+var game = new Phaser.Game(800, window.canvasHeight, Phaser.AUTO, 'gameDiv', null, false, window.antialias);
 
 var textColor = '#ffffff';
 var textFont = 'VT323';
