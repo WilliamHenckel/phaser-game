@@ -69,15 +69,6 @@ var trophyState = {
       this.trophyLockedText[2].alpha = 1;
     }
 
-    /* this.trophyUnlocked = game.add.sprite(850, 350, 'trophy');
-    game.add.tween(this.trophyUnlocked).to({x: 150}, 400, Phaser.Easing.Linear.Out, true);
-    this.trophyUnlocked.anchor.setTo(0.5, 0.5);
-    this.trophyUnlocked.scale.setTo(0.5, 0.5);
-    this.trophyUnlockedText = game.add.text(900, 350, 'Trophée unlocked', {font: fonts, fill: textColor});
-    game.add.tween(this.trophyUnlockedText).to({x: 200}, 400, Phaser.Easing.Linear.Out, true);
-    this.trophyUnlockedText.anchor.setTo(0, 0.5);
-    game.add.tween(this.trophyUnlocked).to({angle: -10}, 300).to({angle: 0}, 300).to({angle: 10}, 300).to({angle: 0}, 300).loop().start(); */
-
     game.input.onDown.add(this.menu, this);
   },
 
