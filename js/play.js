@@ -134,6 +134,7 @@ var playState = {
 
     // Score
     this.scoreLabel = game.add.text(65, 17, 'Score : 0 / ' + game.conf.difficultyData.score, {font: fontm, fill: textColor});
+    this.scoreLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
     this.scoreLabel.fixedToCamera = true;
     this.score = 0;
 
@@ -141,6 +142,7 @@ var playState = {
     if (game.conf.mapName === 3) {
       this.boss_life_pointsLabel = game.add.text(400, 170, 'Boss', {font: fontxl, fill: textColor});
       this.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
+      this.boss_life_pointsLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
     }
 
     // Ennemies
@@ -392,6 +394,7 @@ var playState = {
     let deathLabel = game.add.text(400, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
     deathLabel.fixedToCamera = true;
     deathLabel.anchor.setTo(0.5, 0.5);
+    deathLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
 
     game.stage.backgroundColor = '#313131';
 
@@ -571,7 +574,7 @@ var playState = {
         game.conf.enemyKillCounter++;
 
         if (game.conf.enemyKillCounter === 30) {
-          game.time.events.add(500, this.getTrophy, this, 'Dexter Morgan');
+          game.time.events.add(300, this.getTrophy, this, 'Dexter Morgan');
         }
       }
     }
@@ -580,16 +583,16 @@ var playState = {
   getTrophy: function (name) {
     this.trophySound.play();
 
-    this.dialogue = game.add.sprite(400, -70, 'dialogue');
+    this.dialogue = game.add.sprite(game.world.width - 400, -70, 'dialogue');
     this.dialogue.anchor.setTo(0.5, 0.5);
     game.add.tween(this.dialogue).to({y: 140}, 400, Phaser.Easing.Circular.Out, true);
 
-    this.trophyUnlocked = game.add.sprite(250, -70, 'trophy');
+    this.trophyUnlocked = game.add.sprite(game.world.width - 550, -70, 'trophy');
     this.trophyUnlocked.anchor.setTo(0.5, 0.5);
     this.trophyUnlocked.scale.setTo(0.5, 0.5);
     game.add.tween(this.trophyUnlocked).to({y: 140}, 400, Phaser.Easing.Circular.Out, true);
 
-    this.trophyUnlockedText = game.add.text(400, -70, 'Obtenu : ' + name, {font: fonts, fill: textColorBlack});
+    this.trophyUnlockedText = game.add.text(game.world.width - 400, -70, 'Obtenu : ' + name, {font: fonts, fill: textColorBlack});
     this.trophyUnlockedText.anchor.setTo(0.5, 0.5);
     game.add.tween(this.trophyUnlockedText).to({y: 140}, 400, Phaser.Easing.Circular.Out, true);
 
@@ -618,6 +621,7 @@ var playState = {
   takeCoin: function () {
     this.pointsLabel = game.add.text(this.coin.x, this.coin.y, '10', {font: fontm, fill: textColor});
     this.pointsLabel.anchor.setTo(0.5, 0.5);
+    this.pointsLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
     game.time.events.add(500, this.eraseScore, this);
     game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
 
@@ -765,24 +769,26 @@ var playState = {
     if (game.conf.mapName <= 3) {
       finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
       finishLabel.anchor.setTo(0.5, 0.5);
-      game.time.events.add(2000, this.nextLevelState, this);
+      finishLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
+      game.time.events.add(3000, this.nextLevelState, this);
     } else if (game.conf.mapName === 4) {
       finishLabel = game.add.text(400, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
       finishLabel.fixedToCamera = true;
       finishLabel.anchor.setTo(0.5, 0.5);
+      finishLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
 
       if (game.conf.difficulty === 'easy') {
         game.conf.easyEnding = true;
-        game.time.events.add(500, this.getTrophy, this, 'Fin Facile');
+        game.time.events.add(300, this.getTrophy, this, 'Fin Facile');
       } else if (game.conf.difficulty === 'casual') {
         game.conf.casualEnding = true;
-        game.time.events.add(500, this.getTrophy, this, 'Fin Normale');
+        game.time.events.add(300, this.getTrophy, this, 'Fin Normale');
       } else if (game.conf.difficulty === 'hard') {
         game.conf.hardEnding = true;
-        game.time.events.add(500, this.getTrophy, this, 'Fin Difficile');
+        game.time.events.add(300, this.getTrophy, this, 'Fin Difficile');
       }
 
-      game.time.events.add(2000, this.startMenu, this);
+      game.time.events.add(3000, this.startMenu, this);
     }
   },
 
