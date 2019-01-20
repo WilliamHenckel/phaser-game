@@ -23,15 +23,20 @@ var menuState = {
     this.nameLabel = game.add.text(400, -50, 'Random Guy Adventures', {font: fontxl, fill: textColor});
     this.nameLabel.anchor.setTo(0.5, 0.5);
 
-    this.startButton = game.add.text(400, 700, 'Démarrer', {font: fontxl, fill: textColor});
+    this.startButton = game.add.text(150, 720, 'Démarrer', {font: fontxl, fill: textColor});
     this.startButton.anchor.set(0.5);
     this.startButton.alpha = 0.5;
     this.startButton.inputEnabled = true;
 
-    this.helpButton = game.add.text(400, 700, 'Aide', {font: fontxl, fill: textColor});
+    this.helpButton = game.add.text(400, 720, 'Tutorial', {font: fontxl, fill: textColor});
     this.helpButton.anchor.set(0.5);
     this.helpButton.alpha = 0.5;
     this.helpButton.inputEnabled = true;
+
+    this.trophyButton = game.add.text(650, 720, 'Trophées', {font: fontxl, fill: textColor});
+    this.trophyButton.anchor.set(0.5);
+    this.trophyButton.alpha = 0.5;
+    this.trophyButton.inputEnabled = true;
 
     this.arrows = game.add.sprite(900, game.world.centerY - 15, 'arrows');
     this.arrows.anchor.set(0.5);
@@ -58,9 +63,12 @@ var menuState = {
       this.startButton.alpha = 1;
     } else if (this.helpButton.input.pointerOver()) {
       this.helpButton.alpha = 1;
+    } else if (this.trophyButton.input.pointerOver()) {
+      this.trophyButton.alpha = 1;
     } else {
       this.startButton.alpha = 0.5;
       this.helpButton.alpha = 0.5;
+      this.trophyButton.alpha = 0.5;
     }
   },
 
@@ -79,8 +87,9 @@ var menuState = {
   },
 
   titleStart: function () {
-    game.add.tween(this.startButton).to({y: game.world.centerY + 160}, 1000).easing(Phaser.Easing.Circular.Out).start();
-    game.add.tween(this.helpButton).to({y: game.world.centerY + 240}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(this.startButton).to({y: game.world.centerY + 200}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(this.helpButton).to({y: game.world.centerY + 200}, 1000).easing(Phaser.Easing.Circular.Out).start();
+    game.add.tween(this.trophyButton).to({y: game.world.centerY + 200}, 1000).easing(Phaser.Easing.Circular.Out).start();
 
     if (this.musicplay === undefined) {
       this.music.loopFull();
@@ -107,6 +116,7 @@ var menuState = {
     game.add.tween(this.explosion).to({x: this.explosion.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.startButton).to({x: this.startButton.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.helpButton).to({x: this.helpButton.x - 800}, 400, Phaser.Easing.Linear.Out, true);
+    game.add.tween(this.trophyButton).to({x: this.trophyButton.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.arrows).to({x: this.arrows.x - 800}, 400, Phaser.Easing.Linear.Out, true);
     game.add.tween(this.minion).to({x: this.minion.x - 800}, 400, Phaser.Easing.Linear.Out, true);
 
@@ -114,6 +124,8 @@ var menuState = {
       game.time.events.add(500, this.stateCharacter, this);
     } else if (pState === 'help') {
       game.time.events.add(500, this.stateHelp, this);
+    } else if (pState === 'trophy') {
+      game.time.events.add(500, this.stateTrophy, this);
     }
   },
 
@@ -125,12 +137,18 @@ var menuState = {
     game.state.start('help');
   },
 
+  stateTrophy: function () {
+    game.state.start('trophy');
+  },
+
   menuChoice: function () {
     if (!this.muteButton.input.pointerOver() && this.nameLabel.y === 100) {
       if (this.startButton.input.pointerOver()) {
         this.transitionAnimation('character');
       } else if (this.helpButton.input.pointerOver()) {
         this.transitionAnimation('help');
+      } else if (this.trophyButton.input.pointerOver()) {
+        this.transitionAnimation('trophy');
       }
     }
   },

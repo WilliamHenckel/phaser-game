@@ -1,4 +1,4 @@
-/* global Phaser, game, fontxl, fontl, fontm, textColor */
+/* global Phaser, game, fontxl, fontl, fontm, fonts, textColor, textColorBlack */
 var playState = {
   init: function (map) {
     switch (map) {
@@ -134,6 +134,7 @@ var playState = {
 
     // Score
     this.scoreLabel = game.add.text(65, 17, 'Score : 0 / ' + game.conf.difficultyData.score, {font: fontm, fill: textColor});
+    this.scoreLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
     this.scoreLabel.fixedToCamera = true;
     this.score = 0;
 
@@ -141,6 +142,7 @@ var playState = {
     if (game.conf.mapName === 3) {
       this.boss_life_pointsLabel = game.add.text(400, 170, 'Boss', {font: fontxl, fill: textColor});
       this.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
+      this.boss_life_pointsLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
     }
 
     // Ennemies
@@ -185,6 +187,7 @@ var playState = {
     this.muteButton = game.add.button(20, 20, 'mute', this.toggleSound, this);
     this.muteButton.input.useHandCursor = true;
     this.muteButton.fixedToCamera = true;
+    this.trophySound = game.add.audio('trophy');
 
     if (game.sound.mute) {
       this.muteButton.frame = 1;
@@ -201,10 +204,14 @@ var playState = {
 
     // Décor premier plan
     this.createWorldForeground();
+    game.stage.backgroundColor = '#3c906e';
 
     // Damage
     this.executed = false;
     this.hurtAgain = true;
+
+    // Responsive
+    this.addMobileInputs();
   },
 
   update: function () {
@@ -286,11 +293,11 @@ var playState = {
 
   // PLAYER
   movePlayer: function () {
-    if (this.cursor.left.isDown || this.zsqd.left.isDown) {
+    if (this.cursor.left.isDown || this.zsqd.left.isDown || this.moveLeft) {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
       this.direction = 'left';
-    } else if (this.cursor.right.isDown || this.zsqd.right.isDown) {
+    } else if (this.cursor.right.isDown || this.zsqd.right.isDown || this.moveRight) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
       this.direction = 'right';
@@ -305,9 +312,8 @@ var playState = {
       }
     }
 
-    if ((this.cursor.up.isDown || this.space.isDown || this.zsqd.up.isDown) && (this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
-      this.player.body.velocity.y = -470;
-      this.jumpSound.play();
+    if (this.cursor.up.isDown || this.space.isDown || this.zsqd.up.isDown) {
+      this.playerJump();
     }
 
     if ((this.cursor.up.isDown && this.direction === 'right') || (!this.player.body.onFloor() && this.direction === 'right' && this.player.body.velocity.y !== 0)) {
@@ -326,6 +332,13 @@ var playState = {
       } else if (this.player.body.velocity.y === 0 && this.player.body.velocity.x === 0) {
         this.player.frame = 4;
       }
+    }
+  },
+
+  playerJump: function () {
+    if ((this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
+      this.player.body.velocity.y = -470;
+      this.jumpSound.play();
     }
   },
 
@@ -381,6 +394,7 @@ var playState = {
     let deathLabel = game.add.text(400, game.world.centerY, 'T\'es nul...', {font: fontl, fill: textColor});
     deathLabel.fixedToCamera = true;
     deathLabel.anchor.setTo(0.5, 0.5);
+    deathLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
 
     game.stage.backgroundColor = '#313131';
 
@@ -557,8 +571,46 @@ var playState = {
         this.emitter.start(true, 300, null, 6);
         this.hurtAgain = false;
         game.time.events.add(500, this.resetHurtAgain, this);
+        game.conf.enemyKillCounter++;
+
+        if (game.conf.enemyKillCounter === 30) {
+          game.time.events.add(300, this.getTrophy, this, 'Dexter Morgan');
+        }
       }
     }
+  },
+
+  getTrophy: function (name) {
+    this.trophySound.play();
+
+    this.dialogue = game.add.sprite(game.world.width - 400, -70, 'dialogue');
+    this.dialogue.anchor.setTo(0.5, 0.5);
+    game.add.tween(this.dialogue).to({y: 140}, 400, Phaser.Easing.Circular.Out, true);
+
+    this.trophyUnlocked = game.add.sprite(game.world.width - 550, -70, 'trophy');
+    this.trophyUnlocked.anchor.setTo(0.5, 0.5);
+    this.trophyUnlocked.scale.setTo(0.5, 0.5);
+    game.add.tween(this.trophyUnlocked).to({y: 140}, 400, Phaser.Easing.Circular.Out, true);
+
+    this.trophyUnlockedText = game.add.text(game.world.width - 400, -70, 'Obtenu : ' + name, {font: fonts, fill: textColorBlack});
+    this.trophyUnlockedText.anchor.setTo(0.5, 0.5);
+    game.add.tween(this.trophyUnlockedText).to({y: 140}, 400, Phaser.Easing.Circular.Out, true);
+
+    game.time.events.add(2000, this.eraseTrophy, this);
+  },
+
+  eraseTrophy: function () {
+    game.add.tween(this.dialogue).to({y: -70}, 400, Phaser.Easing.Circular.In, true);
+    game.add.tween(this.trophyUnlocked).to({y: -70}, 400, Phaser.Easing.Circular.In, true);
+    game.add.tween(this.trophyUnlockedText).to({y: -70}, 400, Phaser.Easing.Circular.In, true);
+
+    game.time.events.add(500, this.killTrophy, this);
+  },
+
+  killTrophy: function () {
+    this.dialogue.kill();
+    this.trophyUnlocked.kill();
+    this.trophyUnlockedText.kill();
   },
 
   resetHurtAgain: function () {
@@ -569,6 +621,7 @@ var playState = {
   takeCoin: function () {
     this.pointsLabel = game.add.text(this.coin.x, this.coin.y, '10', {font: fontm, fill: textColor});
     this.pointsLabel.anchor.setTo(0.5, 0.5);
+    this.pointsLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
     game.time.events.add(500, this.eraseScore, this);
     game.add.tween(this.pointsLabel).to({y: this.coin.y - 50}, 500, 'Linear', true);
 
@@ -662,6 +715,50 @@ var playState = {
     this.potion.reset(newPotionPosition.x, newPotionPosition.y);
   },
 
+  addMobileInputs: function () {
+    this.jumpButton = game.add.sprite(650, 620, 'jumpButton');
+    this.jumpButton.inputEnabled = true;
+    this.jumpButton.alpha = 0.5;
+    this.jumpButton.events.onInputDown.add(function () {
+      this.playerJump();
+    }, this);
+
+    this.moveLeft = false;
+    this.moveRight = false;
+
+    this.leftButton = game.add.sprite(50, 620, 'leftButton');
+    this.leftButton.inputEnabled = true;
+    this.leftButton.alpha = 0.5;
+    this.leftButton.events.onInputOver.add(function () {
+      this.moveLeft = true;
+    }, this);
+    this.leftButton.events.onInputOut.add(function () {
+      this.moveLeft = false;
+    }, this);
+    this.leftButton.events.onInputDown.add(function () {
+      this.moveLeft = true;
+    }, this);
+    this.leftButton.events.onInputUp.add(function () {
+      this.moveLeft = false;
+    }, this);
+
+    this.rightButton = game.add.sprite(350, 620, 'rightButton');
+    this.rightButton.inputEnabled = true;
+    this.rightButton.alpha = 0.5;
+    this.rightButton.events.onInputOver.add(function () {
+      this.moveRight = true;
+    }, this);
+    this.rightButton.events.onInputOut.add(function () {
+      this.moveRight = false;
+    }, this);
+    this.rightButton.events.onInputDown.add(function () {
+      this.moveRight = true;
+    }, this);
+    this.rightButton.events.onInputUp.add(function () {
+      this.moveRight = false;
+    }, this);
+  },
+
   // LEVELS
   startMenu: function () {
     game.state.start('menu');
@@ -672,12 +769,26 @@ var playState = {
     if (game.conf.mapName <= 3) {
       finishLabel = game.add.text(game.world.centerX, game.world.centerY, 'Niveau terminé', {font: fontl, fill: textColor});
       finishLabel.anchor.setTo(0.5, 0.5);
-      game.time.events.add(2000, this.nextLevelState, this);
+      finishLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
+      game.time.events.add(3000, this.nextLevelState, this);
     } else if (game.conf.mapName === 4) {
       finishLabel = game.add.text(400, game.world.centerY, 'Jeu terminé ! Bravo !', {font: fontl, fill: textColor});
       finishLabel.fixedToCamera = true;
       finishLabel.anchor.setTo(0.5, 0.5);
-      game.time.events.add(2000, this.startMenu, this);
+      finishLabel.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
+
+      if (game.conf.difficulty === 'easy') {
+        game.conf.easyEnding = true;
+        game.time.events.add(300, this.getTrophy, this, 'Fin Facile');
+      } else if (game.conf.difficulty === 'casual') {
+        game.conf.casualEnding = true;
+        game.time.events.add(300, this.getTrophy, this, 'Fin Normale');
+      } else if (game.conf.difficulty === 'hard') {
+        game.conf.hardEnding = true;
+        game.time.events.add(300, this.getTrophy, this, 'Fin Difficile');
+      }
+
+      game.time.events.add(3000, this.startMenu, this);
     }
   },
 

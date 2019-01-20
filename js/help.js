@@ -3,7 +3,7 @@ var helpState = {
   create: function () {
     game.stage.backgroundColor = '#313131';
 
-    this.title = game.add.text(1100, 100, 'Aide', {font: fontxl, fill: textColor});
+    this.title = game.add.text(1100, 100, 'Tutorial', {font: fontxl, fill: textColor});
     game.add.tween(this.title).to({x: 400}, 400, Phaser.Easing.Linear.Out, true);
     this.title.anchor.set(0.5);
 

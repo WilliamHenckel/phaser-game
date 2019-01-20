@@ -24,9 +24,6 @@ var levelState = {
     game.time.events.add(2400, this.statePlay, this);
   },
 
-  update: function () {
-  },
-
   displayText: function () {
     this.level = game.add.text(400, game.world.centerY - 75, 'World 1 - ' + game.conf.mapName, {font: fontxl, fill: textColor});
     this.level.anchor.set(0.5);
