@@ -125,6 +125,9 @@ var playState = {
     this.coin.scale.setTo(1, 1);
     this.coinCount = 0;
 
+    this.coinPosition = [...this.levelData.coinPosition];
+    this.potionPosition = [...this.levelData.potionPosition];
+
     // Potion
     if (this.life_points <= 3) {
       this.potion = game.add.sprite(this.levelData.potionStart.x, this.levelData.potionStart.y, 'potion');
@@ -652,24 +655,19 @@ var playState = {
   },
 
   updateCoinPosition: function () {
-    let coinPositionJson = this.levelData.coinPosition;
-    let coinPosition = coinPositionJson.slice(0);
-    let newCoinPosition;
+    // generate number between 1 and coinPosition.length (0 holds the last value used)
+    this.keyCoinPosition = game.rnd.integerInRange(1, this.coinPosition.length - 1);
 
-    for (let i = 0; i < coinPosition.length; i++) {
-      if (game.conf.mapName < 4 && coinPosition[i].x === this.coin.x && coinPosition[i].y === this.coin.y) {
-        coinPosition.splice(i, 1);
-        coinPosition.splice(0, coinPosition[i]);
-      }
-    }
+    this.coinPositionValue = this.coinPosition[this.keyCoinPosition];
 
-    if (game.conf.mapName < 4) {
-      newCoinPosition = coinPosition[game.rnd.integerInRange(0, coinPosition.length - 1)];
-    } else if (game.conf.mapName === 4 && this.coinCount < 9) {
-      newCoinPosition = coinPosition[this.coinCount += 1];
-    }
+    // delete value from array
+    this.coinPosition.splice(this.keyCoinPosition, 1);
 
-    this.coin.reset(newCoinPosition.x, newCoinPosition.y);
+    // insert value in coinposition[0]
+    this.coinPosition.unshift(this.coinPositionValue);
+
+    // use value
+    this.coin.reset(this.coinPositionValue.x, this.coinPositionValue.y);
   },
 
   // POTION
@@ -701,18 +699,18 @@ var playState = {
   },
 
   updatePotionPosition: function () {
-    let potionPositionJson = this.levelData.potionPosition;
-    let potionPosition = potionPositionJson.slice(0);
+    // generate number between 1 and coinPosition.length (0 holds the last value used)
+    this.keyPotionPosition = game.rnd.integerInRange(1, this.potionPosition.length - 1);
 
-    for (let i = 0; i < potionPosition.length; i++) {
-      if (potionPosition[i].x === this.potion.x) {
-        potionPosition.splice(i, 1);
-      }
-    }
+    this.potionPositionValue = this.potionPosition[this.keyPotionPosition];
 
-    let newPotionPosition = potionPosition[game.rnd.integerInRange(0, potionPosition.length - 1)];
+    // delete value from array
+    this.potionPosition.splice(this.keyPotionPosition, 1);
 
-    this.potion.reset(newPotionPosition.x, newPotionPosition.y);
+    // insert value in coinposition[0]
+    this.potionPosition.unshift(this.potionPositionValue);
+
+    this.potion.reset(this.potionPositionValue.x, this.potionPositionValue.y);
   },
 
   addMobileInputs: function () {
