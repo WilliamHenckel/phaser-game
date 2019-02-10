@@ -125,8 +125,10 @@ var playState = {
     this.coin.scale.setTo(1, 1);
     this.coinCount = 0;
 
-    this.coinPosition = [...this.levelData.coinPosition];
-    this.potionPosition = [...this.levelData.potionPosition];
+    if (game.conf.mapName < 3) {
+      this.coinPosition = [...this.levelData.coinPosition];
+      this.potionPosition = [...this.levelData.potionPosition];
+    }
 
     // Potion
     if (this.life_points <= 3) {
