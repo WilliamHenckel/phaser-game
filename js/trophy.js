@@ -69,6 +69,12 @@ var trophyState = {
       this.trophyLockedText[2].alpha = 1;
     }
 
+    if (game.conf.pacifiste === true) {
+      this.trophyLocked[3].alpha = 1;
+      game.add.tween(this.trophyLocked[2]).to({angle: -10}, 300).to({angle: 0}, 300).to({angle: 10}, 300).to({angle: 0}, 300).loop().start();
+      this.trophyLockedText[3].alpha = 1;
+    }
+
     game.input.onDown.add(this.menu, this);
   },
 

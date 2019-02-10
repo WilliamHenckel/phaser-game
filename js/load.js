@@ -69,6 +69,7 @@ var loadState = {
     game.conf.easyEnding = false;
     game.conf.casualEnding = false;
     game.conf.hardEnding = false;
+    game.conf.pacifiste = false;
     game.state.start('menu');
   }
 };

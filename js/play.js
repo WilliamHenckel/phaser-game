@@ -655,10 +655,15 @@ var playState = {
   },
 
   updateCoinPosition: function () {
-    // generate number between 1 and coinPosition.length (0 holds the last value used)
-    this.keyCoinPosition = game.rnd.integerInRange(1, this.coinPosition.length - 1);
+    if (game.conf.mapName < 4) {
+      // generate number between 1 and coinPosition.length (0 holds the last value used)
+      this.keyCoinPosition = game.rnd.integerInRange(1, this.coinPosition.length - 1);
 
-    this.coinPositionValue = this.coinPosition[this.keyCoinPosition];
+      this.coinPositionValue = this.coinPosition[this.keyCoinPosition];
+    } else if (game.conf.mapName === 4 && this.coinCount < 9) {
+      ++this.coinCount;
+      this.coinPositionValue = this.coinPosition[this.coinCount];
+    }
 
     // delete value from array
     this.coinPosition.splice(this.keyCoinPosition, 1);
@@ -787,6 +792,11 @@ var playState = {
       }
 
       game.time.events.add(3000, this.startMenu, this);
+    }
+
+    if (game.conf.enemyKillCounter === 0 && game.conf.mapName < 3) {
+      game.conf.pacifiste = true;
+      game.time.events.add(300, this.getTrophy, this, 'Pacifiste');
     }
   },
 
