@@ -125,7 +125,7 @@ var playState = {
     this.coin.scale.setTo(1, 1);
     this.coinCount = 0;
 
-    if (game.conf.mapName < 3) {
+    if (game.conf.mapName === 1 || game.conf.mapName === 2 || game.conf.mapName === 4) {
       this.coinPosition = [...this.levelData.coinPosition];
       this.potionPosition = [...this.levelData.potionPosition];
     }
@@ -796,7 +796,7 @@ var playState = {
       game.time.events.add(3000, this.startMenu, this);
     }
 
-    if (game.conf.enemyKillCounter === 0 && game.conf.mapName < 3) {
+    if (game.conf.enemyKillCounter === 0 && game.conf.mapName < 3 && game.conf.pacifiste === false) {
       game.conf.pacifiste = true;
       game.time.events.add(300, this.getTrophy, this, 'Pacifiste');
     }
