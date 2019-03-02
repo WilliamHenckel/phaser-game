@@ -75,6 +75,12 @@ var trophyState = {
       this.trophyLockedText[3].alpha = 1;
     }
 
+    if (game.conf.grevin === true) {
+      this.trophyLocked[8].alpha = 1;
+      game.add.tween(this.trophyLocked[8]).to({angle: -10}, 300).to({angle: 0}, 300).to({angle: 10}, 300).to({angle: 0}, 300).loop().start();
+      this.trophyLockedText[8].alpha = 1;
+    }
+
     game.input.onDown.add(this.menu, this);
   },
 

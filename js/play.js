@@ -43,6 +43,10 @@ var playState = {
       right: game.input.keyboard.addKey(Phaser.Keyboard.D)
     };
 
+    this.debugInput = {
+      m: game.input.keyboard.addKey(Phaser.Keyboard.M)
+    }
+
     // Décor
     this.createWorld();
 
@@ -217,6 +221,10 @@ var playState = {
 
     // Responsive
     this.addMobileInputs();
+
+    // Timer
+    this.playerHasMoved = false;
+    playState.idleTimer();
   },
 
   update: function () {
@@ -232,6 +240,7 @@ var playState = {
     game.physics.arcade.overlap(this.player, this.boss, this.bossOrPlayerHurt, null, this);
 
     this.movePlayer();
+    this.debugButton();
     this.moveBoss();
 
     if ((!this.player.inWorld && this.player.body.y > 0) && this.score < game.conf.difficultyData.score) {
@@ -302,10 +311,12 @@ var playState = {
       this.player.body.velocity.x = -200;
       this.player.animations.play('left');
       this.direction = 'left';
+      this.playerHasMoved = true;
     } else if (this.cursor.right.isDown || this.zsqd.right.isDown || this.moveRight) {
       this.player.body.velocity.x = 200;
       this.player.animations.play('right');
       this.direction = 'right';
+      this.playerHasMoved = true;
     } else {
       this.player.body.velocity.x = 0;
       this.player.animations.stop();
@@ -340,11 +351,19 @@ var playState = {
     }
   },
 
+  debugButton: function () {
+    if (this.debugInput.m.isDown) {
+      console.log('test m button');
+      game.time.events.add(300, this.startMenu, this);
+    }
+  },
+
   playerJump: function () {
     if ((this.player.body.velocity.y === 0 || this.player.body.onFloor()) && this.player.alive) {
       this.player.body.velocity.y = -470;
       this.jumpSound.play();
     }
+    this.playerHasMoved = true;
   },
 
   playerHurt: function (pPlayer, pEnemy) {
@@ -762,6 +781,15 @@ var playState = {
     this.rightButton.events.onInputUp.add(function () {
       this.moveRight = false;
     }, this);
+  },
+
+  idleTimer: function() {
+    setTimeout(function() {
+      if (playState.playerHasMoved === false) {
+        game.conf.grevin = true;
+        game.time.events.add(300, playState.getTrophy, playState, 'Grevin');
+      }
+    }, 5000);
   },
 
   // LEVELS
