@@ -239,19 +239,25 @@ var playState = {
       "animations.add",
       "animations",
       "walk-left",
-      [0, 1, 2, 1],
-      10
+      [5, 0, 1, 2, 3, 4],
+      8
     );
     this.enemies.callAll(
       "animations.add",
       "animations",
       "walk-right",
-      [7, 6, 5, 6],
-      10
+      [6, 11, 10, 9, 8, 7],
+      8
     );
 
-    this.enemies.callAll("animations.add", "animations", "fall-left", [3], 10);
-    this.enemies.callAll("animations.add", "animations", "fall-right", [4], 10);
+    this.enemies.callAll("animations.add", "animations", "fall-left", [12], 10);
+    this.enemies.callAll(
+      "animations.add",
+      "animations",
+      "fall-right",
+      [13],
+      10
+    );
 
     // Sons
     this.jumpSound = game.add.audio("jump");

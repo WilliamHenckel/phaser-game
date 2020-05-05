@@ -1,11 +1,13 @@
 /* global Phaser, bootState, loadState, menuState, trophyState, helpState, characterState, difficultyState, levelState, playState */
+let canvasHeight;
+let antialias;
 
 if (window.innerWidth <= 800) {
-  let canvasHeight = 700;
-  let antialias = true;
+  canvasHeight = 700;
+  antialias = true;
 } else {
-  let canvasHeight = 640;
-  let antialias = false;
+  canvasHeight = 640;
+  antialias = false;
 }
 
 var game = new Phaser.Game(

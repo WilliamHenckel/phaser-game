@@ -73,7 +73,7 @@ var helpState = {
       .tween(this.enemy1)
       .to({ x: 150 }, 400, Phaser.Easing.Linear.Out, true);
     this.enemy1.anchor.setTo(0.5, 0.5);
-    this.enemy1.animations.add("walk", [7, 6, 5, 6], 8, true);
+    this.enemy1.animations.add("walk", [11, 10, 9, 8, 7, 6], 8, true);
     this.enemy1.animations.play("walk");
     this.enemy1.scale.setTo(1, 1);
     this.enemy1Text = game.add.text(
@@ -92,7 +92,7 @@ var helpState = {
       .tween(this.enemy2)
       .to({ x: 150 }, 400, Phaser.Easing.Linear.Out, true);
     this.enemy2.anchor.setTo(0.5, 0.5);
-    this.enemy2.animations.add("walk", [7, 6, 5, 6], 8, true);
+    this.enemy2.animations.add("walk", [11, 10, 9, 8, 7, 6], 8, true);
     this.enemy2.animations.play("walk");
     this.enemy2.scale.setTo(1, 1);
     this.enemy2Text = game.add.text(

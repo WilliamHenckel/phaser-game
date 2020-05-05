@@ -13,8 +13,8 @@ var loadState = {
     game.load.spritesheet("ernest", "assets/ernest.png", 40, 36, 12);
     game.load.spritesheet("coin", "assets/coin.png", 32, 32, 4);
     game.load.spritesheet("mute", "assets/muteButton.png", 28, 22);
-    game.load.spritesheet("enemy", "assets/enemy.png", 32, 32, 8);
-    game.load.spritesheet("enemy2", "assets/enemy2.png", 40, 26, 8);
+    game.load.spritesheet("enemy", "assets/enemy.png", 32, 32, 14);
+    game.load.spritesheet("enemy2", "assets/enemy2.png", 32, 32, 14);
     game.load.spritesheet("boss", "assets/boss.png", 56, 74, 5);
     game.load.spritesheet("health", "assets/coeur.png", 156, 24, 6);
     game.load.spritesheet("healthBoss", "assets/health-boss.png", 80, 16, 6);
