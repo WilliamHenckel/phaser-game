@@ -68,19 +68,11 @@ var playState = {
     this.createWorld();
 
     // Joueur
-    if (game.character === "achille") {
-      this.player = game.add.sprite(
-        this.levelData.playerStart.x,
-        this.levelData.playerStart.y,
-        "achille"
-      );
-    } else if (game.character === "ernest") {
-      this.player = game.add.sprite(
-        this.levelData.playerStart.x,
-        this.levelData.playerStart.y,
-        "ernest"
-      );
-    }
+    this.player = game.add.sprite(
+      this.levelData.playerStart.x,
+      this.levelData.playerStart.y,
+      game.character
+    );
 
     game.camera.follow(this.player);
 
@@ -147,19 +139,27 @@ var playState = {
         this.fireMissile,
         this
       );
-    }
 
-    // Missiles
-    this.missiles = game.add.group();
-    this.missiles.enableBody = true;
-    this.missiles.createMultiple(10, "missile");
-    this.missiles.callAll(
-      "events.onOutOfBounds.add",
-      "events.onOutOfBounds",
-      this.resetMissile
-    );
-    this.missiles.callAll("anchor.setTo", "anchor", 0.5, 1.0);
-    this.missiles.setAll("checkWorldBounds", true);
+      // Missiles
+      this.missiles = game.add.group();
+      this.missiles.enableBody = true;
+      this.missiles.createMultiple(10, "missile");
+      this.missiles.callAll(
+        "events.onOutOfBounds.add",
+        "events.onOutOfBounds",
+        this.resetMissile
+      );
+      this.missiles.callAll("anchor.setTo", "anchor", 0.5, 1.0);
+      this.missiles.setAll("checkWorldBounds", true);
+
+      // Points de vie boss
+      this.boss_life_pointsLabel = game.add.text(400, 170, "Boss", {
+        font: fontxl,
+        fill: textColor,
+      });
+      this.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
+      this.boss_life_pointsLabel.setShadow(3, 3, "rgba(0,0,0,0.5)", 5);
+    }
 
     // Pièce
     this.coin = game.add.sprite(
@@ -174,12 +174,9 @@ var playState = {
     this.coin.scale.setTo(1, 1);
     this.coinCount = 0;
 
-    if (
-      game.conf.mapName === 1 ||
-      game.conf.mapName === 2 ||
-      game.conf.mapName === 4
-    ) {
+    if (game.conf.mapName !== 3) {
       this.coinPosition = [...this.levelData.coinPosition];
+      console.log("coin position init : ", this.coinPosition);
       this.potionPosition = [...this.levelData.potionPosition];
     }
 
@@ -204,16 +201,6 @@ var playState = {
     this.scoreLabel.setShadow(3, 3, "rgba(0,0,0,0.5)", 5);
     this.scoreLabel.fixedToCamera = true;
     this.score = 0;
-
-    // Points de vie boss
-    if (game.conf.mapName === 3) {
-      this.boss_life_pointsLabel = game.add.text(400, 170, "Boss", {
-        font: fontxl,
-        fill: textColor,
-      });
-      this.boss_life_pointsLabel.anchor.setTo(0.5, 0.5);
-      this.boss_life_pointsLabel.setShadow(3, 3, "rgba(0,0,0,0.5)", 5);
-    }
 
     // Ennemies
     this.enemies = game.add.group();
@@ -309,7 +296,6 @@ var playState = {
   update: function () {
     game.physics.arcade.collide(this.player, this.layer);
     game.physics.arcade.collide(this.enemies, this.layer);
-    game.physics.arcade.collide(this.boss, this.layer);
     game.physics.arcade.collide(this.player, this.movingWall);
 
     game.physics.arcade.overlap(
@@ -333,20 +319,25 @@ var playState = {
       null,
       this
     );
-    game.physics.arcade.overlap(
-      this.player,
-      this.missiles,
-      this.playerHurt,
-      null,
-      this
-    );
-    game.physics.arcade.overlap(
-      this.player,
-      this.boss,
-      this.bossOrPlayerHurt,
-      null,
-      this
-    );
+
+    if (game.conf.mapName === 3) {
+      game.physics.arcade.collide(this.boss, this.layer);
+      game.physics.arcade.overlap(
+        this.player,
+        this.missiles,
+        this.playerHurt,
+        null,
+        this
+      );
+      game.physics.arcade.overlap(
+        this.player,
+        this.boss,
+        this.bossOrPlayerHurt,
+        null,
+        this
+      );
+      this.moveBoss();
+    }
 
     this.movePlayer();
     this.debugButton();
