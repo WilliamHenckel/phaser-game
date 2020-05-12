@@ -3,6 +3,7 @@ var helpState = {
   create: function () {
     game.stage.backgroundColor = "#313131";
 
+    // Titre
     this.title = game.add.text(1100, 100, "Tutorial", {
       font: fontxl,
       fill: textColor,
@@ -18,6 +19,8 @@ var helpState = {
       "Retour",
       { font: fontxl, fill: textColor }
     );
+
+    // Bouton retour
     game.add
       .tween(this.returnButton)
       .to({ x: 400 }, 400, Phaser.Easing.Linear.Out, true);
@@ -25,6 +28,9 @@ var helpState = {
     this.returnButton.alpha = 0.5;
     this.returnButton.inputEnabled = true;
 
+    game.input.onDown.add(this.menu, this);
+
+    // Bouton mute
     this.muteButton = game.add.button(20, 20, "mute", this.toggleSound, this);
     this.muteButton.input.useHandCursor = true;
 
@@ -32,7 +38,8 @@ var helpState = {
       this.muteButton.frame = 1;
     }
 
-    this.coin = game.add.sprite(850, 200, "coin");
+    // Pièce
+    this.coin = game.add.sprite(850, 175, "coin");
     game.add
       .tween(this.coin)
       .to({ x: 150 }, 400, Phaser.Easing.Linear.Out, true);
@@ -42,7 +49,7 @@ var helpState = {
     this.coin.scale.setTo(1, 1);
     this.coinText = game.add.text(
       900,
-      200,
+      175,
       "Les pièces permettent de passer au niveau suivant",
       { font: fonts, fill: textColor }
     );
@@ -51,7 +58,8 @@ var helpState = {
       .to({ x: 200 }, 400, Phaser.Easing.Linear.Out, true);
     this.coinText.anchor.setTo(0, 0.5);
 
-    this.potion = game.add.sprite(850, 275, "potion");
+    // Potion
+    this.potion = game.add.sprite(850, 250, "potion");
     game.add
       .tween(this.potion)
       .to({ x: 150 }, 400, Phaser.Easing.Linear.Out, true);
@@ -59,7 +67,7 @@ var helpState = {
     this.potion.scale.setTo(1, 1);
     this.potionText = game.add.text(
       900,
-      275,
+      250,
       "Les potions vous font récupérer des points de vie",
       { font: fonts, fill: textColor }
     );
@@ -68,7 +76,8 @@ var helpState = {
       .to({ x: 200 }, 400, Phaser.Easing.Linear.Out, true);
     this.potionText.anchor.setTo(0, 0.5);
 
-    this.enemy1 = game.add.sprite(850, 350, "enemy");
+    // Enemy 1
+    this.enemy1 = game.add.sprite(850, 325, "enemy");
     game.add
       .tween(this.enemy1)
       .to({ x: 150 }, 400, Phaser.Easing.Linear.Out, true);
@@ -78,7 +87,7 @@ var helpState = {
     this.enemy1.scale.setTo(1, 1);
     this.enemy1Text = game.add.text(
       900,
-      350,
+      325,
       "Ces ennemis ne peuvent pas être tués",
       { font: fonts, fill: textColor }
     );
@@ -87,7 +96,8 @@ var helpState = {
       .to({ x: 200 }, 400, Phaser.Easing.Linear.Out, true);
     this.enemy1Text.anchor.setTo(0, 0.5);
 
-    this.enemy2 = game.add.sprite(850, 425, "enemy2");
+    // Enemy 2
+    this.enemy2 = game.add.sprite(850, 400, "enemy2");
     game.add
       .tween(this.enemy2)
       .to({ x: 150 }, 400, Phaser.Easing.Linear.Out, true);
@@ -97,7 +107,7 @@ var helpState = {
     this.enemy2.scale.setTo(1, 1);
     this.enemy2Text = game.add.text(
       900,
-      425,
+      400,
       "Ces ennemis peuvent être écrasés en sautant dessus",
       { font: fonts, fill: textColor }
     );
@@ -106,7 +116,30 @@ var helpState = {
       .to({ x: 200 }, 400, Phaser.Easing.Linear.Out, true);
     this.enemy2Text.anchor.setTo(0, 0.5);
 
-    game.input.onDown.add(this.menu, this);
+    // Clés
+    this.key = game.add.sprite(850, 475, "key");
+    game.add
+      .tween(this.key)
+      .to({ x: 150 }, 400, Phaser.Easing.Linear.Out, true);
+    this.key.anchor.setTo(0.5, 0.5);
+    this.key.animations.add(
+      "rotate",
+      [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1],
+      8,
+      true
+    );
+    this.key.animations.play("rotate");
+    this.key.scale.setTo(1, 1);
+    this.keyText = game.add.text(
+      900,
+      475,
+      "Ces clés dévérouillent la porte de fin de niveau",
+      { font: fonts, fill: textColor }
+    );
+    game.add
+      .tween(this.keyText)
+      .to({ x: 200 }, 400, Phaser.Easing.Linear.Out, true);
+    this.keyText.anchor.setTo(0, 0.5);
   },
 
   update: function () {
@@ -153,6 +186,12 @@ var helpState = {
     game.add
       .tween(this.enemy2Text)
       .to({ x: this.enemy2Text.x - 800 }, 400, Phaser.Easing.Linear.Out, true);
+    game.add
+      .tween(this.key)
+      .to({ x: this.key.x - 800 }, 400, Phaser.Easing.Linear.Out, true);
+    game.add
+      .tween(this.keyText)
+      .to({ x: this.keyText.x - 800 }, 400, Phaser.Easing.Linear.Out, true);
 
     game.time.events.add(500, this.stateMenu, this);
   },

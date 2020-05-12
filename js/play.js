@@ -161,35 +161,34 @@ var playState = {
       this.boss_life_pointsLabel.setShadow(3, 3, "rgba(0,0,0,0.5)", 5);
     }
 
-    // Pièce
-    this.coin = game.add.sprite(
-      this.levelData.coinStart.x,
-      this.levelData.coinStart.y,
-      "coin"
-    );
-    game.physics.arcade.enable(this.coin);
-    this.coin.anchor.setTo(0.5, 0.5);
-    this.coin.animations.add("turn", [0, 1, 2, 3], 8, true);
-    this.coin.animations.play("turn");
-    this.coin.scale.setTo(1, 1);
-    this.coinCount = 0;
-
-    if (game.conf.mapName !== 3) {
-      this.coinPosition = [...this.levelData.coinPosition];
-      console.log("coin position init : ", this.coinPosition);
-      this.potionPosition = [...this.levelData.potionPosition];
-    }
-
-    // Potion
-    if (this.life_points <= 3) {
-      this.potion = game.add.sprite(
-        this.levelData.potionStart.x,
-        this.levelData.potionStart.y,
-        "potion"
+    if (game.conf.mapName < 3) {
+      // Pièce
+      this.coin = game.add.sprite(
+        this.levelData.coinStart.x,
+        this.levelData.coinStart.y,
+        "coin"
       );
+      game.physics.arcade.enable(this.coin);
+      this.coin.anchor.setTo(0.5, 0.5);
+      this.coin.animations.add("turn", [0, 1, 2, 3], 8, true);
+      this.coin.animations.play("turn");
+      this.coin.scale.setTo(1, 1);
+      this.coinCount = 0;
+
+      this.coinPosition = [...this.levelData.coinPosition];
+      this.potionPosition = [...this.levelData.potionPosition];
+
+      // Potion
+      if (this.life_points <= 3) {
+        this.potion = game.add.sprite(
+          this.levelData.potionStart.x,
+          this.levelData.potionStart.y,
+          "potion"
+        );
+      }
+      game.physics.arcade.enable(this.potion);
+      this.potion.anchor.setTo(0.5, 0.5);
     }
-    game.physics.arcade.enable(this.potion);
-    this.potion.anchor.setTo(0.5, 0.5);
 
     // Score
     this.scoreLabel = game.add.text(

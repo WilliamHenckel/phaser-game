@@ -18,6 +18,7 @@ var loadState = {
     game.load.spritesheet("boss", "assets/boss.png", 56, 74, 5);
     game.load.spritesheet("health", "assets/coeur.png", 156, 24, 6);
     game.load.spritesheet("healthBoss", "assets/health-boss.png", 80, 16, 6);
+    game.load.spritesheet("key", "assets/key.png", 18, 40, 7);
 
     game.load.image("background", "assets/background.jpg");
     game.load.image("backgroundscroll", "assets/backgroundscroll.png");
