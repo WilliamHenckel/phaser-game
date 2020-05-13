@@ -21,6 +21,8 @@ var playState = {
     if (game.conf.mapName === 4) {
       game.conf.difficultyData.score = 100;
     }
+
+    // console.log("mapname : ", game.conf.mapName);
   },
 
   create: function () {
@@ -100,6 +102,8 @@ var playState = {
     this.health.animations.add("1", [4], 1, true);
     this.health.animations.add("0", [5], 1, true);
     this.health.animations.play(this.life_points);
+
+    this.score = 0;
 
     // Boss
     if (game.conf.mapName === 3) {
@@ -188,62 +192,67 @@ var playState = {
       }
       game.physics.arcade.enable(this.potion);
       this.potion.anchor.setTo(0.5, 0.5);
-    }
 
-    // Score
-    this.scoreLabel = game.add.text(
-      65,
-      17,
-      "Score : 0 / " + game.conf.difficultyData.score,
-      { font: fontm, fill: textColor }
-    );
-    this.scoreLabel.setShadow(3, 3, "rgba(0,0,0,0.5)", 5);
-    this.scoreLabel.fixedToCamera = true;
-    this.score = 0;
+      // Score
+      this.scoreLabel = game.add.text(
+        65,
+        17,
+        "Score : 0 / " + game.conf.difficultyData.score,
+        { font: fontm, fill: textColor }
+      );
+      this.scoreLabel.setShadow(3, 3, "rgba(0,0,0,0.5)", 5);
+      this.scoreLabel.fixedToCamera = true;
 
-    // Ennemies
-    this.enemies = game.add.group();
-    this.enemies.enableBody = true;
+      // Ennemies
+      this.enemies = game.add.group();
+      this.enemies.enableBody = true;
 
-    for (let i = 0; i < 12; i++) {
-      let tirage = game.rnd.integerInRange(0, 3);
+      for (let i = 0; i < 12; i++) {
+        let tirage = game.rnd.integerInRange(0, 3);
 
-      switch (tirage) {
-        case 0:
-        case 1:
-          this.enemies.createMultiple(1, "enemy");
-          break;
-        case 2:
-        case 3:
-          this.enemies.createMultiple(1, "enemy2");
-          break;
+        switch (tirage) {
+          case 0:
+          case 1:
+            this.enemies.createMultiple(1, "enemy");
+            break;
+          case 2:
+          case 3:
+            this.enemies.createMultiple(1, "enemy2");
+            break;
+        }
       }
+      this.nextEnemy = 0;
+
+      this.enemies.callAll(
+        "animations.add",
+        "animations",
+        "walk-left",
+        [5, 0, 1, 2, 3, 4],
+        8
+      );
+      this.enemies.callAll(
+        "animations.add",
+        "animations",
+        "walk-right",
+        [6, 11, 10, 9, 8, 7],
+        8
+      );
+
+      this.enemies.callAll(
+        "animations.add",
+        "animations",
+        "fall-left",
+        [12],
+        10
+      );
+      this.enemies.callAll(
+        "animations.add",
+        "animations",
+        "fall-right",
+        [13],
+        10
+      );
     }
-    this.nextEnemy = 0;
-
-    this.enemies.callAll(
-      "animations.add",
-      "animations",
-      "walk-left",
-      [5, 0, 1, 2, 3, 4],
-      8
-    );
-    this.enemies.callAll(
-      "animations.add",
-      "animations",
-      "walk-right",
-      [6, 11, 10, 9, 8, 7],
-      8
-    );
-
-    this.enemies.callAll("animations.add", "animations", "fall-left", [12], 10);
-    this.enemies.callAll(
-      "animations.add",
-      "animations",
-      "fall-right",
-      [13],
-      10
-    );
 
     // Sons
     this.jumpSound = game.add.audio("jump");
@@ -294,30 +303,53 @@ var playState = {
 
   update: function () {
     game.physics.arcade.collide(this.player, this.layer);
-    game.physics.arcade.collide(this.enemies, this.layer);
-    game.physics.arcade.collide(this.player, this.movingWall);
 
-    game.physics.arcade.overlap(
-      this.player,
-      this.coin,
-      this.takeCoin,
-      null,
-      this
-    );
-    game.physics.arcade.overlap(
-      this.player,
-      this.potion,
-      this.takePotion,
-      null,
-      this
-    );
-    game.physics.arcade.overlap(
-      this.player,
-      this.enemies,
-      this.enemyOrPlayerHurt,
-      null,
-      this
-    );
+    if (game.conf.mapName < 3) {
+      game.physics.arcade.collide(this.enemies, this.layer);
+
+      game.physics.arcade.overlap(
+        this.player,
+        this.coin,
+        this.takeCoin,
+        null,
+        this
+      );
+
+      game.physics.arcade.overlap(
+        this.player,
+        this.potion,
+        this.takePotion,
+        null,
+        this
+      );
+      game.physics.arcade.overlap(
+        this.player,
+        this.enemies,
+        this.enemyOrPlayerHurt,
+        null,
+        this
+      );
+
+      this.enemies.forEach(this.animateEnemy);
+    }
+
+    if (
+      !this.player.inWorld &&
+      this.player.body.y > 0 &&
+      this.score < game.conf.difficultyData.score
+    ) {
+      this.playerDie();
+    }
+
+    if (game.conf.mapName === 1) {
+      game.physics.arcade.collide(this.player, this.movingWall);
+
+      if (this.movingWall.x >= this.levelData.movingwallStart.x + 50) {
+        this.movingWall.body.velocity.x = -50;
+      } else if (this.movingWall.x <= this.levelData.movingwallStart.x - 50) {
+        this.movingWall.body.velocity.x = 50;
+      }
+    }
 
     if (game.conf.mapName === 3) {
       game.physics.arcade.collide(this.boss, this.layer);
@@ -340,15 +372,6 @@ var playState = {
 
     this.movePlayer();
     this.debugButton();
-    this.moveBoss();
-
-    if (
-      !this.player.inWorld &&
-      this.player.body.y > 0 &&
-      this.score < game.conf.difficultyData.score
-    ) {
-      this.playerDie();
-    }
 
     if (this.nextEnemy < game.time.now) {
       let start = 4000;
@@ -359,16 +382,6 @@ var playState = {
       if (game.conf.mapName < 3) {
         game.time.events.add(3000, this.addEnemy, this);
         this.nextEnemy = game.time.now + delay;
-      }
-    }
-
-    this.enemies.forEach(this.animateEnemy);
-
-    if (game.conf.mapName === 1) {
-      if (this.movingWall.x >= this.levelData.movingwallStart.x + 50) {
-        this.movingWall.body.velocity.x = -50;
-      } else if (this.movingWall.x <= this.levelData.movingwallStart.x - 50) {
-        this.movingWall.body.velocity.x = 50;
       }
     }
 
