@@ -254,6 +254,34 @@ var playState = {
       );
     }
 
+    if (game.conf.mapName === 4) {
+      for (let i = 0; i < this.levelData.keyPosition.length; i++) {
+        this.key = game.add.sprite(
+          this.levelData.keyPosition[i].x,
+          this.levelData.keyPosition[i].y,
+          "key"
+        );
+        game.physics.arcade.enable(this.key);
+        this.key.anchor.setTo(0.5, 0.5);
+        this.key.animations.add(
+          "rotate",
+          [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1],
+          8,
+          true
+        );
+        this.key.animations.play("rotate");
+      }
+
+      this.keyLabel = game.add.text(65, 17, "Clés : 0 / 3", {
+        font: fontm,
+        fill: textColor,
+      });
+
+      this.keyLabel.setShadow(3, 3, "rgba(0,0,0,0.5)", 5);
+      this.keyLabel.fixedToCamera = true;
+      this.keyCount = 0;
+    }
+
     // Sons
     this.jumpSound = game.add.audio("jump");
     this.coinSound = game.add.audio("coin");
@@ -368,6 +396,16 @@ var playState = {
         this
       );
       this.moveBoss();
+    }
+
+    if (game.conf.mapName === 4) {
+      game.physics.arcade.overlap(
+        this.player,
+        this.key,
+        this.takeKey,
+        null,
+        this
+      );
     }
 
     this.movePlayer();
@@ -888,6 +926,20 @@ var playState = {
 
     // use value
     this.coin.reset(this.coinPositionValue.x, this.coinPositionValue.y);
+  },
+
+  // CLES
+  takeKey: function () {
+    this.key.kill();
+    this.keyCount += 1;
+    this.keyLabel.text = "Clés : " + this.keyCount + " / 3";
+    this.coinSound.play();
+
+    game.add
+      .tween(this.player.scale)
+      .to({ x: 1.2, y: 0.8 }, 50)
+      .to({ x: 1, y: 1 }, 150)
+      .start();
   },
 
   // POTION

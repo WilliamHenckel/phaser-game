@@ -156,7 +156,7 @@ var difficultyState = {
   },
 
   stateLevel: function () {
-    game.state.start("level", true, false, 1);
+    game.state.start("level", true, false, 4);
   },
 
   stateCharacter: function () {
