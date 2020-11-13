@@ -254,23 +254,24 @@ var playState = {
       );
     }
 
+    // Clés
     if (game.conf.mapName === 4) {
+      this.key = game.add.group();
+      // this.key.enableBody = true;
+      this.key.callAll("anchor.setTo", "anchor", 0.5, 0.5);
+      // game.physics.arcade.enable(this.key);
+
       for (let i = 0; i < this.levelData.keyPosition.length; i++) {
-        this.key = game.add.sprite(
+        this.key.create(
           this.levelData.keyPosition[i].x,
           this.levelData.keyPosition[i].y,
-          "key"
-        );
+          'key',
+          0)
         game.physics.arcade.enable(this.key);
-        this.key.anchor.setTo(0.5, 0.5);
-        this.key.animations.add(
-          "rotate",
-          [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1],
-          8,
-          true
-        );
-        this.key.animations.play("rotate");
       }
+
+      this.key.callAll("animations.add", "animations", "rotate", [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1], 8, true);
+      this.key.callAll('animations.play', 'animations', 'rotate');
 
       this.keyLabel = game.add.text(65, 17, "Clés : 0 / 3", {
         font: fontm,
@@ -350,6 +351,7 @@ var playState = {
         null,
         this
       );
+
       game.physics.arcade.overlap(
         this.player,
         this.enemies,
@@ -930,7 +932,7 @@ var playState = {
 
   // CLES
   takeKey: function () {
-    this.key.kill();
+    // this.key.kill();
     this.keyCount += 1;
     this.keyLabel.text = "Clés : " + this.keyCount + " / 3";
     this.coinSound.play();

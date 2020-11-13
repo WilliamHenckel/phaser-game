@@ -65,5 +65,7 @@ gulp.task("dist", gulp.series("prod-js", "copy-all"));
 
 // WATCH
 gulp.task("watch", function () {
-  gulp.watch(["./assets/**/*", "./css/**/*", "./js/**/*"], ["dist"]);
+  gulp.watch("./assets/**/*", gulp.series('dist'));
+  gulp.watch("./css/**/*", gulp.series('dist'));
+  gulp.watch("./js/**/*", gulp.series('dist'));
 });
