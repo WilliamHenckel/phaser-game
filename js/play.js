@@ -21,8 +21,6 @@ var playState = {
     if (game.conf.mapName === 4) {
       game.conf.difficultyData.score = 100;
     }
-
-    // console.log("mapname : ", game.conf.mapName);
   },
 
   create: function () {
@@ -257,9 +255,7 @@ var playState = {
     // Clés
     if (game.conf.mapName === 4) {
       this.key = game.add.group();
-      // this.key.enableBody = true;
       this.key.callAll("anchor.setTo", "anchor", 0.5, 0.5);
-      // game.physics.arcade.enable(this.key);
 
       for (let i = 0; i < this.levelData.keyPosition.length; i++) {
         this.key.create(
@@ -273,7 +269,7 @@ var playState = {
       this.key.callAll("animations.add", "animations", "rotate", [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1], 8, true);
       this.key.callAll('animations.play', 'animations', 'rotate');
 
-      this.keyLabel = game.add.text(65, 17, "Clés : 0 / 3", {
+      this.keyLabel = game.add.text(65, 17, "Clés : 0 / 5", {
         font: fontm,
         fill: textColor,
       });
@@ -931,11 +927,15 @@ var playState = {
   },
 
   // CLES
-  takeKey: function () {
-    // this.key.kill();
+  takeKey: function (player, key) {
+    key.kill();
     this.keyCount += 1;
-    this.keyLabel.text = "Clés : " + this.keyCount + " / 3";
+    this.keyLabel.text = "Clés : " + this.keyCount + " / 5";
     this.coinSound.play();
+
+    if (this.keyCount === 5) {
+      this.nextLevelText();
+    }
 
     game.add
       .tween(this.player.scale)

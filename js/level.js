@@ -61,7 +61,7 @@ var levelState = {
         this.tutoLabel = game.add.text(
           400,
           game.world.centerY + 75,
-          "Goal : Collect the 3 keys",
+          "Goal : Collect the 5 keys",
           { font: fontl, fill: textColor }
         );
         break;
