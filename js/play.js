@@ -21,8 +21,6 @@ var playState = {
     if (game.conf.mapName === 4) {
       game.conf.difficultyData.score = 100;
     }
-
-    // console.log("mapname : ", game.conf.mapName);
   },
 
   create: function () {
@@ -254,6 +252,33 @@ var playState = {
       );
     }
 
+    // Clés
+    if (game.conf.mapName === 4) {
+      this.key = game.add.group();
+      this.key.callAll("anchor.setTo", "anchor", 0.5, 0.5);
+
+      for (let i = 0; i < this.levelData.keyPosition.length; i++) {
+        this.key.create(
+          this.levelData.keyPosition[i].x,
+          this.levelData.keyPosition[i].y,
+          'key',
+          0)
+        game.physics.arcade.enable(this.key);
+      }
+
+      this.key.callAll("animations.add", "animations", "rotate", [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1], 8, true);
+      this.key.callAll('animations.play', 'animations', 'rotate');
+
+      this.keyLabel = game.add.text(65, 17, "Clés : 0 / 5", {
+        font: fontm,
+        fill: textColor,
+      });
+
+      this.keyLabel.setShadow(3, 3, "rgba(0,0,0,0.5)", 5);
+      this.keyLabel.fixedToCamera = true;
+      this.keyCount = 0;
+    }
+
     // Sons
     this.jumpSound = game.add.audio("jump");
     this.coinSound = game.add.audio("coin");
@@ -322,6 +347,7 @@ var playState = {
         null,
         this
       );
+
       game.physics.arcade.overlap(
         this.player,
         this.enemies,
@@ -368,6 +394,16 @@ var playState = {
         this
       );
       this.moveBoss();
+    }
+
+    if (game.conf.mapName === 4) {
+      game.physics.arcade.overlap(
+        this.player,
+        this.key,
+        this.takeKey,
+        null,
+        this
+      );
     }
 
     this.movePlayer();
@@ -888,6 +924,24 @@ var playState = {
 
     // use value
     this.coin.reset(this.coinPositionValue.x, this.coinPositionValue.y);
+  },
+
+  // CLES
+  takeKey: function (player, key) {
+    key.kill();
+    this.keyCount += 1;
+    this.keyLabel.text = "Clés : " + this.keyCount + " / 5";
+    this.coinSound.play();
+
+    if (this.keyCount === 5) {
+      this.nextLevelText();
+    }
+
+    game.add
+      .tween(this.player.scale)
+      .to({ x: 1.2, y: 0.8 }, 50)
+      .to({ x: 1, y: 1 }, 150)
+      .start();
   },
 
   // POTION
